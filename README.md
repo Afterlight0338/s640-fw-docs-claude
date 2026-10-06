@@ -2043,6 +2043,12 @@ hashes in [`asm/patched_images.sha256`](asm/patched_images.sha256); they match t
   `0x080003AC` and `0x08000B24` do.
 * The meaning of report bytes 11 and 12 (most likely tilt).
 * Whether the unused `mov r5, sl` variant of nosmooth-nohold (7.4) behaves any differently in practice.
+* Whether `nosmooth-hook` (7.9) behaves like `nosmooth-nohold` on a
+  real tablet over SWD, and after that, whether it can be written safely through Veikk's USB
+  updater on an untouched tablet (0.2).
+* Pressure smoothing: the 8-sample pressure average and the 4-report tip debounce (5.7) are
+  still in every patch here.
+* Whether a tablet with a different board than `HK1102 VER02b` exists at all (2.6).
 * The S640 bootloader at `0x0800D800`: it is not in Veikk's update file. A flash dump from a
   working tablet would answer this and the settings questions.
 
