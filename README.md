@@ -1,3 +1,18 @@
+<!-- banner:start -->
+> [!CAUTION]
+> **This entire document was written by Claude Opus 5.5 on xHigh reasoning.** I did not check
+> every byte of it, and I am **not responsible for anything in here that turns out to be wrong.**
+> Some of it probably is. Flash something because a README told you to, turn your tablet into a
+> very expensive coaster, and that is on you. Not me, not Claude, you.
+>
+> Read the code yourself. Measure with your own multimeter. Check every address and every
+> command before you run it. Better yet, do the shi yourself and use this as a map, not a
+> manual. **You have been warned.**
+
+**Same thing, but shorter and just looks nicer i guess? → [vivlos.dev/s640](https://vivlos.dev/s640/)**
+<!-- banner:end -->
+
+
 # Veikk S640: SWD unbrick, firmware internals, and the zero-smoothing patch
 
 Everything learned while bringing a bricked Veikk S640 drawing tablet back to life over SWD
@@ -33,6 +48,7 @@ SHA-256 `150fbc8b…287b45`).
 
 | Thing | Value | How it was found |
 | :--- | :--- | :--- |
+| Unit used | one Veikk S640, called **V1** in the earlier notes; no revision marking on the photographed parts of the PCB (2.1) | owner, photos |
 | Tablet | Veikk S640, USB `2feb:0001`, manufacturer string `VEIKK.INC`, product `S640` | `lsusb`, kernel log |
 | MCU marking | `VEIKK VK1801` (relabelled), LQFP64, 16 pins per side | photos |
 | Core | ARM Cortex-M3 r2p1, CPUID `0x412FC231` | SWD read of `0xE000ED00` |
@@ -53,7 +69,23 @@ SHA-256 `150fbc8b…287b45`).
 
 ## 2. Hardware
 
-### 2.1 Board
+### 2.1 The unit these notes come from
+
+| | |
+| :--- | :--- |
+| Model | Veikk S640 (6 x 4 inch), the version the earlier notes call **V1**. Veikk also sells an "S640 V2"; nothing here was checked on one |
+| PCB revision | no version or date marking on the parts of the board in the photos (front side around the MCU and the antenna front end) |
+| USB | `2feb:0001`, `bcdDevice 0x0000`, strings `VEIKK.INC` / `S640` |
+| MCU | marked `VEIKK VK1801`, LQFP64, device ID `0x13030410` |
+| Firmware it came with | unknown version, never read out (lost in the unlock, 3.6). The earlier notes measured `bInterval 3` on it |
+| Firmware now | `S640-251022` with the v2 patch (7.4) |
+| Pen | the pen that came with it; model not recorded. The hover frequency measurement returns a period of 2621 to 2687 TIMER2 ticks (5.7) |
+
+If your tablet's MCU marking, USB ID, J1 layout or the bytes the patch scripts check differ
+from this table, **stop**: you have different hardware or firmware, and nothing below is
+known to apply.
+
+### 2.2 Board
 
 ![Board with the J1 SWD wiring](images/s640_board_j1_swd_wiring.jpg)
 
@@ -76,7 +108,7 @@ Parts seen on the board (from the photos in [`images/raw/`](images/raw/)):
 
 [`images/raw/IMG20260929140039.jpg`](images/raw/IMG20260929140039.jpg) shows the antenna front end (the HC4051 and MC4580 parts).
 
-### 2.2 MCU pins that matter
+### 2.3 MCU pins that matter
 
 ![Chip and J1, rotated view](images/s640_mcu_pinout_top_view.jpg)
 
@@ -105,7 +137,7 @@ pinout and from what the firmware drives.
 | 60 | BOOT0 | tied to GND on the board |
 | 63, 64 | VSS, VDD | |
 
-### 2.3 J1 debug header
+### 2.4 J1 debug header
 
 | J1 pad | Signal | Connects to | Volts, tablet powered | Diode reading to GND, unpowered |
 | :--- | :--- | :--- | :--- | :--- |
@@ -127,7 +159,7 @@ Wiring used for the recovery (Raspberry Pi Pico running `debugprobe_on_pico`):
 
 Physical pin numbers count from the USB end of the Pico, on the row that starts with GP0.
 
-### 2.4 BOOT0 cannot be used
+### 2.5 BOOT0 cannot be used
 
 BOOT0 (pin 60) measures **0 Ω to GND**. It is tied to ground on the board, so the chip
 can never be strapped into its ROM bootloader from BOOT0. Bridging pin 64 (3.3 V) to pin 60,
@@ -203,7 +235,7 @@ pull-down (0 V on pad 2), PA13 (SWDIO) a pull-up (3.30 V on pad 3).
 1. Hold BOOTSEL and plug the Pico in. It appears as `2e8a:0003 RP2 Boot` with a drive called `RPI-RP2`.
 2. Copy `debugprobe_on_pico.uf2` onto it (SHA-256 in section 10). It re-enumerates as
    `2e8a:000c Raspberry Pi Debugprobe on Pico (CMSIS-DAP)`, firmware version 2.0.0.
-3. Wire it as in 2.3. Then plug in the tablet first and the Pico second.
+3. Wire it as in 2.4. Then plug in the tablet first and the Pico second.
 
 A charge-only USB cable is a common reason for the Pico not appearing at all.
 
