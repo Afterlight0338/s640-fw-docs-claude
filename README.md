@@ -140,14 +140,18 @@ The main loop calls `0x2834` from `0x6822` and `0x685E`, both above `0x3000`. Po
 calls at a small routine in the free flash after the image (`0x0800C464` to `0x0800CFFF`,
 about 2.9 KB). It calls the original `0x2834`, then copies the newest sample (`histX[7]`,
 `histY[7]`) into `outX`/`outY` and marks a report pending. That is what `nosmooth-nohold`
-does, without changing a byte below `0x3000`. Only about 2 flash pages change.
+does, without changing a byte below `0x3000`. Only 2 flash pages change. This is the
+`nosmooth-hook` patch, built by [`patches/hook.py`](patches/hook.py) (0.2.2, details in 7.9).
 
-**Not known yet (check over SWD first):**
+**Answered from the code (not yet on a tablet):**
 
-* whether the history is updated on every report even while the hold is active
-* whether the report is built inside `0x2834` (a hook after it would then add one report,
-  about 4 ms, of lag) or after it returns
-* when it is safe to set the report-pending flag `0x20001031` (never with no pen in range)
+* The history is updated on every valid sample, before the hold is checked, so `hist[7]` is
+  always the newest raw position, held or not.
+* The report is built in the main loop after `0x2834` returns (`bl 0x08008780` at
+  `0x080068D6`), so a hook right after the call adds no lag.
+* The hook only marks a report pending when a new sample actually arrived this pass (the
+  history counter `0x2000107F` changed) and not in the rarely used mode A, the same cases
+  in which the stock firmware would run its output routine without the hold.
 
 **Why it is ultra mega risky:**
 
@@ -163,6 +167,62 @@ does, without changing a byte below `0x3000`. Only about 2 flash pages change.
 A heavier variant that rewrites the first 12 KB from code running above `0x3000` has been
 suggested. It is not covered here: it is riskier than the hook, and it is not known whether
 the chip even allows it.
+
+#### 0.2.1 Why not just undo the smoothing after it happens?
+
+Fair question: if the smoothing lives in the first 12 KB, why not add "reverse smoothing"
+after it?
+
+* **The average can only be half-undone.** The output is the average of the last 8
+  positions. Knowing the last 8 outputs, you could in theory work back to the newest raw
+  position. But the firmware rounds every average down, which loses a little each time.
+  Working backwards multiplies that error by 8 and carries it into every later step, so the
+  result drifts and gets noisy fast.
+* **The hold can't be undone at all.** When the pen moves only a little, the firmware does
+  not update the output and does not send a report. Nothing leaves the chip, so there is
+  nothing to reverse.
+
+**What works instead: don't reverse it, go around it.** The firmware keeps the raw positions
+in memory (the history, newest at `hist[7]`) and computes the average from them. Code after
+the 12 KB can read that raw value directly and put it in the output just before the report
+goes out. The smoothing still runs; its result just gets replaced. Think of a draft and a
+polished copy: turning the polished copy back into the draft is hard, but the draft is still
+on the desk, so you hand that over instead. That is the hook above, and because it also marks
+a report pending on every new sample, it gets past the hold too.
+
+Undoing it on the PC (an OpenTabletDriver filter) runs into the same two problems: the
+rounding, and the hold sending nothing.
+
+#### 0.2.2 Trying `nosmooth-hook` (SWD first)
+
+**Untested.** Try it over SWD, with a probe that can put stock back, before anyone thinks
+about USB.
+
+1. Build it in a folder with `S640-251022.bin`. The script refuses anything but the exact
+   stock file, and checks that nothing below `0x08003000` changed:
+
+   ```
+   python3 hook.py s640_nosmooth_hook.bin
+   # s640_nosmooth_hook.bin 50344 bytes, sha256 4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c
+   ```
+
+2. Flash it over SWD like any other image (0.1 for other probes), with the factory tags if
+   the chip was unlocked:
+
+   ```
+   openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_hook.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'
+   ```
+
+3. Check that it behaves like `nosmooth-nohold` (7.5, 7.8): `still.py` shows a few units of
+   still-pen noise and about 267 reports per second, `stroke.py` gives about 0.4, the pen is
+   found again after lifting it away, and pressure and the pen buttons still work.
+4. If anything is off, flash `S640-251022.bin` or `s640_nosmooth_nohold.bin` back.
+
+**Over USB: no tool here, on purpose.** Only once the SWD test passes. A USB tool would have
+to confirm the tablet runs exactly `S640-251022` above `0x3000` before writing anything, and
+then rewrite just two pages: `0x08006800` to `0x08006BFF` (both calls) and `0x0800C400` to
+`0x0800C7FF` (image tail plus the hook). Everything in "why it is ultra mega risky" above
+still applies.
 
 ## Contents
 
@@ -575,7 +635,9 @@ vector table: [`asm/00_data_tables.txt`](asm/00_data_tables.txt). The entries th
 | `0x0800FC80` to `0x0800FFFF` | unknown |
 
 Pages are 1 KB. The firmware references `0x0800C464` (the end of its own image) and the
-addresses above; nothing else past the image.
+addresses above; nothing else past the image. The `0x0800C464` reference is a C startup
+table entry at `0x08007320` that zeroes `0x77C` bytes of RAM at `0x20001174`; its handler
+(`0x0800663E`) never reads the source address, so the flash after the image really is free.
 
 ### 4.3 Factory tags
 
@@ -1733,6 +1795,84 @@ on any mismatch. To go back to stock, flash `S640-251022.bin` the same way.
 3. With the Pico attached, [`tools/outcheck.tcl`](tools/outcheck.tcl) prints the history buffer and the output
    coordinates five times. With nosmooth-nohold, `outX` equals the last `histX` value every time.
 
+
+### 7.9 Patch nosmooth-hook (untested): the same result without touching the first 12 KB
+
+`patches/hook.py OUT.bin`. Built and checked against the disassembly only; it has **never
+run on a tablet**. Why it exists and how to try it: 0.2.
+
+Changes (68 bytes appended at `0x0800C464`, 2 calls redirected; nothing below `0x08003000`):
+
+| Offset | Stock | Hook |
+| :--- | :--- | :--- |
+| `0x6822` | `fc f7 07 f8` (`bl 0x08002834`) | `05 f0 1f fe` (`bl 0x0800C464`) |
+| `0x685E` | `fb f7 e9 ff` (`bl 0x08002834`) | `05 f0 01 fe` (`bl 0x0800C464`) |
+| `0xC464` | end of image (erased flash) | the routine below |
+
+How each part was decided:
+
+* **New sample or not.** The 19-entry raw history counter `0x2000107F` changes on every valid
+  sample: it is incremented at `0x08002A52`, set to 1 when the pen is first found
+  (`0x08002A90`, all histories filled), and wraps from 19 to 3. Passes with no valid sample
+  leave `0x2834` before that: an invalid sample (`0xFFFF`) goes `0x080028DA` → `0x08002AFA` →
+  `0x08002F6A` → exit, and a too-weak signal exits at `0x08002A16`/`0x08002A24`. The hook compares
+  the counter before and after the call. (One corner: if the pen is found again while the
+  counter is already 1, that one pass is missed.)
+* **Mode A.** `0x2000107E` set means path A owns the output (`0x08002E62`), and the stock
+  output routine `0x08000310` does nothing in that case. The hook does the same.
+* **No added lag.** The report is built after `0x2834` returns: the main loop checks the
+  pending flag `0x20001031` at `0x080068A4` and calls the report builder at `0x080068D6`.
+* **Registers.** `0x2834` keeps r4 to r11 and returns nothing the main loop uses, and
+  `0x08000390`, called next, loads its own inputs. The hook keeps r4 to r6 and the stack
+  8-byte aligned.
+* **Path B** (5.8) can still run inside `0x2834` on a still pen and move the output; the hook
+  overwrites it right after, so it has no effect.
+
+```
+; ---- 0x08006816 .. 0x0800682e
+08006816:  fb f7 d1 fd   bl       #0x80023bc
+0800681a:  ff f7 5f fe   bl       #0x80064dc
+0800681e:  fa f7 75 fa   bl       #0x8000d0c
+08006822:  05 f0 1f fe   bl       #0x800c464
+08006826:  f9 f7 b3 fd   bl       #0x8000390
+0800682a:  fa f7 63 f9   bl       #0x8000af4
+; ---- 0x08006852 .. 0x0800686a
+08006852:  fc f7 b7 fb   bl       #0x8002fc4
+08006856:  ff f7 7d fe   bl       #0x8006554
+0800685a:  fa f7 57 fa   bl       #0x8000d0c
+0800685e:  05 f0 01 fe   bl       #0x800c464
+08006862:  f9 f7 95 fd   bl       #0x8000390
+08006866:  fa f7 5d f9   bl       #0x8000b24
+; ---- 0x0800c464 .. 0x0800c4a8
+0800c464:  70 b5         push     {r4, r5, r6, lr}
+0800c466:  0a 4c         ldr      r4, [pc, #0x28]    ; =0x2000107f
+0800c468:  25 78         ldrb     r5, [r4]
+0800c46a:  f6 f7 e3 f9   bl       #0x8002834
+0800c46e:  20 78         ldrb     r0, [r4]
+0800c470:  a8 42         cmp      r0, r5
+0800c472:  0c d0         beq      #0x800c48e
+0800c474:  07 48         ldr      r0, [pc, #0x1c]    ; =0x2000107e
+0800c476:  00 78         ldrb     r0, [r0]
+0800c478:  48 b9         cbnz     r0, #0x800c48e
+0800c47a:  07 49         ldr      r1, [pc, #0x1c]    ; =0x20000482
+0800c47c:  c8 89         ldrh     r0, [r1, #0xe]
+0800c47e:  07 4a         ldr      r2, [pc, #0x1c]    ; =0x20001040
+0800c480:  10 80         strh     r0, [r2]
+0800c482:  07 49         ldr      r1, [pc, #0x1c]    ; =0x2000139a
+0800c484:  c8 89         ldrh     r0, [r1, #0xe]
+0800c486:  50 80         strh     r0, [r2, #2]
+0800c488:  06 49         ldr      r1, [pc, #0x18]    ; =0x20001031
+0800c48a:  01 20         movs     r0, #1
+0800c48c:  08 70         strb     r0, [r1]
+0800c48e:  70 bd         pop      {r4, r5, r6, pc}
+0800c490:  7f 10 00 20   .word    0x2000107f
+0800c494:  7e 10 00 20   .word    0x2000107e
+0800c498:  82 04 00 20   .word    0x20000482
+0800c49c:  40 10 00 20   .word    0x20001040
+0800c4a0:  9a 13 00 20   .word    0x2000139a
+0800c4a4:  31 10 00 20   .word    0x20001031
+```
+
 ---
 
 ## 8. Corrections to the earlier notes
@@ -1804,6 +1944,7 @@ python3 tools/build_readme.py
 | `nosmooth.py OUT.bin [--nohold] [--fast]` | reads `S640-251022.bin` from the current directory. No flag: nosmooth. `--nohold`: nosmooth-nohold. `--fast`: also the failed changes of 6.5 (do not use) |
 | `scanpatch.py TOTAL CAP OUT.bin` | the tuner experiment of 6.4 (stock = 100 and 80) |
 | `build_window_only.py` | the failed window-only build of 6.5, exactly as run (do not use) |
+| `hook.py OUT.bin` | `nosmooth-hook` (7.9, **untested**): same effect as nosmooth-nohold, nothing below `0x08003000` changed |
 | `factory_tags_fc60.bin` | the 32 tag bytes for `0x0800FC60` (4.3) |
 
 ### 9.3 Measurement scripts ([`tools/`](tools/), Python 3, no dependencies)
@@ -1876,6 +2017,7 @@ SHA-256:
 | nosmooth, `s640_nosmooth.bin` | `ab25928dd939246f03fffbb858bded70663db3a4dbc37b01fb24c26d5477b7e2` |
 | nosmooth-nohold, `s640_nosmooth_nohold.bin` | `371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e` |
 | T = 80, `test_t80.bin` | `93ac3e22e1c5b2dcec173d932f73bb843625f46872f41e0a3a9edd3b510ccf51` |
+| nosmooth-hook (untested), `s640_nosmooth_hook.bin` | `4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c` |
 | failed `--fast` build, `test_v3.bin` | `986577b753ea574ed1bcee845152d949c743dc47393e655a319b6ad15cdbb592` |
 | failed window-only, `test_v3_windowonly.bin` | `85de141275ada1ff30e6e74b3032a52587ae8375333959f6f9827ac03396d6a6` |
 | [`patches/factory_tags_fc60.bin`](patches/factory_tags_fc60.bin) | `09816b76a42cd4c5109f91dc5e880c012fb89f37b815a53e20eb592851b50247` |
@@ -1953,6 +2095,7 @@ as stored in flash.
 | [`asm/patched_nosmooth_output_routine.lst`](asm/patched_nosmooth_output_routine.lst) | | nosmooth output routine |
 | [`asm/patched_nohold_state_machine_tail.lst`](asm/patched_nohold_state_machine_tail.lst) | | nosmooth-nohold state machine tail |
 | [`asm/patched_t80_tuner.lst`](asm/patched_t80_tuner.lst) | | T = 80 tuner |
+| [`asm/patched_hook.lst`](asm/patched_hook.lst) | | nosmooth-hook: redirected calls and the hook (untested) |
 
 The routines that matter most, in full:
 
