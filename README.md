@@ -96,6 +96,26 @@ tablets). Writing them again on a tablet that has them does no harm.
 **Back to stock:** the same command with `S640-251022.bin`.
 **Not over USB:** Veikk's USB updater skips the first 12 KB, which is where the patch is (3.1).
 
+### 0.1 No Pi Pico?
+
+Anything that speaks SWD and works with OpenOCD will do. **Only the Pico was tested on this
+tablet**; the rest is what should work, not what was tried. Wire SWCLK, SWDIO and GND to J1
+pads 2, 3 and 5 as above, and swap the start of each OpenOCD command.
+
+| Probe | Cost | Replace `-f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0'` with |
+| :--- | :--- | :--- |
+| Raspberry Pi Pico (tested) | about $4 | (as written) |
+| Pico 2, or another RP2040 board with GP2/GP3 broken out | $2 to $5 | (as written). Pico 2 needs `debugprobe_on_pico2.uf2` |
+| ST-Link V2 USB stick (clones are fine) | about $3 | `-f interface/stlink.cfg -c 'transport select hla_swd; set CPUTAPID 0'` |
+| Segger J-Link, or any CMSIS-DAP probe | varies | `-f interface/jlink.cfg -c 'transport select swd; set CPUTAPID 0'` (CMSIS-DAP: as written) |
+| Raspberry Pi 2/3/4 GPIO header, no probe at all | - | `-f interface/raspberrypi2-native.cfg -c 'transport select swd; set CPUTAPID 0'`, run on the Pi itself. SWCLK = GPIO11 (pin 23), SWDIO = GPIO25 (pin 22), GND = pin 25. On a Pi 4 also add `-c 'bcm2835gpio peripheral_base 0xFE000000'`. Not for the Pi 5 |
+
+On an ST-Link stick, use its SWCLK, SWDIO and GND pins and leave its 3.3V pin unconnected
+too. The tablet powers itself from USB.
+
+**No probe at all:** there is no way yet. Veikk's USB updater cannot write the first 12 KB,
+where the patch is, and nothing else on USB can write flash. Opening the tablet is required.
+
 ## Contents
 
 1. [Quick facts](#1-quick-facts)
