@@ -1,0 +1,3 @@
+/dev/hidraw13: 2460 reports, median 3.99 ms -> 250 Hz, active mean 243 Hz, min 0.20 ms  sample: 09 41 a0 78 53 00 b3 29 00 00 00 00 00
+/dev/hidraw11 reports: 0
+/dev/hidraw12 reports: 0

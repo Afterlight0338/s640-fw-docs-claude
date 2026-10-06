@@ -1,0 +1,58 @@
+Strings extracted on 2026-10-06 from https://files.shav.it/osu/tablet/ (page title: tabletvit). Verbatim, unedited.
+
+1000 hz polling rate, smoothing filters off. only works with pro pen 3.
+aligns tablet scan timing with usb reports.
+ctl-4100 / ctl-4100wl
+ctl-472 / ctl-672
+ctl-480 / cth-480 / ctl-680 / cth-680
+ctl-490 / cth-490 / ctl-690 / cth-690
+custom firmware 
+custom firmware is supported for ptk-x70, ctl-x72, ctl-x80/cth-x80, ctl-x90/cth-x90, ctl-4100, and ctl-4100wl. no custom firmware is available here for the other models.
+firmware · ctl-4100 / ctl-4100wl
+firmware · ptk-470 / ptk-670 / ptk-870
+flashed firmware only reaches around 500 hz
+for filter and correction toggles, on is the default. off disables the filters or correction and is probably what you want.
+motion sync
+pro pen 3 guarantees 1000 hz; other pens will do 400 hz or higher.
+pth-460 / pth-660 / pth-860
+ptk-470 / ptk-670 / ptk-870
+start 1000 hz · until reset
+toggle coordinate correction on stock firmware. custom firmware: 1000 hz, no temporal filtering, and motion sync. controls for report rate, pressure, smoothing, and motion sync.
+toggle coordinate correction on stock firmware. custom firmware: 1000 hz, no temporal filtering, motion sync, and support for lp-180/lp-180e/lp-1100k. controls for report rate, pressure, smoothing, and motion sync.
+toggle filters on stock firmware.
+toggle filters on stock firmware. custom firmware: 1000 hz, no smoothing, and motion sync. controls for report rate, pressure, smoothing, and motion sync.
+toggle filters on stock firmware. custom firmware enables a 1000 hz scan rate and disables firmware filtering. requires pro pen 3. available as temporary or persistent firmware. v2 keeps the smoothing switch working: smoothing starts off and the switch turns it back on. v1 keeps filters off.
+v1 · 1000 hz / no smoothing / motion sync
+
+Firmware file names referenced by the page:
+ctl4100_1000hz_no_smooth_161e4d63.wac
+ctl4100_stock_v0111_517381a1.wac
+ctl4100wl_stock_v0205_bank1_7f72212c.bin
+ctl4100wl_stock_v0207_bank1_6184626d.bin
+ctl472_1000hz_no_correction_66a24ab2.bin
+ctl472_1000hz_no_smoothing_v2_2abf35b2.bin
+ctl472_1000hz_no_smoothing_v2_5_83d789de.bin
+ctl472_1000hz_no_smoothing_v2_6_9ded4cf5.bin
+ctl472_stock_2d4b7f2b.bin
+ctl480_1000hz_no_smoothing_v1_1_2b990f3d.bin
+ctl480_1000hz_no_smoothing_v1_e7a39ec6.bin
+ctl480_stock_a3eb1629.bin
+ctl490_1000hz_no_smoothing_motion_sync_v1_9c247ff7.bin
+ctl490_stock_bf82849d.bin
+ptk470_1000hz_no_smooth_b4f7cb91.wac
+ptk470_1000hz_no_smooth_temporary_a86e132d.wac
+ptk470_1000hz_no_smooth_v2_bcd35679.wac
+ptk470_1000hz_no_smooth_v2_temporary_0e90b1e1.wac
+ptk470_v0106_d5e26da9.wac
+ptk670_1000hz_no_smooth_acfa9e2c.wac
+ptk670_1000hz_no_smooth_temporary_0c7ffcfc.wac
+ptk670_1000hz_no_smooth_v2_0033f174.wac
+ptk670_1000hz_no_smooth_v2_temporary_0f616273.wac
+ptk670_v0106_7a4f2586.wac
+ptk870_1000hz_no_smooth_a46c929c.wac
+ptk870_1000hz_no_smooth_temporary_581dadf4.wac
+ptk870_1000hz_no_smooth_v2_3d127613.wac
+ptk870_1000hz_no_smooth_v2_temporary_be222e3f.wac
+ptk870_v0106_9be946db.wac
+
+Rate validation in the page script: rate must satisfy 133 <= rate <= 1000

@@ -1,0 +1,7 @@
+Pico GND must be on a black USB pad. Never touch the red (5V) pad.
+23:38:02 pad 1: pullup=mpremote:V pulldown=failedV spread=to/access /dev/ttyACM0 (it may be in use by another program) UNSTABLE
+23:38:07 pad 1: pullup=mpremote:V pulldown=failedV spread=to/access /dev/ttyACM0 (it may be in use by another program) UNSTABLE
+Pico GND must be on a black USB pad. Never touch the red (5V) pad.
+Pico GND must be on a black USB pad. Never touch the red (5V) pad.
+Pico GND must be on a black USB pad. Never touch the red (5V) pad.
+Pico GND must be on a black USB pad. Never touch the red (5V) pad.

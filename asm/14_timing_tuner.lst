@@ -1,0 +1,87 @@
+; ---- 0x08003abc .. 0x08003bb4
+08003abc:  2d e9 f0 5f   push.w   {r4, r5, r6, r7, r8, sb, sl, fp, ip, lr}
+08003ac0:  34 4f         ldr      r7, [pc, #0xd0]    ; =0x2000101d
+08003ac2:  33 48         ldr      r0, [pc, #0xcc]    ; =0x200001c4
+08003ac4:  32 24         movs     r4, #0x32
+08003ac6:  39 78         ldrb     r1, [r7]
+08003ac8:  df f8 cc 80   ldr.w    r8, [pc, #0xcc]    ; =0x20000043
+08003acc:  df f8 cc b0   ldr.w    fp, [pc, #0xcc]    ; =0x20001095
+08003ad0:  30 f8 11 50   ldrh.w   r5, [r0, r1, lsl #1]
+08003ad4:  4f f4 20 76   mov.w    r6, #0x280
+08003ad8:  4f f4 a0 79   mov.w    sb, #0x140
+08003adc:  df f8 c0 a0   ldr.w    sl, [pc, #0xc0]    ; =0x2000002e
+08003ae0:  21 e0         b        #0x8003b26
+08003ae2:  b5 42         cmp      r5, r6
+08003ae4:  05 d9         bls      #0x8003af2
+08003ae6:  98 f8 00 10   ldrb.w   r1, [r8]
+08003aea:  50 29         cmp      r1, #0x50
+08003aec:  1e d2         bhs      #0x8003b2c
+08003aee:  89 1c         adds     r1, r1, #2
+08003af0:  06 e0         b        #0x8003b00
+08003af2:  4d 45         cmp      r5, sb
+08003af4:  1a d2         bhs      #0x8003b2c
+08003af6:  98 f8 00 10   ldrb.w   r1, [r8]
+08003afa:  05 29         cmp      r1, #5
+08003afc:  16 d9         bls      #0x8003b2c
+08003afe:  89 1e         subs     r1, r1, #2
+08003b00:  c9 b2         uxtb     r1, r1
+08003b02:  88 f8 00 10   strb.w   r1, [r8]
+08003b06:  c1 f1 64 00   rsb.w    r0, r1, #0x64
+08003b0a:  8b f8 00 00   strb.w   r0, [fp]
+08003b0e:  fd f7 5f f8   bl       #0x8000bd0
+08003b12:  3a 78         ldrb     r2, [r7]
+08003b14:  9a f8 00 30   ldrb.w   r3, [sl]
+08003b18:  10 46         mov      r0, r2
+08003b1a:  ff 21         movs     r1, #0xff
+08003b1c:  fe f7 22 fe   bl       #0x8002764
+08003b20:  05 46         mov      r5, r0
+08003b22:  fd f7 a3 f8   bl       #0x8000c6c
+08003b26:  64 1e         subs     r4, r4, #1
+08003b28:  e4 b2         uxtb     r4, r4
+08003b2a:  da d2         bhs      #0x8003ae2
+08003b2c:  1e 4f         ldr      r7, [pc, #0x78]    ; =0x2000101e
+08003b2e:  1d 48         ldr      r0, [pc, #0x74]    ; =0x2000022c
+08003b30:  df f8 78 80   ldr.w    r8, [pc, #0x78]    ; =0x20001094
+08003b34:  39 78         ldrb     r1, [r7]
+08003b36:  df f8 78 b0   ldr.w    fp, [pc, #0x78]    ; =0x20000045
+08003b3a:  31 25         movs     r5, #0x31
+08003b3c:  30 f8 11 40   ldrh.w   r4, [r0, r1, lsl #1]
+08003b40:  b4 42         cmp      r4, r6
+08003b42:  05 d9         bls      #0x8003b50
+08003b44:  98 f8 00 10   ldrb.w   r1, [r8]
+08003b48:  50 29         cmp      r1, #0x50
+08003b4a:  1e d2         bhs      #0x8003b8a
+08003b4c:  89 1c         adds     r1, r1, #2
+08003b4e:  06 e0         b        #0x8003b5e
+08003b50:  4c 45         cmp      r4, sb
+08003b52:  1a d2         bhs      #0x8003b8a
+08003b54:  98 f8 00 10   ldrb.w   r1, [r8]
+08003b58:  05 29         cmp      r1, #5
+08003b5a:  16 d9         bls      #0x8003b8a
+08003b5c:  89 1e         subs     r1, r1, #2
+08003b5e:  c9 b2         uxtb     r1, r1
+08003b60:  88 f8 00 10   strb.w   r1, [r8]
+08003b64:  c1 f1 64 00   rsb.w    r0, r1, #0x64
+08003b68:  8b f8 00 00   strb.w   r0, [fp]
+08003b6c:  fd f7 30 f8   bl       #0x8000bd0
+08003b70:  3a 78         ldrb     r2, [r7]
+08003b72:  9a f8 00 30   ldrb.w   r3, [sl]
+08003b76:  11 46         mov      r1, r2
+08003b78:  ff 20         movs     r0, #0xff
+08003b7a:  fe f7 25 fe   bl       #0x80027c8
+08003b7e:  04 46         mov      r4, r0
+08003b80:  fd f7 74 f8   bl       #0x8000c6c
+08003b84:  6d 1e         subs     r5, r5, #1
+08003b86:  ed b2         uxtb     r5, r5
+08003b88:  da d2         bhs      #0x8003b40
+08003b8a:  bd e8 f0 9f   pop.w    {r4, r5, r6, r7, r8, sb, sl, fp, ip, pc}
+08003b8e:  00 00         movs     r0, r0
+08003b90:  c4 01 00 20   .word    0x200001c4
+08003b94:  1d 10 00 20   .word    0x2000101d
+08003b98:  43 00 00 20   .word    0x20000043
+08003b9c:  95 10 00 20   .word    0x20001095
+08003ba0:  2e 00 00 20   .word    0x2000002e
+08003ba4:  2c 02 00 20   .word    0x2000022c
+08003ba8:  1e 10 00 20   .word    0x2000101e
+08003bac:  94 10 00 20   .word    0x20001094
+08003bb0:  45 00 00 20   .word    0x20000045

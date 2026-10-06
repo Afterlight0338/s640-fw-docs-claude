@@ -1,0 +1,5 @@
+reports 1193  rate 199 Hz  median 4.01 ms  intervals(ms):{0: 4, 1: 46, 2: 38, 3: 349, 4: 261, 5: 92}
+  x@2: mean 44193.0  std 0.00  range 0
+  y@6: mean 5475.0  std 0.00  range 0
+  raw@9: mean 3167.9  std 63.67  range 379
+  status bytes: [65]

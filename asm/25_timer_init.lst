@@ -1,0 +1,95 @@
+; ---- 0x080095d4 .. 0x080096e8
+080095d4:  70 b5         push     {r4, r5, r6, lr}
+080095d6:  88 b0         sub      sp, #0x20
+080095d8:  01 21         movs     r1, #1
+080095da:  4f f4 e1 20   mov.w    r0, #0x70800
+080095de:  ff f7 05 ff   bl       #0x80093ec
+080095e2:  01 21         movs     r1, #1
+080095e4:  40 f2 13 10   movw     r0, #0x113
+080095e8:  ff f7 e8 fe   bl       #0x80093bc
+080095ec:  20 4e         ldr      r6, [pc, #0x80]    ; =0x40000400
+080095ee:  30 46         mov      r0, r6
+080095f0:  fa f7 5e fe   bl       #0x80042b0
+080095f4:  00 24         movs     r4, #0
+080095f6:  4f f6 ff 70   movw     r0, #0xffff
+080095fa:  ad f8 0c 40   strh.w   r4, [sp, #0xc]
+080095fe:  04 90         str      r0, [sp, #0x10]
+08009600:  ad f8 0e 40   strh.w   r4, [sp, #0xe]
+08009604:  ad f8 14 40   strh.w   r4, [sp, #0x14]
+08009608:  03 a9         add      r1, sp, #0xc
+0800960a:  30 46         mov      r0, r6
+0800960c:  fa f7 0a fe   bl       #0x8004224
+08009610:  08 20         movs     r0, #8
+08009612:  ad f8 00 00   strh.w   r0, [sp]
+08009616:  01 25         movs     r5, #1
+08009618:  ad f8 04 50   strh.w   r5, [sp, #4]
+0800961c:  ad f8 02 40   strh.w   r4, [sp, #2]
+08009620:  ad f8 06 40   strh.w   r4, [sp, #6]
+08009624:  ad f8 08 40   strh.w   r4, [sp, #8]
+08009628:  69 46         mov      r1, sp
+0800962a:  30 46         mov      r0, r6
+0800962c:  fa f7 c3 fe   bl       #0x80043b6
+08009630:  01 21         movs     r1, #1
+08009632:  30 46         mov      r0, r6
+08009634:  fa f7 2e fe   bl       #0x8004294
+08009638:  08 21         movs     r1, #8
+0800963a:  30 46         mov      r0, r6
+0800963c:  fa f7 34 fe   bl       #0x80042a8
+08009640:  00 22         movs     r2, #0
+08009642:  08 21         movs     r1, #8
+08009644:  30 46         mov      r0, r6
+08009646:  fa f7 0c ff   bl       #0x8004462
+0800964a:  01 21         movs     r1, #1
+0800964c:  30 46         mov      r0, r6
+0800964e:  fa f7 9b fe   bl       #0x8004388
+08009652:  10 20         movs     r0, #0x10
+08009654:  8d f8 18 00   strb.w   r0, [sp, #0x18]
+08009658:  8d f8 19 40   strb.w   r4, [sp, #0x19]
+0800965c:  8d f8 1a 40   strb.w   r4, [sp, #0x1a]
+08009660:  8d f8 1b 50   strb.w   r5, [sp, #0x1b]
+08009664:  06 a8         add      r0, sp, #0x18
+08009666:  ff f7 97 fd   bl       #0x8009198
+0800966a:  08 b0         add      sp, #0x20
+0800966c:  70 bd         pop      {r4, r5, r6, pc}
+0800966e:  00 00         movs     r0, r0
+08009670:  00 04 00 40   .word    0x40000400
+08009674:  1f b5         push     {r0, r1, r2, r3, r4, lr}
+08009676:  01 21         movs     r1, #1
+08009678:  10 20         movs     r0, #0x10
+0800967a:  ff f7 9f fe   bl       #0x80093bc
+0800967e:  19 4c         ldr      r4, [pc, #0x64]    ; =0x40001000
+08009680:  20 46         mov      r0, r4
+08009682:  fa f7 15 fe   bl       #0x80042b0
+08009686:  40 f2 e7 30   movw     r0, #0x3e7
+0800968a:  ad f8 00 00   strh.w   r0, [sp]
+0800968e:  00 21         movs     r1, #0
+08009690:  40 f2 67 10   movw     r0, #0x167
+08009694:  ad f8 02 10   strh.w   r1, [sp, #2]
+08009698:  01 90         str      r0, [sp, #4]
+0800969a:  ad f8 08 10   strh.w   r1, [sp, #8]
+0800969e:  69 46         mov      r1, sp
+080096a0:  20 46         mov      r0, r4
+080096a2:  fa f7 bf fd   bl       #0x8004224
+080096a6:  01 21         movs     r1, #1
+080096a8:  20 46         mov      r0, r4
+080096aa:  fa f7 f3 fd   bl       #0x8004294
+080096ae:  01 21         movs     r1, #1
+080096b0:  20 46         mov      r0, r4
+080096b2:  fa f7 f9 fd   bl       #0x80042a8
+080096b6:  01 22         movs     r2, #1
+080096b8:  11 46         mov      r1, r2
+080096ba:  20 46         mov      r0, r4
+080096bc:  fa f7 d1 fe   bl       #0x8004462
+080096c0:  01 21         movs     r1, #1
+080096c2:  20 46         mov      r0, r4
+080096c4:  fa f7 60 fe   bl       #0x8004388
+080096c8:  11 20         movs     r0, #0x11
+080096ca:  8d f8 0c 00   strb.w   r0, [sp, #0xc]
+080096ce:  01 20         movs     r0, #1
+080096d0:  8d f8 0d 00   strb.w   r0, [sp, #0xd]
+080096d4:  8d f8 0e 00   strb.w   r0, [sp, #0xe]
+080096d8:  8d f8 0f 00   strb.w   r0, [sp, #0xf]
+080096dc:  03 a8         add      r0, sp, #0xc
+080096de:  ff f7 5b fd   bl       #0x8009198
+080096e2:  1f bd         pop      {r0, r1, r2, r3, r4, pc}
+080096e4:  00 10 00 40   .word    0x40001000

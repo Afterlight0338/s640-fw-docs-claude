@@ -1,0 +1,328 @@
+Verbatim outputs from the 2026-10-06 recovery and analysis session that were not saved
+to their own files at the time. Copied from the terminal output. Times are local (UTC+8).
+Pad numbering of J1: 1..5 from bottom to top with the chip text "VK1801" upright
+(see images/s640_board_j1_swd_wiring.jpg). Tablet USB GND = black wire, 5V = red wire.
+
+======================================================================
+1. Multimeter, round 1 (tablet USB plugged in, DC volts, black probe on the black USB wire)
+======================================================================
+pin 64 (VDD)    3.3 V
+pin 7  (NRST)   3.19 to 3.2 V
+pin 60 (BOOT0)  0 V
+J1 pads, bottom to top: 3.33, 0, 3.30, 3.19, 0 (V)
+
+======================================================================
+2. Multimeter, round 2 (unplugged, diode/continuity mode, other probe on GND)
+======================================================================
+J1 pads, bottom to top: 761, 1 (OL), 1 (OL), 1312, 002 (beeps)
+pin 64: fluctuates 600 to 1100, mostly 760
+pin 49: 1 (OL)
+pin 46: 1 (OL)
+pin 7:  1200 to 1300
+("1" shown at the left of the display = over limit / open)
+
+======================================================================
+3. Multimeter, round 3 (unplugged, ohms)
+======================================================================
+pin 60 (BOOT0) to GND: 0  -> BOOT0 is tied to GND
+
+Continuity checks (beep mode, unplugged):
+J1 pad 2 <-> chip pin 49: beep
+J1 pad 3 <-> chip pin 46: beep
+
+First wiring check after the first "wired up" attempt (photo showed no wires at all between
+the Pico and the tablet). Second wiring check:
+Pico GND <-> J1 pad 5: beep
+Pico GP2 <-> pin 49: no beep
+Pico GP3 <-> pin 49: beep      (GP3 wire was bridging pads 2 and 3)
+Pico GP3 <-> pin 46: beep
+Pico GP1 <-> J1 pad 4: beep
+Pico GP2 <-> Pico GP3: no beep
+After re-seating the wires: all correct.
+
+======================================================================
+4. Pico enumeration and debugprobe flash
+======================================================================
+Bus 003 Device 017: ID 2e8a:0003 Raspberry Pi RP2 Boot
+(copied ~/debugprobe_on_pico.uf2 to /run/media/afterlight/RPI-RP2/)
+Bus 003 Device 018: ID 2e8a:000c Raspberry Pi Debugprobe on Pico (CMSIS-DAP)
+crw-rw-rw- 1 root dialout 166, 0 Oct  6 17:21 /dev/ttyACM0
+
+OpenOCD 0.12.0 (nix-shell -p openocd) banner lines:
+Info : Using CMSIS-DAPv2 interface with VID:PID=0x2e8a:0x000c, serial=50444672A0D16E1C
+Info : CMSIS-DAP: SWD supported
+Info : CMSIS-DAP: Atomic commands supported
+Info : CMSIS-DAP: Test domain timer supported
+Info : CMSIS-DAP: FW Version = 2.0.0
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : SWCLK/TCK = 0 SWDIO/TMS = 0 TDI = 0 TDO = 0 nTRST = 0 nRESET = 1
+Info : CMSIS-DAP: Interface ready
+
+======================================================================
+5. Failed connects (before the wiring was fixed)
+======================================================================
+adapter speed set before target cfg (target cfg overrides it):
+Info : clock speed 1000 kHz
+Error: Error connecting DP: cannot read IDR
+adapter speed 50 after target cfg:
+Info : clock speed 50 kHz
+Error: Error connecting DP: cannot read IDR
+100 kHz (after "done", still no wires):
+Error: Error connecting DP: cannot read IDR
+100 kHz and 10 kHz with reset_config srst_only srst_nogate connect_assert_srst:
+Error: Error connecting DP: cannot read IDR
+
+======================================================================
+6. First successful connect (wiring fixed)
+======================================================================
+== reset_config none
+Info : SWD DPIDR 0x1ba01477
+Info : [stm32f1x.cpu] Cortex-M3 r2p1 processor detected
+Info : [stm32f1x.cpu] target has 6 breakpoints, 4 watchpoints
+Error: [stm32f1x.cpu] clearing lockup after double fault
+Info : [stm32f1x.cpu] Cortex-M3 r2p1 processor detected
+Info : [stm32f1x.cpu] target has 6 breakpoints, 4 watchpoints
+Info : SWD DPIDR 0x1ba01477
+Error: Failed to read memory at 0x08000004
+== reset_config srst_only srst_nogate connect_assert_srst
+Info : SWD DPIDR 0xffffffff
+Info : [stm32f1x.cpu] Cortex-M3 r2p1 processor detected
+Info : [stm32f1x.cpu] target has 6 breakpoints, 4 watchpoints
+Info : [stm32f1x.cpu] external reset detected
+Error: timed out while waiting for target halted
+
+======================================================================
+7. tools/probe.tcl on the bricked chip (read protection still on)
+======================================================================
+state: halted
+e000ed00: 412fc231                     (CPUID)
+e000edf0: 00030003                     (DHCSR)
+40022000: 00000000 00000000 00000000 00000000 00000080 00000000 00000000 ffffff02
+                                       (FMC: CTL=0x80 = LK, OBSTAT=0xffffff02, bit 1 = read protection)
+1ffff7e0: 00080040                     (flash 0x0040 = 64 KB, SRAM 0x0008 = 8 KB)
+1ffff800: 00ffff00 00ff00ff 00ff00ff 00ff00ff   (option bytes: SPC = 0x00, nSPC = 0xff)
+20000000: d5dffd01 02c9b8b6 0bd8be20 1add3856
+08000000: ERR (Failed to read memory at 0x08000004)
+0800d000: ERR (Failed to read memory at 0x0800d004)
+pc (/32): 0x08001210
+
+======================================================================
+8. Unlock (mass erase) and power cycle
+======================================================================
+command: init; halt; stm32f1x unlock 0; ...
+Info : device id = 0x13030410
+Info : flash size = 64 KiB
+
+tools/state.tcl right after unlock, before power cycle:
+4002201c: ffffff02
+1ffff800: 00ff5aa5 00ff00ff 00ff00ff 00ff00ff   (SPC = 0xa5 = no protection)
+08000000: ERR
+0800fc60: ERR
+
+after unplugging/replugging the tablet USB:
+Error: [stm32f1x.cpu] clearing lockup after double fault
+4002201c: ffffff00
+1ffff800: 00ff5aa5 00ff00ff 00ff00ff 00ff00ff
+08000000: ffffffff ffffffff ffffffff ffffffff
+0800fc60: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+
+======================================================================
+9. Restore
+======================================================================
+factory_tags_fc60.bin (od -c):
+   U   G   E   E 377 377 377 377   3   7   2   1 377 377 377 377
+   0   2   2   6 377 377 377 377 214   B  \t 322 377 377 377 377
+program S640-251022.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify:
+** Programming Started **
+** Programming Finished **
+** Verified OK **
+** Programming Started **
+** Programming Finished **
+** Verified OK **
+lsusb: Bus 008 Device 004: ID 2feb:0001 Beijing Veikk E-Commerce Co., Ltd. S640
+kernel: Oct 06 18:07:52 usb 8-1: New USB device found, idVendor=2feb, idProduct=0001, bcdDevice= 0.00
+kernel: usb 8-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+kernel: usb 8-1: Product: S640
+kernel: usb 8-1: Manufacturer: VEIKK.INC
+
+======================================================================
+10. USB endpoints of the restored tablet (lsusb -v -d 2feb:0001)
+======================================================================
+      bInterfaceNumber        0
+        bEndpointAddress     0x81  EP 1 IN
+        wMaxPacketSize     0x0008  1x 8 bytes
+        bInterval               1
+      bInterfaceNumber        1
+        bEndpointAddress     0x82  EP 2 IN
+        wMaxPacketSize     0x000a  1x 10 bytes
+        bInterval               1
+      bInterfaceNumber        2
+        bEndpointAddress     0x83  EP 3 IN
+        wMaxPacketSize     0x0010  1x 16 bytes
+        bInterval               1
+        bEndpointAddress     0x03  EP 3 OUT
+        wMaxPacketSize     0x0010  1x 16 bytes
+        bInterval              10
+hidraw nodes: input0 -> hidraw11, input1 -> hidraw12, input2 -> hidraw13 (numbers change on
+re-enumeration; later sessions saw hidraw16). OpenTabletDriver 0.6.7 daemon was running for
+every measurement below, so the tablet streamed pen reports (report ID 0x09) on input2.
+
+======================================================================
+11. Raw pen reports (interface 2, 13 bytes)
+======================================================================
+moving, stock:          09 41 a0 78 53 00 b3 29 00 00 00 00 00
+pen lying flat, stock:  09 41 a1 f4 11 00 b0 15 00 a3 0b 00 00   (and ..91 0b, ..c7 0b, ..8c 0b,
+                        ..00 0c, ..d7 0b, ..c4 0b, ..d6 0b : only bytes 9-10 changed)
+pen lying flat, T=80:   09 41 a1 7e 14 00 56 15 00 c9 0b 00 fd   (bytes 9-10 also a9 0b, c3 0b,
+                        da 0b, f7 0b)
+hover, T=80 (rate.py):  09 41 a1 75 12 00 b4 15 00 bf 0b 00 fd
+
+======================================================================
+12. tools/clk.tcl (stock firmware running)
+======================================================================
+TIMER5 CTL0=00000081 PSC=999 CAR=359
+TIMER2 PSC=0 CAR=65535
+RCU CTL=03035f83 CFG0=0011800a CFG1=00000000
+sysclk ~ 72.00 MHz
+
+======================================================================
+13. tools/vars.tcl (stock firmware running)
+======================================================================
+first read:
+0x20000003 = 28
+0x20000043 = 5
+0x20000044 = 60
+0x20001093 = 5
+0x20001094 = 5
+0x20001095 = 60
+0x2000105b = 1
+second read, pen lying flat on the tablet:
+0x20000043 = 35
+0x20001095 = 65
+0x20001094 = 49
+0x20000045 = 51
+0x2000105b = 1
+0x20001093 = 35
+0x20000044 = 51
+
+======================================================================
+14. PC sampling (DWT_PCSR, 0xE000101C), stock firmware
+======================================================================
+run 1, tools/prof.tcl, 4000 samples, 64-byte buckets with >= 40 hits (pen state not recorded):
+08006900 807
+08006940 559
+08002500 270
+080068c0 210
+08001300 154
+080012c0 125
+08001280 112
+08005240 95
+080050c0 94
+08004dc0 93
+08004a40 91
+08005140 88
+08004d80 87
+08004a80 83
+08005180 81
+08004a00 81
+08005280 80
+08004e00 77
+08005100 75
+run 2, prof.tcl with n=12000 while the pen was moved: data/profile_buckets_pen_in_use_12000.txt
+run 3, tools/prof2.tcl, 8000 exact PCs (raw file overwritten later):
+8000 samples, in flash 8000 in NOP: 5779 = 72%
+(a sample counts as NOP when the halfword at the PC is 00 bf or af f3)
+boxcar 0x310 0 of 8000
+0x2e80-0x2f40 0 of 8000
+
+======================================================================
+15. T=80 test build (tools/../patches/scanpatch.py 80 70 test_t80.bin)
+======================================================================
+cmp -l S640-251022.bin test_t80.bin   (1-based offsets, octal values)
+15083 120 106      -> 0x3aea: 0x50 -> 0x46
+15113 144 120      -> 0x3b08: 0x64 -> 0x50
+15177 120 106      -> 0x3b48: 0x50 -> 0x46
+15207 144 120      -> 0x3b66: 0x64 -> 0x50
+still.py (x@2 field, wrong field definition at the time): see data/still_t80.txt
+still.py 3 s with the fixed fields, still on T=80:
+reports 594  rate 198 Hz  median 4.02 ms  intervals(ms):{0: 3, 1: 18, 2: 16, 3: 173, 4: 131, 5: 57}
+  x@3: mean 5246.0  std 0.00  range 0
+  y@6: mean 5462.0  std 0.00  range 0
+back to stock: data/still_stock2.txt (x@3 4593.1, y@6 5642.8)
+
+======================================================================
+16. Breakpoint path probes (tools/paths.tcl, 2.5 s per address, user moving the pen)
+======================================================================
+run 1:
+boxcar8 (0x08000330): no
+boxcar4 (0x08000356): no
+bigmove (0x08002e98): no
+deadzone_or_done (0x08002eca): no
+halfavg (0x08002eb8): no
+rawstore (0x08002eac): no
+site3_filter (0x08002f24): no
+site3_raw (0x08002f1a): no
+run 2 (sanity addresses added first):
+SANITY_delay (0x080068f0): HIT
+SANITY_coil (0x08002464): HIT
+boxcar8 (0x08000330): HIT
+boxcar4 (0x08000356): no
+bigmove (0x08002e98): no
+deadzone_or_done (0x08002eca): no
+halfavg (0x08002eb8): no
+rawstore (0x08002eac): no
+site3_filter (0x08002f24): no
+site3_raw (0x08002f1a): no
+
+======================================================================
+17. tools/outcheck.tcl: history buffer vs output (5 snapshots, 300 ms apart)
+======================================================================
+v1 (no boxcar), pen moving:
+histX 0x489f 0x47a3 0x46d0 0x45f2 0x4565 0x4505 0x44c7 0x4487 | outX 0x4487   histY7 0x264b outY 0x264b
+histX 0x4658 0x4711 0x4839 0x490e 0x49e3 0x4aa5 0x4bd1 0x4cae | outX 0x4cae   histY7 0x2b74 outY 0x2b74
+histX 0x4dff 0x4deb 0x4dcf 0x4db7 0x4d8e 0x4d6a 0x4d32 0x4cfc | outX 0x4cfc   histY7 0x2796 outY 0x2796
+histX 0x445d 0x443b 0x4428 0x4413 0x4405 0x43f9 0x43f2 0x43f2 | outX 0x43f2   histY7 0x272e outY 0x272e
+histX 0x4c1a 0x4cfc 0x4d47 0x4d88 0x4db3 0x4de0 0x4dff 0x4e1c | outX 0x4e1c   histY7 0x2b3f outY 0x2b3f
+v1, pen lying still (output held by the motion state machine):
+histX 0x14be 0x14b6 0x14df 0x14b6 0x14ba 0x14b8 0x14be 0x14b8 | outX 0x14ce   histY7 0x377d outY 0x376f
+histX 0x14be 0x14ba 0x14c9 0x14b8 0x14be 0x14c1 0x14be 0x14b4 | outX 0x14c4   histY7 0x376d outY 0x3770
+histX 0x14b8 0x14bf 0x14c1 0x14c7 0x14b8 0x14be 0x14ba 0x14c1 | outX 0x14c4   histY7 0x3770 outY 0x3770
+histX 0x14c1 0x14ba 0x14c1 0x14b6 0x14bf 0x14ba 0x14b4 0x14b8 | outX 0x14c4   histY7 0x3778 outY 0x3770
+histX 0x14be 0x14ba 0x14ba 0x14b0 0x14c7 0x14be 0x14ba 0x14b6 | outX 0x14c4   histY7 0x376f outY 0x3770
+v2 (no boxcar, no hold), pen lying still:
+histX 0x15a5 0x15ab 0x15af 0x15ad 0x15af 0x15a1 0x15b0 0x15ab | outX 0x15ab   histY7 0x37ff outY 0x37ff
+histX 0x15a7 0x15a7 0x15ab 0x15b0 0x15b0 0x15ad 0x15ab 0x15ad | outX 0x15ad   histY7 0x37fd outY 0x37fd
+histX 0x15af 0x15b0 0x15ab 0x15b2 0x15a7 0x15ad 0x15b0 0x15a3 | outX 0x15a3   histY7 0x37f4 outY 0x37f4
+
+======================================================================
+18. Cycle counts (DWT_CYCCNT, which does not count while the core is halted)
+======================================================================
+tools/cyc.tcl, pen hovering. "pressure" = cycles inside the call at 0x08001F94,
+"report period" = cycles between two consecutive passes over 0x08001F94:
+pressure 24075 cyc, report period 3666222 cyc   (first sample includes start-up, ignore)
+pressure 23428 cyc, report period 286503 cyc
+pressure 23346 cyc, report period 279584 cyc
+pressure 23346 cyc, report period 289588 cyc
+pressure 23256 cyc, report period 279716 cyc
+pressure 23337 cyc, report period 286565 cyc
+tools/count.tcl, pen hovering:
+report 0: coil measurements 16, period 284928 cyc, callers 08003008 11 0800307a 5
+report 1: coil measurements 14, period 253791 cyc, callers 08003008 5 0800307a 9
+one coil measurement: 12905 cyc
+tools/pval.tcl, value returned by the pressure/frequency call while hovering:
+pressure fn returns: 2687 2648 2681 2641 2685 2685 2675 2678 2621 2674 2638 2675
+
+======================================================================
+19. Position-only attempt (v3) and window-only build
+======================================================================
+test_v3.bin (v2 + movw r0,#2665 at 0x08001F94 + smaller window), 31 bytes differ from stock:
+  user: "i see it not detecting the pen"
+test_v3_windowonly.bin (v2 + smaller window only):
+  user: "yes it detects now", then "it stopped after i lifted the pen away"
+  rate.py 3 s: no reports on any interface; USB still enumerated (Bus 008 Device 012)
+  PC profile, 8000 samples, 256-byte buckets (address, hits):
+  0x08006900 2949, 0x08005100 2240, 0x08005000 692, 0x08001200 537, 0x08002500 527,
+  0x08006800 370, 0x08001300 294, 0x08000a00 124
+  raw PCs: data/pcs_window_only_build_pen_lost.txt
+Both reverted; s640_firmware_nosmooth_v2.bin flashed again (Verified OK). User confirmed the
+pen is picked up again after lifting it away.

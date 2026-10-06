@@ -1,0 +1,5 @@
+reports 1241  rate 207 Hz  median 4.00 ms  intervals(ms):{0: 3, 1: 65, 2: 9, 3: 187, 4: 612, 5: 46}
+  x@3: mean 4593.1  std 3.38  range 14
+  y@6: mean 5642.8  std 0.96  range 4
+  raw@9: mean 3013.0  std 47.60  range 277
+  status bytes: [65]

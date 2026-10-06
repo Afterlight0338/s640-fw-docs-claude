@@ -1,0 +1,36 @@
+; ---- 0x08003ae2 .. 0x08003b0e
+08003ae2:  b5 42         cmp      r5, r6
+08003ae4:  05 d9         bls      #0x8003af2
+08003ae6:  98 f8 00 10   ldrb.w   r1, [r8]
+08003aea:  46 29         cmp      r1, #0x46
+08003aec:  1e d2         bhs      #0x8003b2c
+08003aee:  89 1c         adds     r1, r1, #2
+08003af0:  06 e0         b        #0x8003b00
+08003af2:  4d 45         cmp      r5, sb
+08003af4:  1a d2         bhs      #0x8003b2c
+08003af6:  98 f8 00 10   ldrb.w   r1, [r8]
+08003afa:  05 29         cmp      r1, #5
+08003afc:  16 d9         bls      #0x8003b2c
+08003afe:  89 1e         subs     r1, r1, #2
+08003b00:  c9 b2         uxtb     r1, r1
+08003b02:  88 f8 00 10   strb.w   r1, [r8]
+08003b06:  c1 f1 50 00   rsb.w    r0, r1, #0x50
+08003b0a:  8b f8 00 00   strb.w   r0, [fp]
+; ---- 0x08003b40 .. 0x08003b6c
+08003b40:  b4 42         cmp      r4, r6
+08003b42:  05 d9         bls      #0x8003b50
+08003b44:  98 f8 00 10   ldrb.w   r1, [r8]
+08003b48:  46 29         cmp      r1, #0x46
+08003b4a:  1e d2         bhs      #0x8003b8a
+08003b4c:  89 1c         adds     r1, r1, #2
+08003b4e:  06 e0         b        #0x8003b5e
+08003b50:  4c 45         cmp      r4, sb
+08003b52:  1a d2         bhs      #0x8003b8a
+08003b54:  98 f8 00 10   ldrb.w   r1, [r8]
+08003b58:  05 29         cmp      r1, #5
+08003b5a:  16 d9         bls      #0x8003b8a
+08003b5c:  89 1e         subs     r1, r1, #2
+08003b5e:  c9 b2         uxtb     r1, r1
+08003b60:  88 f8 00 10   strb.w   r1, [r8]
+08003b64:  c1 f1 50 00   rsb.w    r0, r1, #0x50
+08003b68:  8b f8 00 00   strb.w   r0, [fp]

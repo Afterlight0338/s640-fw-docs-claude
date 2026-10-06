@@ -1,0 +1,2276 @@
+; ---- 0x080045c0 .. 0x08005860
+080045c0:  70 b5         push     {r4, r5, r6, lr}
+080045c2:  4f 48         ldr      r0, [pc, #0x13c]    ; =0x20000003
+080045c4:  04 78         ldrb     r4, [r0]
+080045c6:  97 e0         b        #0x80046f8
+080045c8:  4e 4e         ldr      r6, [pc, #0x138]    ; =0x48000800
+080045ca:  64 1e         subs     r4, r4, #1
+080045cc:  4f f4 70 75   mov.w    r5, #0x3c0
+080045d0:  e4 b2         uxtb     r4, r4
+080045d2:  29 46         mov      r1, r5
+080045d4:  30 46         mov      r0, r6
+080045d6:  fc f7 a8 fe   bl       #0x800132a
+080045da:  00 bf         nop      
+080045dc:  00 bf         nop      
+080045de:  00 bf         nop      
+080045e0:  00 bf         nop      
+080045e2:  00 bf         nop      
+080045e4:  00 bf         nop      
+080045e6:  00 bf         nop      
+080045e8:  00 bf         nop      
+080045ea:  00 bf         nop      
+080045ec:  00 bf         nop      
+080045ee:  00 bf         nop      
+080045f0:  00 bf         nop      
+080045f2:  00 bf         nop      
+080045f4:  00 bf         nop      
+080045f6:  00 bf         nop      
+080045f8:  00 bf         nop      
+080045fa:  00 bf         nop      
+080045fc:  00 bf         nop      
+080045fe:  00 bf         nop      
+08004600:  00 bf         nop      
+08004602:  00 bf         nop      
+08004604:  00 bf         nop      
+08004606:  00 bf         nop      
+08004608:  00 bf         nop      
+0800460a:  00 bf         nop      
+0800460c:  00 bf         nop      
+0800460e:  00 bf         nop      
+08004610:  00 bf         nop      
+08004612:  00 bf         nop      
+08004614:  00 bf         nop      
+08004616:  00 bf         nop      
+08004618:  00 bf         nop      
+0800461a:  00 bf         nop      
+0800461c:  00 bf         nop      
+0800461e:  00 bf         nop      
+08004620:  00 bf         nop      
+08004622:  00 bf         nop      
+08004624:  00 bf         nop      
+08004626:  00 bf         nop      
+08004628:  00 bf         nop      
+0800462a:  00 bf         nop      
+0800462c:  00 bf         nop      
+0800462e:  00 bf         nop      
+08004630:  00 bf         nop      
+08004632:  00 bf         nop      
+08004634:  00 bf         nop      
+08004636:  00 bf         nop      
+08004638:  00 bf         nop      
+0800463a:  00 bf         nop      
+0800463c:  00 bf         nop      
+0800463e:  00 bf         nop      
+08004640:  00 bf         nop      
+08004642:  00 bf         nop      
+08004644:  00 bf         nop      
+08004646:  00 bf         nop      
+08004648:  00 bf         nop      
+0800464a:  00 bf         nop      
+0800464c:  00 bf         nop      
+0800464e:  00 bf         nop      
+08004650:  00 bf         nop      
+08004652:  00 bf         nop      
+08004654:  00 bf         nop      
+08004656:  00 bf         nop      
+08004658:  00 bf         nop      
+0800465a:  00 bf         nop      
+0800465c:  00 bf         nop      
+0800465e:  00 bf         nop      
+08004660:  00 bf         nop      
+08004662:  00 bf         nop      
+08004664:  00 bf         nop      
+08004666:  00 bf         nop      
+08004668:  00 bf         nop      
+0800466a:  29 46         mov      r1, r5
+0800466c:  30 46         mov      r0, r6
+0800466e:  fc f7 5a fe   bl       #0x8001326
+08004672:  00 bf         nop      
+08004674:  00 bf         nop      
+08004676:  00 bf         nop      
+08004678:  00 bf         nop      
+0800467a:  00 bf         nop      
+0800467c:  00 bf         nop      
+0800467e:  00 bf         nop      
+08004680:  00 bf         nop      
+08004682:  00 bf         nop      
+08004684:  00 bf         nop      
+08004686:  00 bf         nop      
+08004688:  00 bf         nop      
+0800468a:  00 bf         nop      
+0800468c:  00 bf         nop      
+0800468e:  00 bf         nop      
+08004690:  00 bf         nop      
+08004692:  00 bf         nop      
+08004694:  00 bf         nop      
+08004696:  00 bf         nop      
+08004698:  00 bf         nop      
+0800469a:  00 bf         nop      
+0800469c:  00 bf         nop      
+0800469e:  00 bf         nop      
+080046a0:  00 bf         nop      
+080046a2:  00 bf         nop      
+080046a4:  00 bf         nop      
+080046a6:  00 bf         nop      
+080046a8:  00 bf         nop      
+080046aa:  00 bf         nop      
+080046ac:  00 bf         nop      
+080046ae:  00 bf         nop      
+080046b0:  00 bf         nop      
+080046b2:  00 bf         nop      
+080046b4:  00 bf         nop      
+080046b6:  00 bf         nop      
+080046b8:  00 bf         nop      
+080046ba:  00 bf         nop      
+080046bc:  00 bf         nop      
+080046be:  00 bf         nop      
+080046c0:  00 bf         nop      
+080046c2:  00 bf         nop      
+080046c4:  00 bf         nop      
+080046c6:  00 bf         nop      
+080046c8:  00 bf         nop      
+080046ca:  00 bf         nop      
+080046cc:  00 bf         nop      
+080046ce:  00 bf         nop      
+080046d0:  00 bf         nop      
+080046d2:  00 bf         nop      
+080046d4:  00 bf         nop      
+080046d6:  00 bf         nop      
+080046d8:  00 bf         nop      
+080046da:  00 bf         nop      
+080046dc:  00 bf         nop      
+080046de:  00 bf         nop      
+080046e0:  00 bf         nop      
+080046e2:  00 bf         nop      
+080046e4:  00 bf         nop      
+080046e6:  00 bf         nop      
+080046e8:  00 bf         nop      
+080046ea:  00 bf         nop      
+080046ec:  00 bf         nop      
+080046ee:  00 bf         nop      
+080046f0:  00 bf         nop      
+080046f2:  00 bf         nop      
+080046f4:  00 bf         nop      
+080046f6:  00 bf         nop      
+080046f8:  00 2c         cmp      r4, #0
+080046fa:  7f f4 65 af   bne.w    #0x80045c8
+080046fe:  70 bd         pop      {r4, r5, r6, pc}
+08004700:  03 00 00 20   .word    0x20000003
+08004704:  00 08 00 48   .word    0x48000800
+08004708:  70 b5 4e 48   .word    0x484eb570
+0800470c:  04 78         ldrb     r4, [r0]
+0800470e:  95 e0         b        #0x800483c
+08004710:  4d 4e         ldr      r6, [pc, #0x134]    ; =0x48000800
+08004712:  64 1e         subs     r4, r4, #1
+08004714:  4f f4 70 75   mov.w    r5, #0x3c0
+08004718:  e4 b2         uxtb     r4, r4
+0800471a:  29 46         mov      r1, r5
+0800471c:  30 46         mov      r0, r6
+0800471e:  fc f7 04 fe   bl       #0x800132a
+08004722:  00 bf         nop      
+08004724:  00 bf         nop      
+08004726:  00 bf         nop      
+08004728:  00 bf         nop      
+0800472a:  00 bf         nop      
+0800472c:  00 bf         nop      
+0800472e:  00 bf         nop      
+08004730:  00 bf         nop      
+08004732:  00 bf         nop      
+08004734:  00 bf         nop      
+08004736:  00 bf         nop      
+08004738:  00 bf         nop      
+0800473a:  00 bf         nop      
+0800473c:  00 bf         nop      
+0800473e:  00 bf         nop      
+08004740:  00 bf         nop      
+08004742:  00 bf         nop      
+08004744:  00 bf         nop      
+08004746:  00 bf         nop      
+08004748:  00 bf         nop      
+0800474a:  00 bf         nop      
+0800474c:  00 bf         nop      
+0800474e:  00 bf         nop      
+08004750:  00 bf         nop      
+08004752:  00 bf         nop      
+08004754:  00 bf         nop      
+08004756:  00 bf         nop      
+08004758:  00 bf         nop      
+0800475a:  00 bf         nop      
+0800475c:  00 bf         nop      
+0800475e:  00 bf         nop      
+08004760:  00 bf         nop      
+08004762:  00 bf         nop      
+08004764:  00 bf         nop      
+08004766:  00 bf         nop      
+08004768:  00 bf         nop      
+0800476a:  00 bf         nop      
+0800476c:  00 bf         nop      
+0800476e:  00 bf         nop      
+08004770:  00 bf         nop      
+08004772:  00 bf         nop      
+08004774:  00 bf         nop      
+08004776:  00 bf         nop      
+08004778:  00 bf         nop      
+0800477a:  00 bf         nop      
+0800477c:  00 bf         nop      
+0800477e:  00 bf         nop      
+08004780:  00 bf         nop      
+08004782:  00 bf         nop      
+08004784:  00 bf         nop      
+08004786:  00 bf         nop      
+08004788:  00 bf         nop      
+0800478a:  00 bf         nop      
+0800478c:  00 bf         nop      
+0800478e:  00 bf         nop      
+08004790:  00 bf         nop      
+08004792:  00 bf         nop      
+08004794:  00 bf         nop      
+08004796:  00 bf         nop      
+08004798:  00 bf         nop      
+0800479a:  00 bf         nop      
+0800479c:  00 bf         nop      
+0800479e:  00 bf         nop      
+080047a0:  00 bf         nop      
+080047a2:  00 bf         nop      
+080047a4:  00 bf         nop      
+080047a6:  00 bf         nop      
+080047a8:  00 bf         nop      
+080047aa:  00 bf         nop      
+080047ac:  00 bf         nop      
+080047ae:  00 bf         nop      
+080047b0:  29 46         mov      r1, r5
+080047b2:  30 46         mov      r0, r6
+080047b4:  fc f7 b7 fd   bl       #0x8001326
+080047b8:  00 bf         nop      
+080047ba:  00 bf         nop      
+080047bc:  00 bf         nop      
+080047be:  00 bf         nop      
+080047c0:  00 bf         nop      
+080047c2:  00 bf         nop      
+080047c4:  00 bf         nop      
+080047c6:  00 bf         nop      
+080047c8:  00 bf         nop      
+080047ca:  00 bf         nop      
+080047cc:  00 bf         nop      
+080047ce:  00 bf         nop      
+080047d0:  00 bf         nop      
+080047d2:  00 bf         nop      
+080047d4:  00 bf         nop      
+080047d6:  00 bf         nop      
+080047d8:  00 bf         nop      
+080047da:  00 bf         nop      
+080047dc:  00 bf         nop      
+080047de:  00 bf         nop      
+080047e0:  00 bf         nop      
+080047e2:  00 bf         nop      
+080047e4:  00 bf         nop      
+080047e6:  00 bf         nop      
+080047e8:  00 bf         nop      
+080047ea:  00 bf         nop      
+080047ec:  00 bf         nop      
+080047ee:  00 bf         nop      
+080047f0:  00 bf         nop      
+080047f2:  00 bf         nop      
+080047f4:  00 bf         nop      
+080047f6:  00 bf         nop      
+080047f8:  00 bf         nop      
+080047fa:  00 bf         nop      
+080047fc:  00 bf         nop      
+080047fe:  00 bf         nop      
+08004800:  00 bf         nop      
+08004802:  00 bf         nop      
+08004804:  00 bf         nop      
+08004806:  00 bf         nop      
+08004808:  00 bf         nop      
+0800480a:  00 bf         nop      
+0800480c:  00 bf         nop      
+0800480e:  00 bf         nop      
+08004810:  00 bf         nop      
+08004812:  00 bf         nop      
+08004814:  00 bf         nop      
+08004816:  00 bf         nop      
+08004818:  00 bf         nop      
+0800481a:  00 bf         nop      
+0800481c:  00 bf         nop      
+0800481e:  00 bf         nop      
+08004820:  00 bf         nop      
+08004822:  00 bf         nop      
+08004824:  00 bf         nop      
+08004826:  00 bf         nop      
+08004828:  00 bf         nop      
+0800482a:  00 bf         nop      
+0800482c:  00 bf         nop      
+0800482e:  00 bf         nop      
+08004830:  00 bf         nop      
+08004832:  00 bf         nop      
+08004834:  00 bf         nop      
+08004836:  00 bf         nop      
+08004838:  00 bf         nop      
+0800483a:  00 bf         nop      
+0800483c:  00 2c         cmp      r4, #0
+0800483e:  7f f4 67 af   bne.w    #0x8004710
+08004842:  70 bd         pop      {r4, r5, r6, pc}
+08004844:  03 00 00 20   .word    0x20000003
+08004848:  00 08 00 48   .word    0x48000800
+0800484c:  70 b5 4d 48   .word    0x484db570
+08004850:  04 78         ldrb     r4, [r0]
+08004852:  93 e0         b        #0x800497c
+08004854:  4c 4e         ldr      r6, [pc, #0x130]    ; =0x48000800
+08004856:  64 1e         subs     r4, r4, #1
+08004858:  4f f4 70 75   mov.w    r5, #0x3c0
+0800485c:  e4 b2         uxtb     r4, r4
+0800485e:  29 46         mov      r1, r5
+08004860:  30 46         mov      r0, r6
+08004862:  fc f7 62 fd   bl       #0x800132a
+08004866:  00 bf         nop      
+08004868:  00 bf         nop      
+0800486a:  00 bf         nop      
+0800486c:  00 bf         nop      
+0800486e:  00 bf         nop      
+08004870:  00 bf         nop      
+08004872:  00 bf         nop      
+08004874:  00 bf         nop      
+08004876:  00 bf         nop      
+08004878:  00 bf         nop      
+0800487a:  00 bf         nop      
+0800487c:  00 bf         nop      
+0800487e:  00 bf         nop      
+08004880:  00 bf         nop      
+08004882:  00 bf         nop      
+08004884:  00 bf         nop      
+08004886:  00 bf         nop      
+08004888:  00 bf         nop      
+0800488a:  00 bf         nop      
+0800488c:  00 bf         nop      
+0800488e:  00 bf         nop      
+08004890:  00 bf         nop      
+08004892:  00 bf         nop      
+08004894:  00 bf         nop      
+08004896:  00 bf         nop      
+08004898:  00 bf         nop      
+0800489a:  00 bf         nop      
+0800489c:  00 bf         nop      
+0800489e:  00 bf         nop      
+080048a0:  00 bf         nop      
+080048a2:  00 bf         nop      
+080048a4:  00 bf         nop      
+080048a6:  00 bf         nop      
+080048a8:  00 bf         nop      
+080048aa:  00 bf         nop      
+080048ac:  00 bf         nop      
+080048ae:  00 bf         nop      
+080048b0:  00 bf         nop      
+080048b2:  00 bf         nop      
+080048b4:  00 bf         nop      
+080048b6:  00 bf         nop      
+080048b8:  00 bf         nop      
+080048ba:  00 bf         nop      
+080048bc:  00 bf         nop      
+080048be:  00 bf         nop      
+080048c0:  00 bf         nop      
+080048c2:  00 bf         nop      
+080048c4:  00 bf         nop      
+080048c6:  00 bf         nop      
+080048c8:  00 bf         nop      
+080048ca:  00 bf         nop      
+080048cc:  00 bf         nop      
+080048ce:  00 bf         nop      
+080048d0:  00 bf         nop      
+080048d2:  00 bf         nop      
+080048d4:  00 bf         nop      
+080048d6:  00 bf         nop      
+080048d8:  00 bf         nop      
+080048da:  00 bf         nop      
+080048dc:  00 bf         nop      
+080048de:  00 bf         nop      
+080048e0:  00 bf         nop      
+080048e2:  00 bf         nop      
+080048e4:  00 bf         nop      
+080048e6:  00 bf         nop      
+080048e8:  00 bf         nop      
+080048ea:  00 bf         nop      
+080048ec:  00 bf         nop      
+080048ee:  00 bf         nop      
+080048f0:  00 bf         nop      
+080048f2:  29 46         mov      r1, r5
+080048f4:  30 46         mov      r0, r6
+080048f6:  fc f7 16 fd   bl       #0x8001326
+080048fa:  00 bf         nop      
+080048fc:  00 bf         nop      
+080048fe:  00 bf         nop      
+08004900:  00 bf         nop      
+08004902:  00 bf         nop      
+08004904:  00 bf         nop      
+08004906:  00 bf         nop      
+08004908:  00 bf         nop      
+0800490a:  00 bf         nop      
+0800490c:  00 bf         nop      
+0800490e:  00 bf         nop      
+08004910:  00 bf         nop      
+08004912:  00 bf         nop      
+08004914:  00 bf         nop      
+08004916:  00 bf         nop      
+08004918:  00 bf         nop      
+0800491a:  00 bf         nop      
+0800491c:  00 bf         nop      
+0800491e:  00 bf         nop      
+08004920:  00 bf         nop      
+08004922:  00 bf         nop      
+08004924:  00 bf         nop      
+08004926:  00 bf         nop      
+08004928:  00 bf         nop      
+0800492a:  00 bf         nop      
+0800492c:  00 bf         nop      
+0800492e:  00 bf         nop      
+08004930:  00 bf         nop      
+08004932:  00 bf         nop      
+08004934:  00 bf         nop      
+08004936:  00 bf         nop      
+08004938:  00 bf         nop      
+0800493a:  00 bf         nop      
+0800493c:  00 bf         nop      
+0800493e:  00 bf         nop      
+08004940:  00 bf         nop      
+08004942:  00 bf         nop      
+08004944:  00 bf         nop      
+08004946:  00 bf         nop      
+08004948:  00 bf         nop      
+0800494a:  00 bf         nop      
+0800494c:  00 bf         nop      
+0800494e:  00 bf         nop      
+08004950:  00 bf         nop      
+08004952:  00 bf         nop      
+08004954:  00 bf         nop      
+08004956:  00 bf         nop      
+08004958:  00 bf         nop      
+0800495a:  00 bf         nop      
+0800495c:  00 bf         nop      
+0800495e:  00 bf         nop      
+08004960:  00 bf         nop      
+08004962:  00 bf         nop      
+08004964:  00 bf         nop      
+08004966:  00 bf         nop      
+08004968:  00 bf         nop      
+0800496a:  00 bf         nop      
+0800496c:  00 bf         nop      
+0800496e:  00 bf         nop      
+08004970:  00 bf         nop      
+08004972:  00 bf         nop      
+08004974:  00 bf         nop      
+08004976:  00 bf         nop      
+08004978:  00 bf         nop      
+0800497a:  00 bf         nop      
+0800497c:  00 2c         cmp      r4, #0
+0800497e:  7f f4 69 af   bne.w    #0x8004854
+08004982:  70 bd         pop      {r4, r5, r6, pc}
+08004984:  03 00 00 20   .word    0x20000003
+08004988:  00 08 00 48   .word    0x48000800
+0800498c:  70 b5 4c 48   .word    0x484cb570
+08004990:  04 78         ldrb     r4, [r0]
+08004992:  91 e0         b        #0x8004ab8
+08004994:  4b 4e         ldr      r6, [pc, #0x12c]    ; =0x48000800
+08004996:  64 1e         subs     r4, r4, #1
+08004998:  4f f4 70 75   mov.w    r5, #0x3c0
+0800499c:  e4 b2         uxtb     r4, r4
+0800499e:  29 46         mov      r1, r5
+080049a0:  30 46         mov      r0, r6
+080049a2:  fc f7 c2 fc   bl       #0x800132a
+080049a6:  00 bf         nop      
+080049a8:  00 bf         nop      
+080049aa:  00 bf         nop      
+080049ac:  00 bf         nop      
+080049ae:  00 bf         nop      
+080049b0:  00 bf         nop      
+080049b2:  00 bf         nop      
+080049b4:  00 bf         nop      
+080049b6:  00 bf         nop      
+080049b8:  00 bf         nop      
+080049ba:  00 bf         nop      
+080049bc:  00 bf         nop      
+080049be:  00 bf         nop      
+080049c0:  00 bf         nop      
+080049c2:  00 bf         nop      
+080049c4:  00 bf         nop      
+080049c6:  00 bf         nop      
+080049c8:  00 bf         nop      
+080049ca:  00 bf         nop      
+080049cc:  00 bf         nop      
+080049ce:  00 bf         nop      
+080049d0:  00 bf         nop      
+080049d2:  00 bf         nop      
+080049d4:  00 bf         nop      
+080049d6:  00 bf         nop      
+080049d8:  00 bf         nop      
+080049da:  00 bf         nop      
+080049dc:  00 bf         nop      
+080049de:  00 bf         nop      
+080049e0:  00 bf         nop      
+080049e2:  00 bf         nop      
+080049e4:  00 bf         nop      
+080049e6:  00 bf         nop      
+080049e8:  00 bf         nop      
+080049ea:  00 bf         nop      
+080049ec:  00 bf         nop      
+080049ee:  00 bf         nop      
+080049f0:  00 bf         nop      
+080049f2:  00 bf         nop      
+080049f4:  00 bf         nop      
+080049f6:  00 bf         nop      
+080049f8:  00 bf         nop      
+080049fa:  00 bf         nop      
+080049fc:  00 bf         nop      
+080049fe:  00 bf         nop      
+08004a00:  00 bf         nop      
+08004a02:  00 bf         nop      
+08004a04:  00 bf         nop      
+08004a06:  00 bf         nop      
+08004a08:  00 bf         nop      
+08004a0a:  00 bf         nop      
+08004a0c:  00 bf         nop      
+08004a0e:  00 bf         nop      
+08004a10:  00 bf         nop      
+08004a12:  00 bf         nop      
+08004a14:  00 bf         nop      
+08004a16:  00 bf         nop      
+08004a18:  00 bf         nop      
+08004a1a:  00 bf         nop      
+08004a1c:  00 bf         nop      
+08004a1e:  00 bf         nop      
+08004a20:  00 bf         nop      
+08004a22:  00 bf         nop      
+08004a24:  00 bf         nop      
+08004a26:  00 bf         nop      
+08004a28:  00 bf         nop      
+08004a2a:  00 bf         nop      
+08004a2c:  00 bf         nop      
+08004a2e:  00 bf         nop      
+08004a30:  29 46         mov      r1, r5
+08004a32:  30 46         mov      r0, r6
+08004a34:  fc f7 77 fc   bl       #0x8001326
+08004a38:  00 bf         nop      
+08004a3a:  00 bf         nop      
+08004a3c:  00 bf         nop      
+08004a3e:  00 bf         nop      
+08004a40:  00 bf         nop      
+08004a42:  00 bf         nop      
+08004a44:  00 bf         nop      
+08004a46:  00 bf         nop      
+08004a48:  00 bf         nop      
+08004a4a:  00 bf         nop      
+08004a4c:  00 bf         nop      
+08004a4e:  00 bf         nop      
+08004a50:  00 bf         nop      
+08004a52:  00 bf         nop      
+08004a54:  00 bf         nop      
+08004a56:  00 bf         nop      
+08004a58:  00 bf         nop      
+08004a5a:  00 bf         nop      
+08004a5c:  00 bf         nop      
+08004a5e:  00 bf         nop      
+08004a60:  00 bf         nop      
+08004a62:  00 bf         nop      
+08004a64:  00 bf         nop      
+08004a66:  00 bf         nop      
+08004a68:  00 bf         nop      
+08004a6a:  00 bf         nop      
+08004a6c:  00 bf         nop      
+08004a6e:  00 bf         nop      
+08004a70:  00 bf         nop      
+08004a72:  00 bf         nop      
+08004a74:  00 bf         nop      
+08004a76:  00 bf         nop      
+08004a78:  00 bf         nop      
+08004a7a:  00 bf         nop      
+08004a7c:  00 bf         nop      
+08004a7e:  00 bf         nop      
+08004a80:  00 bf         nop      
+08004a82:  00 bf         nop      
+08004a84:  00 bf         nop      
+08004a86:  00 bf         nop      
+08004a88:  00 bf         nop      
+08004a8a:  00 bf         nop      
+08004a8c:  00 bf         nop      
+08004a8e:  00 bf         nop      
+08004a90:  00 bf         nop      
+08004a92:  00 bf         nop      
+08004a94:  00 bf         nop      
+08004a96:  00 bf         nop      
+08004a98:  00 bf         nop      
+08004a9a:  00 bf         nop      
+08004a9c:  00 bf         nop      
+08004a9e:  00 bf         nop      
+08004aa0:  00 bf         nop      
+08004aa2:  00 bf         nop      
+08004aa4:  00 bf         nop      
+08004aa6:  00 bf         nop      
+08004aa8:  00 bf         nop      
+08004aaa:  00 bf         nop      
+08004aac:  00 bf         nop      
+08004aae:  00 bf         nop      
+08004ab0:  00 bf         nop      
+08004ab2:  00 bf         nop      
+08004ab4:  00 bf         nop      
+08004ab6:  00 bf         nop      
+08004ab8:  00 2c         cmp      r4, #0
+08004aba:  7f f4 6b af   bne.w    #0x8004994
+08004abe:  70 bd         pop      {r4, r5, r6, pc}
+08004ac0:  03 00 00 20   .word    0x20000003
+08004ac4:  00 08 00 48   .word    0x48000800
+08004ac8:  70 b5 4b 48   .word    0x484bb570
+08004acc:  04 78         ldrb     r4, [r0]
+08004ace:  8f e0         b        #0x8004bf0
+08004ad0:  4a 4e         ldr      r6, [pc, #0x128]    ; =0x48000800
+08004ad2:  64 1e         subs     r4, r4, #1
+08004ad4:  4f f4 70 75   mov.w    r5, #0x3c0
+08004ad8:  e4 b2         uxtb     r4, r4
+08004ada:  29 46         mov      r1, r5
+08004adc:  30 46         mov      r0, r6
+08004ade:  fc f7 24 fc   bl       #0x800132a
+08004ae2:  00 bf         nop      
+08004ae4:  00 bf         nop      
+08004ae6:  00 bf         nop      
+08004ae8:  00 bf         nop      
+08004aea:  00 bf         nop      
+08004aec:  00 bf         nop      
+08004aee:  00 bf         nop      
+08004af0:  00 bf         nop      
+08004af2:  00 bf         nop      
+08004af4:  00 bf         nop      
+08004af6:  00 bf         nop      
+08004af8:  00 bf         nop      
+08004afa:  00 bf         nop      
+08004afc:  00 bf         nop      
+08004afe:  00 bf         nop      
+08004b00:  00 bf         nop      
+08004b02:  00 bf         nop      
+08004b04:  00 bf         nop      
+08004b06:  00 bf         nop      
+08004b08:  00 bf         nop      
+08004b0a:  00 bf         nop      
+08004b0c:  00 bf         nop      
+08004b0e:  00 bf         nop      
+08004b10:  00 bf         nop      
+08004b12:  00 bf         nop      
+08004b14:  00 bf         nop      
+08004b16:  00 bf         nop      
+08004b18:  00 bf         nop      
+08004b1a:  00 bf         nop      
+08004b1c:  00 bf         nop      
+08004b1e:  00 bf         nop      
+08004b20:  00 bf         nop      
+08004b22:  00 bf         nop      
+08004b24:  00 bf         nop      
+08004b26:  00 bf         nop      
+08004b28:  00 bf         nop      
+08004b2a:  00 bf         nop      
+08004b2c:  00 bf         nop      
+08004b2e:  00 bf         nop      
+08004b30:  00 bf         nop      
+08004b32:  00 bf         nop      
+08004b34:  00 bf         nop      
+08004b36:  00 bf         nop      
+08004b38:  00 bf         nop      
+08004b3a:  00 bf         nop      
+08004b3c:  00 bf         nop      
+08004b3e:  00 bf         nop      
+08004b40:  00 bf         nop      
+08004b42:  00 bf         nop      
+08004b44:  00 bf         nop      
+08004b46:  00 bf         nop      
+08004b48:  00 bf         nop      
+08004b4a:  00 bf         nop      
+08004b4c:  00 bf         nop      
+08004b4e:  00 bf         nop      
+08004b50:  00 bf         nop      
+08004b52:  00 bf         nop      
+08004b54:  00 bf         nop      
+08004b56:  00 bf         nop      
+08004b58:  00 bf         nop      
+08004b5a:  00 bf         nop      
+08004b5c:  00 bf         nop      
+08004b5e:  00 bf         nop      
+08004b60:  00 bf         nop      
+08004b62:  00 bf         nop      
+08004b64:  00 bf         nop      
+08004b66:  00 bf         nop      
+08004b68:  00 bf         nop      
+08004b6a:  29 46         mov      r1, r5
+08004b6c:  30 46         mov      r0, r6
+08004b6e:  fc f7 da fb   bl       #0x8001326
+08004b72:  00 bf         nop      
+08004b74:  00 bf         nop      
+08004b76:  00 bf         nop      
+08004b78:  00 bf         nop      
+08004b7a:  00 bf         nop      
+08004b7c:  00 bf         nop      
+08004b7e:  00 bf         nop      
+08004b80:  00 bf         nop      
+08004b82:  00 bf         nop      
+08004b84:  00 bf         nop      
+08004b86:  00 bf         nop      
+08004b88:  00 bf         nop      
+08004b8a:  00 bf         nop      
+08004b8c:  00 bf         nop      
+08004b8e:  00 bf         nop      
+08004b90:  00 bf         nop      
+08004b92:  00 bf         nop      
+08004b94:  00 bf         nop      
+08004b96:  00 bf         nop      
+08004b98:  00 bf         nop      
+08004b9a:  00 bf         nop      
+08004b9c:  00 bf         nop      
+08004b9e:  00 bf         nop      
+08004ba0:  00 bf         nop      
+08004ba2:  00 bf         nop      
+08004ba4:  00 bf         nop      
+08004ba6:  00 bf         nop      
+08004ba8:  00 bf         nop      
+08004baa:  00 bf         nop      
+08004bac:  00 bf         nop      
+08004bae:  00 bf         nop      
+08004bb0:  00 bf         nop      
+08004bb2:  00 bf         nop      
+08004bb4:  00 bf         nop      
+08004bb6:  00 bf         nop      
+08004bb8:  00 bf         nop      
+08004bba:  00 bf         nop      
+08004bbc:  00 bf         nop      
+08004bbe:  00 bf         nop      
+08004bc0:  00 bf         nop      
+08004bc2:  00 bf         nop      
+08004bc4:  00 bf         nop      
+08004bc6:  00 bf         nop      
+08004bc8:  00 bf         nop      
+08004bca:  00 bf         nop      
+08004bcc:  00 bf         nop      
+08004bce:  00 bf         nop      
+08004bd0:  00 bf         nop      
+08004bd2:  00 bf         nop      
+08004bd4:  00 bf         nop      
+08004bd6:  00 bf         nop      
+08004bd8:  00 bf         nop      
+08004bda:  00 bf         nop      
+08004bdc:  00 bf         nop      
+08004bde:  00 bf         nop      
+08004be0:  00 bf         nop      
+08004be2:  00 bf         nop      
+08004be4:  00 bf         nop      
+08004be6:  00 bf         nop      
+08004be8:  00 bf         nop      
+08004bea:  00 bf         nop      
+08004bec:  00 bf         nop      
+08004bee:  00 bf         nop      
+08004bf0:  00 2c         cmp      r4, #0
+08004bf2:  7f f4 6d af   bne.w    #0x8004ad0
+08004bf6:  70 bd         pop      {r4, r5, r6, pc}
+08004bf8:  03 00 00 20   .word    0x20000003
+08004bfc:  00 08 00 48   .word    0x48000800
+08004c00:  70 b5 4a 48   .word    0x484ab570
+08004c04:  04 78         ldrb     r4, [r0]
+08004c06:  8d e0         b        #0x8004d24
+08004c08:  49 4e         ldr      r6, [pc, #0x124]    ; =0x48000800
+08004c0a:  64 1e         subs     r4, r4, #1
+08004c0c:  4f f4 70 75   mov.w    r5, #0x3c0
+08004c10:  e4 b2         uxtb     r4, r4
+08004c12:  29 46         mov      r1, r5
+08004c14:  30 46         mov      r0, r6
+08004c16:  fc f7 88 fb   bl       #0x800132a
+08004c1a:  00 bf         nop      
+08004c1c:  00 bf         nop      
+08004c1e:  00 bf         nop      
+08004c20:  00 bf         nop      
+08004c22:  00 bf         nop      
+08004c24:  00 bf         nop      
+08004c26:  00 bf         nop      
+08004c28:  00 bf         nop      
+08004c2a:  00 bf         nop      
+08004c2c:  00 bf         nop      
+08004c2e:  00 bf         nop      
+08004c30:  00 bf         nop      
+08004c32:  00 bf         nop      
+08004c34:  00 bf         nop      
+08004c36:  00 bf         nop      
+08004c38:  00 bf         nop      
+08004c3a:  00 bf         nop      
+08004c3c:  00 bf         nop      
+08004c3e:  00 bf         nop      
+08004c40:  00 bf         nop      
+08004c42:  00 bf         nop      
+08004c44:  00 bf         nop      
+08004c46:  00 bf         nop      
+08004c48:  00 bf         nop      
+08004c4a:  00 bf         nop      
+08004c4c:  00 bf         nop      
+08004c4e:  00 bf         nop      
+08004c50:  00 bf         nop      
+08004c52:  00 bf         nop      
+08004c54:  00 bf         nop      
+08004c56:  00 bf         nop      
+08004c58:  00 bf         nop      
+08004c5a:  00 bf         nop      
+08004c5c:  00 bf         nop      
+08004c5e:  00 bf         nop      
+08004c60:  00 bf         nop      
+08004c62:  00 bf         nop      
+08004c64:  00 bf         nop      
+08004c66:  00 bf         nop      
+08004c68:  00 bf         nop      
+08004c6a:  00 bf         nop      
+08004c6c:  00 bf         nop      
+08004c6e:  00 bf         nop      
+08004c70:  00 bf         nop      
+08004c72:  00 bf         nop      
+08004c74:  00 bf         nop      
+08004c76:  00 bf         nop      
+08004c78:  00 bf         nop      
+08004c7a:  00 bf         nop      
+08004c7c:  00 bf         nop      
+08004c7e:  00 bf         nop      
+08004c80:  00 bf         nop      
+08004c82:  00 bf         nop      
+08004c84:  00 bf         nop      
+08004c86:  00 bf         nop      
+08004c88:  00 bf         nop      
+08004c8a:  00 bf         nop      
+08004c8c:  00 bf         nop      
+08004c8e:  00 bf         nop      
+08004c90:  00 bf         nop      
+08004c92:  00 bf         nop      
+08004c94:  00 bf         nop      
+08004c96:  00 bf         nop      
+08004c98:  00 bf         nop      
+08004c9a:  00 bf         nop      
+08004c9c:  00 bf         nop      
+08004c9e:  00 bf         nop      
+08004ca0:  29 46         mov      r1, r5
+08004ca2:  30 46         mov      r0, r6
+08004ca4:  fc f7 3f fb   bl       #0x8001326
+08004ca8:  00 bf         nop      
+08004caa:  00 bf         nop      
+08004cac:  00 bf         nop      
+08004cae:  00 bf         nop      
+08004cb0:  00 bf         nop      
+08004cb2:  00 bf         nop      
+08004cb4:  00 bf         nop      
+08004cb6:  00 bf         nop      
+08004cb8:  00 bf         nop      
+08004cba:  00 bf         nop      
+08004cbc:  00 bf         nop      
+08004cbe:  00 bf         nop      
+08004cc0:  00 bf         nop      
+08004cc2:  00 bf         nop      
+08004cc4:  00 bf         nop      
+08004cc6:  00 bf         nop      
+08004cc8:  00 bf         nop      
+08004cca:  00 bf         nop      
+08004ccc:  00 bf         nop      
+08004cce:  00 bf         nop      
+08004cd0:  00 bf         nop      
+08004cd2:  00 bf         nop      
+08004cd4:  00 bf         nop      
+08004cd6:  00 bf         nop      
+08004cd8:  00 bf         nop      
+08004cda:  00 bf         nop      
+08004cdc:  00 bf         nop      
+08004cde:  00 bf         nop      
+08004ce0:  00 bf         nop      
+08004ce2:  00 bf         nop      
+08004ce4:  00 bf         nop      
+08004ce6:  00 bf         nop      
+08004ce8:  00 bf         nop      
+08004cea:  00 bf         nop      
+08004cec:  00 bf         nop      
+08004cee:  00 bf         nop      
+08004cf0:  00 bf         nop      
+08004cf2:  00 bf         nop      
+08004cf4:  00 bf         nop      
+08004cf6:  00 bf         nop      
+08004cf8:  00 bf         nop      
+08004cfa:  00 bf         nop      
+08004cfc:  00 bf         nop      
+08004cfe:  00 bf         nop      
+08004d00:  00 bf         nop      
+08004d02:  00 bf         nop      
+08004d04:  00 bf         nop      
+08004d06:  00 bf         nop      
+08004d08:  00 bf         nop      
+08004d0a:  00 bf         nop      
+08004d0c:  00 bf         nop      
+08004d0e:  00 bf         nop      
+08004d10:  00 bf         nop      
+08004d12:  00 bf         nop      
+08004d14:  00 bf         nop      
+08004d16:  00 bf         nop      
+08004d18:  00 bf         nop      
+08004d1a:  00 bf         nop      
+08004d1c:  00 bf         nop      
+08004d1e:  00 bf         nop      
+08004d20:  00 bf         nop      
+08004d22:  00 bf         nop      
+08004d24:  00 2c         cmp      r4, #0
+08004d26:  7f f4 6f af   bne.w    #0x8004c08
+08004d2a:  70 bd         pop      {r4, r5, r6, pc}
+08004d2c:  03 00 00 20   .word    0x20000003
+08004d30:  00 08 00 48   .word    0x48000800
+08004d34:  70 b5 49 48   .word    0x4849b570
+08004d38:  04 78         ldrb     r4, [r0]
+08004d3a:  8b e0         b        #0x8004e54
+08004d3c:  48 4e         ldr      r6, [pc, #0x120]    ; =0x48000800
+08004d3e:  64 1e         subs     r4, r4, #1
+08004d40:  4f f4 70 75   mov.w    r5, #0x3c0
+08004d44:  e4 b2         uxtb     r4, r4
+08004d46:  29 46         mov      r1, r5
+08004d48:  30 46         mov      r0, r6
+08004d4a:  fc f7 ee fa   bl       #0x800132a
+08004d4e:  00 bf         nop      
+08004d50:  00 bf         nop      
+08004d52:  00 bf         nop      
+08004d54:  00 bf         nop      
+08004d56:  00 bf         nop      
+08004d58:  00 bf         nop      
+08004d5a:  00 bf         nop      
+08004d5c:  00 bf         nop      
+08004d5e:  00 bf         nop      
+08004d60:  00 bf         nop      
+08004d62:  00 bf         nop      
+08004d64:  00 bf         nop      
+08004d66:  00 bf         nop      
+08004d68:  00 bf         nop      
+08004d6a:  00 bf         nop      
+08004d6c:  00 bf         nop      
+08004d6e:  00 bf         nop      
+08004d70:  00 bf         nop      
+08004d72:  00 bf         nop      
+08004d74:  00 bf         nop      
+08004d76:  00 bf         nop      
+08004d78:  00 bf         nop      
+08004d7a:  00 bf         nop      
+08004d7c:  00 bf         nop      
+08004d7e:  00 bf         nop      
+08004d80:  00 bf         nop      
+08004d82:  00 bf         nop      
+08004d84:  00 bf         nop      
+08004d86:  00 bf         nop      
+08004d88:  00 bf         nop      
+08004d8a:  00 bf         nop      
+08004d8c:  00 bf         nop      
+08004d8e:  00 bf         nop      
+08004d90:  00 bf         nop      
+08004d92:  00 bf         nop      
+08004d94:  00 bf         nop      
+08004d96:  00 bf         nop      
+08004d98:  00 bf         nop      
+08004d9a:  00 bf         nop      
+08004d9c:  00 bf         nop      
+08004d9e:  00 bf         nop      
+08004da0:  00 bf         nop      
+08004da2:  00 bf         nop      
+08004da4:  00 bf         nop      
+08004da6:  00 bf         nop      
+08004da8:  00 bf         nop      
+08004daa:  00 bf         nop      
+08004dac:  00 bf         nop      
+08004dae:  00 bf         nop      
+08004db0:  00 bf         nop      
+08004db2:  00 bf         nop      
+08004db4:  00 bf         nop      
+08004db6:  00 bf         nop      
+08004db8:  00 bf         nop      
+08004dba:  00 bf         nop      
+08004dbc:  00 bf         nop      
+08004dbe:  00 bf         nop      
+08004dc0:  00 bf         nop      
+08004dc2:  00 bf         nop      
+08004dc4:  00 bf         nop      
+08004dc6:  00 bf         nop      
+08004dc8:  00 bf         nop      
+08004dca:  00 bf         nop      
+08004dcc:  00 bf         nop      
+08004dce:  00 bf         nop      
+08004dd0:  00 bf         nop      
+08004dd2:  29 46         mov      r1, r5
+08004dd4:  30 46         mov      r0, r6
+08004dd6:  fc f7 a6 fa   bl       #0x8001326
+08004dda:  00 bf         nop      
+08004ddc:  00 bf         nop      
+08004dde:  00 bf         nop      
+08004de0:  00 bf         nop      
+08004de2:  00 bf         nop      
+08004de4:  00 bf         nop      
+08004de6:  00 bf         nop      
+08004de8:  00 bf         nop      
+08004dea:  00 bf         nop      
+08004dec:  00 bf         nop      
+08004dee:  00 bf         nop      
+08004df0:  00 bf         nop      
+08004df2:  00 bf         nop      
+08004df4:  00 bf         nop      
+08004df6:  00 bf         nop      
+08004df8:  00 bf         nop      
+08004dfa:  00 bf         nop      
+08004dfc:  00 bf         nop      
+08004dfe:  00 bf         nop      
+08004e00:  00 bf         nop      
+08004e02:  00 bf         nop      
+08004e04:  00 bf         nop      
+08004e06:  00 bf         nop      
+08004e08:  00 bf         nop      
+08004e0a:  00 bf         nop      
+08004e0c:  00 bf         nop      
+08004e0e:  00 bf         nop      
+08004e10:  00 bf         nop      
+08004e12:  00 bf         nop      
+08004e14:  00 bf         nop      
+08004e16:  00 bf         nop      
+08004e18:  00 bf         nop      
+08004e1a:  00 bf         nop      
+08004e1c:  00 bf         nop      
+08004e1e:  00 bf         nop      
+08004e20:  00 bf         nop      
+08004e22:  00 bf         nop      
+08004e24:  00 bf         nop      
+08004e26:  00 bf         nop      
+08004e28:  00 bf         nop      
+08004e2a:  00 bf         nop      
+08004e2c:  00 bf         nop      
+08004e2e:  00 bf         nop      
+08004e30:  00 bf         nop      
+08004e32:  00 bf         nop      
+08004e34:  00 bf         nop      
+08004e36:  00 bf         nop      
+08004e38:  00 bf         nop      
+08004e3a:  00 bf         nop      
+08004e3c:  00 bf         nop      
+08004e3e:  00 bf         nop      
+08004e40:  00 bf         nop      
+08004e42:  00 bf         nop      
+08004e44:  00 bf         nop      
+08004e46:  00 bf         nop      
+08004e48:  00 bf         nop      
+08004e4a:  00 bf         nop      
+08004e4c:  00 bf         nop      
+08004e4e:  00 bf         nop      
+08004e50:  00 bf         nop      
+08004e52:  00 bf         nop      
+08004e54:  00 2c         cmp      r4, #0
+08004e56:  7f f4 71 af   bne.w    #0x8004d3c
+08004e5a:  70 bd         pop      {r4, r5, r6, pc}
+08004e5c:  03 00 00 20   .word    0x20000003
+08004e60:  00 08 00 48   .word    0x48000800
+08004e64:  70 b5 48 48   .word    0x4848b570
+08004e68:  04 78         ldrb     r4, [r0]
+08004e6a:  89 e0         b        #0x8004f80
+08004e6c:  47 4e         ldr      r6, [pc, #0x11c]    ; =0x48000800
+08004e6e:  64 1e         subs     r4, r4, #1
+08004e70:  4f f4 70 75   mov.w    r5, #0x3c0
+08004e74:  e4 b2         uxtb     r4, r4
+08004e76:  29 46         mov      r1, r5
+08004e78:  30 46         mov      r0, r6
+08004e7a:  fc f7 56 fa   bl       #0x800132a
+08004e7e:  00 bf         nop      
+08004e80:  00 bf         nop      
+08004e82:  00 bf         nop      
+08004e84:  00 bf         nop      
+08004e86:  00 bf         nop      
+08004e88:  00 bf         nop      
+08004e8a:  00 bf         nop      
+08004e8c:  00 bf         nop      
+08004e8e:  00 bf         nop      
+08004e90:  00 bf         nop      
+08004e92:  00 bf         nop      
+08004e94:  00 bf         nop      
+08004e96:  00 bf         nop      
+08004e98:  00 bf         nop      
+08004e9a:  00 bf         nop      
+08004e9c:  00 bf         nop      
+08004e9e:  00 bf         nop      
+08004ea0:  00 bf         nop      
+08004ea2:  00 bf         nop      
+08004ea4:  00 bf         nop      
+08004ea6:  00 bf         nop      
+08004ea8:  00 bf         nop      
+08004eaa:  00 bf         nop      
+08004eac:  00 bf         nop      
+08004eae:  00 bf         nop      
+08004eb0:  00 bf         nop      
+08004eb2:  00 bf         nop      
+08004eb4:  00 bf         nop      
+08004eb6:  00 bf         nop      
+08004eb8:  00 bf         nop      
+08004eba:  00 bf         nop      
+08004ebc:  00 bf         nop      
+08004ebe:  00 bf         nop      
+08004ec0:  00 bf         nop      
+08004ec2:  00 bf         nop      
+08004ec4:  00 bf         nop      
+08004ec6:  00 bf         nop      
+08004ec8:  00 bf         nop      
+08004eca:  00 bf         nop      
+08004ecc:  00 bf         nop      
+08004ece:  00 bf         nop      
+08004ed0:  00 bf         nop      
+08004ed2:  00 bf         nop      
+08004ed4:  00 bf         nop      
+08004ed6:  00 bf         nop      
+08004ed8:  00 bf         nop      
+08004eda:  00 bf         nop      
+08004edc:  00 bf         nop      
+08004ede:  00 bf         nop      
+08004ee0:  00 bf         nop      
+08004ee2:  00 bf         nop      
+08004ee4:  00 bf         nop      
+08004ee6:  00 bf         nop      
+08004ee8:  00 bf         nop      
+08004eea:  00 bf         nop      
+08004eec:  00 bf         nop      
+08004eee:  00 bf         nop      
+08004ef0:  00 bf         nop      
+08004ef2:  00 bf         nop      
+08004ef4:  00 bf         nop      
+08004ef6:  00 bf         nop      
+08004ef8:  00 bf         nop      
+08004efa:  00 bf         nop      
+08004efc:  00 bf         nop      
+08004efe:  00 bf         nop      
+08004f00:  29 46         mov      r1, r5
+08004f02:  30 46         mov      r0, r6
+08004f04:  fc f7 0f fa   bl       #0x8001326
+08004f08:  00 bf         nop      
+08004f0a:  00 bf         nop      
+08004f0c:  00 bf         nop      
+08004f0e:  00 bf         nop      
+08004f10:  00 bf         nop      
+08004f12:  00 bf         nop      
+08004f14:  00 bf         nop      
+08004f16:  00 bf         nop      
+08004f18:  00 bf         nop      
+08004f1a:  00 bf         nop      
+08004f1c:  00 bf         nop      
+08004f1e:  00 bf         nop      
+08004f20:  00 bf         nop      
+08004f22:  00 bf         nop      
+08004f24:  00 bf         nop      
+08004f26:  00 bf         nop      
+08004f28:  00 bf         nop      
+08004f2a:  00 bf         nop      
+08004f2c:  00 bf         nop      
+08004f2e:  00 bf         nop      
+08004f30:  00 bf         nop      
+08004f32:  00 bf         nop      
+08004f34:  00 bf         nop      
+08004f36:  00 bf         nop      
+08004f38:  00 bf         nop      
+08004f3a:  00 bf         nop      
+08004f3c:  00 bf         nop      
+08004f3e:  00 bf         nop      
+08004f40:  00 bf         nop      
+08004f42:  00 bf         nop      
+08004f44:  00 bf         nop      
+08004f46:  00 bf         nop      
+08004f48:  00 bf         nop      
+08004f4a:  00 bf         nop      
+08004f4c:  00 bf         nop      
+08004f4e:  00 bf         nop      
+08004f50:  00 bf         nop      
+08004f52:  00 bf         nop      
+08004f54:  00 bf         nop      
+08004f56:  00 bf         nop      
+08004f58:  00 bf         nop      
+08004f5a:  00 bf         nop      
+08004f5c:  00 bf         nop      
+08004f5e:  00 bf         nop      
+08004f60:  00 bf         nop      
+08004f62:  00 bf         nop      
+08004f64:  00 bf         nop      
+08004f66:  00 bf         nop      
+08004f68:  00 bf         nop      
+08004f6a:  00 bf         nop      
+08004f6c:  00 bf         nop      
+08004f6e:  00 bf         nop      
+08004f70:  00 bf         nop      
+08004f72:  00 bf         nop      
+08004f74:  00 bf         nop      
+08004f76:  00 bf         nop      
+08004f78:  00 bf         nop      
+08004f7a:  00 bf         nop      
+08004f7c:  00 bf         nop      
+08004f7e:  00 bf         nop      
+08004f80:  00 2c         cmp      r4, #0
+08004f82:  7f f4 73 af   bne.w    #0x8004e6c
+08004f86:  70 bd         pop      {r4, r5, r6, pc}
+08004f88:  03 00 00 20   .word    0x20000003
+08004f8c:  00 08 00 48   .word    0x48000800
+08004f90:  70 b5 47 48   .word    0x4847b570
+08004f94:  04 78         ldrb     r4, [r0]
+08004f96:  87 e0         b        #0x80050a8
+08004f98:  46 4e         ldr      r6, [pc, #0x118]    ; =0x48000800
+08004f9a:  64 1e         subs     r4, r4, #1
+08004f9c:  4f f4 70 75   mov.w    r5, #0x3c0
+08004fa0:  e4 b2         uxtb     r4, r4
+08004fa2:  29 46         mov      r1, r5
+08004fa4:  30 46         mov      r0, r6
+08004fa6:  fc f7 c0 f9   bl       #0x800132a
+08004faa:  00 bf         nop      
+08004fac:  00 bf         nop      
+08004fae:  00 bf         nop      
+08004fb0:  00 bf         nop      
+08004fb2:  00 bf         nop      
+08004fb4:  00 bf         nop      
+08004fb6:  00 bf         nop      
+08004fb8:  00 bf         nop      
+08004fba:  00 bf         nop      
+08004fbc:  00 bf         nop      
+08004fbe:  00 bf         nop      
+08004fc0:  00 bf         nop      
+08004fc2:  00 bf         nop      
+08004fc4:  00 bf         nop      
+08004fc6:  00 bf         nop      
+08004fc8:  00 bf         nop      
+08004fca:  00 bf         nop      
+08004fcc:  00 bf         nop      
+08004fce:  00 bf         nop      
+08004fd0:  00 bf         nop      
+08004fd2:  00 bf         nop      
+08004fd4:  00 bf         nop      
+08004fd6:  00 bf         nop      
+08004fd8:  00 bf         nop      
+08004fda:  00 bf         nop      
+08004fdc:  00 bf         nop      
+08004fde:  00 bf         nop      
+08004fe0:  00 bf         nop      
+08004fe2:  00 bf         nop      
+08004fe4:  00 bf         nop      
+08004fe6:  00 bf         nop      
+08004fe8:  00 bf         nop      
+08004fea:  00 bf         nop      
+08004fec:  00 bf         nop      
+08004fee:  00 bf         nop      
+08004ff0:  00 bf         nop      
+08004ff2:  00 bf         nop      
+08004ff4:  00 bf         nop      
+08004ff6:  00 bf         nop      
+08004ff8:  00 bf         nop      
+08004ffa:  00 bf         nop      
+08004ffc:  00 bf         nop      
+08004ffe:  00 bf         nop      
+08005000:  00 bf         nop      
+08005002:  00 bf         nop      
+08005004:  00 bf         nop      
+08005006:  00 bf         nop      
+08005008:  00 bf         nop      
+0800500a:  00 bf         nop      
+0800500c:  00 bf         nop      
+0800500e:  00 bf         nop      
+08005010:  00 bf         nop      
+08005012:  00 bf         nop      
+08005014:  00 bf         nop      
+08005016:  00 bf         nop      
+08005018:  00 bf         nop      
+0800501a:  00 bf         nop      
+0800501c:  00 bf         nop      
+0800501e:  00 bf         nop      
+08005020:  00 bf         nop      
+08005022:  00 bf         nop      
+08005024:  00 bf         nop      
+08005026:  00 bf         nop      
+08005028:  00 bf         nop      
+0800502a:  29 46         mov      r1, r5
+0800502c:  30 46         mov      r0, r6
+0800502e:  fc f7 7a f9   bl       #0x8001326
+08005032:  00 bf         nop      
+08005034:  00 bf         nop      
+08005036:  00 bf         nop      
+08005038:  00 bf         nop      
+0800503a:  00 bf         nop      
+0800503c:  00 bf         nop      
+0800503e:  00 bf         nop      
+08005040:  00 bf         nop      
+08005042:  00 bf         nop      
+08005044:  00 bf         nop      
+08005046:  00 bf         nop      
+08005048:  00 bf         nop      
+0800504a:  00 bf         nop      
+0800504c:  00 bf         nop      
+0800504e:  00 bf         nop      
+08005050:  00 bf         nop      
+08005052:  00 bf         nop      
+08005054:  00 bf         nop      
+08005056:  00 bf         nop      
+08005058:  00 bf         nop      
+0800505a:  00 bf         nop      
+0800505c:  00 bf         nop      
+0800505e:  00 bf         nop      
+08005060:  00 bf         nop      
+08005062:  00 bf         nop      
+08005064:  00 bf         nop      
+08005066:  00 bf         nop      
+08005068:  00 bf         nop      
+0800506a:  00 bf         nop      
+0800506c:  00 bf         nop      
+0800506e:  00 bf         nop      
+08005070:  00 bf         nop      
+08005072:  00 bf         nop      
+08005074:  00 bf         nop      
+08005076:  00 bf         nop      
+08005078:  00 bf         nop      
+0800507a:  00 bf         nop      
+0800507c:  00 bf         nop      
+0800507e:  00 bf         nop      
+08005080:  00 bf         nop      
+08005082:  00 bf         nop      
+08005084:  00 bf         nop      
+08005086:  00 bf         nop      
+08005088:  00 bf         nop      
+0800508a:  00 bf         nop      
+0800508c:  00 bf         nop      
+0800508e:  00 bf         nop      
+08005090:  00 bf         nop      
+08005092:  00 bf         nop      
+08005094:  00 bf         nop      
+08005096:  00 bf         nop      
+08005098:  00 bf         nop      
+0800509a:  00 bf         nop      
+0800509c:  00 bf         nop      
+0800509e:  00 bf         nop      
+080050a0:  00 bf         nop      
+080050a2:  00 bf         nop      
+080050a4:  00 bf         nop      
+080050a6:  00 bf         nop      
+080050a8:  00 2c         cmp      r4, #0
+080050aa:  7f f4 75 af   bne.w    #0x8004f98
+080050ae:  70 bd         pop      {r4, r5, r6, pc}
+080050b0:  03 00 00 20   .word    0x20000003
+080050b4:  00 08 00 48   .word    0x48000800
+080050b8:  70 b5 46 48   .word    0x4846b570
+080050bc:  04 78         ldrb     r4, [r0]
+080050be:  85 e0         b        #0x80051cc
+080050c0:  45 4e         ldr      r6, [pc, #0x114]    ; =0x48000800
+080050c2:  64 1e         subs     r4, r4, #1
+080050c4:  4f f4 70 75   mov.w    r5, #0x3c0
+080050c8:  e4 b2         uxtb     r4, r4
+080050ca:  29 46         mov      r1, r5
+080050cc:  30 46         mov      r0, r6
+080050ce:  fc f7 2c f9   bl       #0x800132a
+080050d2:  00 bf         nop      
+080050d4:  00 bf         nop      
+080050d6:  00 bf         nop      
+080050d8:  00 bf         nop      
+080050da:  00 bf         nop      
+080050dc:  00 bf         nop      
+080050de:  00 bf         nop      
+080050e0:  00 bf         nop      
+080050e2:  00 bf         nop      
+080050e4:  00 bf         nop      
+080050e6:  00 bf         nop      
+080050e8:  00 bf         nop      
+080050ea:  00 bf         nop      
+080050ec:  00 bf         nop      
+080050ee:  00 bf         nop      
+080050f0:  00 bf         nop      
+080050f2:  00 bf         nop      
+080050f4:  00 bf         nop      
+080050f6:  00 bf         nop      
+080050f8:  00 bf         nop      
+080050fa:  00 bf         nop      
+080050fc:  00 bf         nop      
+080050fe:  00 bf         nop      
+08005100:  00 bf         nop      
+08005102:  00 bf         nop      
+08005104:  00 bf         nop      
+08005106:  00 bf         nop      
+08005108:  00 bf         nop      
+0800510a:  00 bf         nop      
+0800510c:  00 bf         nop      
+0800510e:  00 bf         nop      
+08005110:  00 bf         nop      
+08005112:  00 bf         nop      
+08005114:  00 bf         nop      
+08005116:  00 bf         nop      
+08005118:  00 bf         nop      
+0800511a:  00 bf         nop      
+0800511c:  00 bf         nop      
+0800511e:  00 bf         nop      
+08005120:  00 bf         nop      
+08005122:  00 bf         nop      
+08005124:  00 bf         nop      
+08005126:  00 bf         nop      
+08005128:  00 bf         nop      
+0800512a:  00 bf         nop      
+0800512c:  00 bf         nop      
+0800512e:  00 bf         nop      
+08005130:  00 bf         nop      
+08005132:  00 bf         nop      
+08005134:  00 bf         nop      
+08005136:  00 bf         nop      
+08005138:  00 bf         nop      
+0800513a:  00 bf         nop      
+0800513c:  00 bf         nop      
+0800513e:  00 bf         nop      
+08005140:  00 bf         nop      
+08005142:  00 bf         nop      
+08005144:  00 bf         nop      
+08005146:  00 bf         nop      
+08005148:  00 bf         nop      
+0800514a:  00 bf         nop      
+0800514c:  00 bf         nop      
+0800514e:  00 bf         nop      
+08005150:  29 46         mov      r1, r5
+08005152:  30 46         mov      r0, r6
+08005154:  fc f7 e7 f8   bl       #0x8001326
+08005158:  00 bf         nop      
+0800515a:  00 bf         nop      
+0800515c:  00 bf         nop      
+0800515e:  00 bf         nop      
+08005160:  00 bf         nop      
+08005162:  00 bf         nop      
+08005164:  00 bf         nop      
+08005166:  00 bf         nop      
+08005168:  00 bf         nop      
+0800516a:  00 bf         nop      
+0800516c:  00 bf         nop      
+0800516e:  00 bf         nop      
+08005170:  00 bf         nop      
+08005172:  00 bf         nop      
+08005174:  00 bf         nop      
+08005176:  00 bf         nop      
+08005178:  00 bf         nop      
+0800517a:  00 bf         nop      
+0800517c:  00 bf         nop      
+0800517e:  00 bf         nop      
+08005180:  00 bf         nop      
+08005182:  00 bf         nop      
+08005184:  00 bf         nop      
+08005186:  00 bf         nop      
+08005188:  00 bf         nop      
+0800518a:  00 bf         nop      
+0800518c:  00 bf         nop      
+0800518e:  00 bf         nop      
+08005190:  00 bf         nop      
+08005192:  00 bf         nop      
+08005194:  00 bf         nop      
+08005196:  00 bf         nop      
+08005198:  00 bf         nop      
+0800519a:  00 bf         nop      
+0800519c:  00 bf         nop      
+0800519e:  00 bf         nop      
+080051a0:  00 bf         nop      
+080051a2:  00 bf         nop      
+080051a4:  00 bf         nop      
+080051a6:  00 bf         nop      
+080051a8:  00 bf         nop      
+080051aa:  00 bf         nop      
+080051ac:  00 bf         nop      
+080051ae:  00 bf         nop      
+080051b0:  00 bf         nop      
+080051b2:  00 bf         nop      
+080051b4:  00 bf         nop      
+080051b6:  00 bf         nop      
+080051b8:  00 bf         nop      
+080051ba:  00 bf         nop      
+080051bc:  00 bf         nop      
+080051be:  00 bf         nop      
+080051c0:  00 bf         nop      
+080051c2:  00 bf         nop      
+080051c4:  00 bf         nop      
+080051c6:  00 bf         nop      
+080051c8:  00 bf         nop      
+080051ca:  00 bf         nop      
+080051cc:  00 2c         cmp      r4, #0
+080051ce:  7f f4 77 af   bne.w    #0x80050c0
+080051d2:  70 bd         pop      {r4, r5, r6, pc}
+080051d4:  03 00 00 20   .word    0x20000003
+080051d8:  00 08 00 48   .word    0x48000800
+080051dc:  70 b5 45 48   .word    0x4845b570
+080051e0:  04 78         ldrb     r4, [r0]
+080051e2:  83 e0         b        #0x80052ec
+080051e4:  44 4e         ldr      r6, [pc, #0x110]    ; =0x48000800
+080051e6:  64 1e         subs     r4, r4, #1
+080051e8:  4f f4 70 75   mov.w    r5, #0x3c0
+080051ec:  e4 b2         uxtb     r4, r4
+080051ee:  29 46         mov      r1, r5
+080051f0:  30 46         mov      r0, r6
+080051f2:  fc f7 9a f8   bl       #0x800132a
+080051f6:  00 bf         nop      
+080051f8:  00 bf         nop      
+080051fa:  00 bf         nop      
+080051fc:  00 bf         nop      
+080051fe:  00 bf         nop      
+08005200:  00 bf         nop      
+08005202:  00 bf         nop      
+08005204:  00 bf         nop      
+08005206:  00 bf         nop      
+08005208:  00 bf         nop      
+0800520a:  00 bf         nop      
+0800520c:  00 bf         nop      
+0800520e:  00 bf         nop      
+08005210:  00 bf         nop      
+08005212:  00 bf         nop      
+08005214:  00 bf         nop      
+08005216:  00 bf         nop      
+08005218:  00 bf         nop      
+0800521a:  00 bf         nop      
+0800521c:  00 bf         nop      
+0800521e:  00 bf         nop      
+08005220:  00 bf         nop      
+08005222:  00 bf         nop      
+08005224:  00 bf         nop      
+08005226:  00 bf         nop      
+08005228:  00 bf         nop      
+0800522a:  00 bf         nop      
+0800522c:  00 bf         nop      
+0800522e:  00 bf         nop      
+08005230:  00 bf         nop      
+08005232:  00 bf         nop      
+08005234:  00 bf         nop      
+08005236:  00 bf         nop      
+08005238:  00 bf         nop      
+0800523a:  00 bf         nop      
+0800523c:  00 bf         nop      
+0800523e:  00 bf         nop      
+08005240:  00 bf         nop      
+08005242:  00 bf         nop      
+08005244:  00 bf         nop      
+08005246:  00 bf         nop      
+08005248:  00 bf         nop      
+0800524a:  00 bf         nop      
+0800524c:  00 bf         nop      
+0800524e:  00 bf         nop      
+08005250:  00 bf         nop      
+08005252:  00 bf         nop      
+08005254:  00 bf         nop      
+08005256:  00 bf         nop      
+08005258:  00 bf         nop      
+0800525a:  00 bf         nop      
+0800525c:  00 bf         nop      
+0800525e:  00 bf         nop      
+08005260:  00 bf         nop      
+08005262:  00 bf         nop      
+08005264:  00 bf         nop      
+08005266:  00 bf         nop      
+08005268:  00 bf         nop      
+0800526a:  00 bf         nop      
+0800526c:  00 bf         nop      
+0800526e:  00 bf         nop      
+08005270:  00 bf         nop      
+08005272:  29 46         mov      r1, r5
+08005274:  30 46         mov      r0, r6
+08005276:  fc f7 56 f8   bl       #0x8001326
+0800527a:  00 bf         nop      
+0800527c:  00 bf         nop      
+0800527e:  00 bf         nop      
+08005280:  00 bf         nop      
+08005282:  00 bf         nop      
+08005284:  00 bf         nop      
+08005286:  00 bf         nop      
+08005288:  00 bf         nop      
+0800528a:  00 bf         nop      
+0800528c:  00 bf         nop      
+0800528e:  00 bf         nop      
+08005290:  00 bf         nop      
+08005292:  00 bf         nop      
+08005294:  00 bf         nop      
+08005296:  00 bf         nop      
+08005298:  00 bf         nop      
+0800529a:  00 bf         nop      
+0800529c:  00 bf         nop      
+0800529e:  00 bf         nop      
+080052a0:  00 bf         nop      
+080052a2:  00 bf         nop      
+080052a4:  00 bf         nop      
+080052a6:  00 bf         nop      
+080052a8:  00 bf         nop      
+080052aa:  00 bf         nop      
+080052ac:  00 bf         nop      
+080052ae:  00 bf         nop      
+080052b0:  00 bf         nop      
+080052b2:  00 bf         nop      
+080052b4:  00 bf         nop      
+080052b6:  00 bf         nop      
+080052b8:  00 bf         nop      
+080052ba:  00 bf         nop      
+080052bc:  00 bf         nop      
+080052be:  00 bf         nop      
+080052c0:  00 bf         nop      
+080052c2:  00 bf         nop      
+080052c4:  00 bf         nop      
+080052c6:  00 bf         nop      
+080052c8:  00 bf         nop      
+080052ca:  00 bf         nop      
+080052cc:  00 bf         nop      
+080052ce:  00 bf         nop      
+080052d0:  00 bf         nop      
+080052d2:  00 bf         nop      
+080052d4:  00 bf         nop      
+080052d6:  00 bf         nop      
+080052d8:  00 bf         nop      
+080052da:  00 bf         nop      
+080052dc:  00 bf         nop      
+080052de:  00 bf         nop      
+080052e0:  00 bf         nop      
+080052e2:  00 bf         nop      
+080052e4:  00 bf         nop      
+080052e6:  00 bf         nop      
+080052e8:  00 bf         nop      
+080052ea:  00 bf         nop      
+080052ec:  00 2c         cmp      r4, #0
+080052ee:  7f f4 79 af   bne.w    #0x80051e4
+080052f2:  70 bd         pop      {r4, r5, r6, pc}
+080052f4:  03 00 00 20   .word    0x20000003
+080052f8:  00 08 00 48   .word    0x48000800
+080052fc:  70 b5 44 48   .word    0x4844b570
+08005300:  04 78         ldrb     r4, [r0]
+08005302:  81 e0         b        #0x8005408
+08005304:  43 4e         ldr      r6, [pc, #0x10c]    ; =0x48000800
+08005306:  64 1e         subs     r4, r4, #1
+08005308:  4f f4 70 75   mov.w    r5, #0x3c0
+0800530c:  e4 b2         uxtb     r4, r4
+0800530e:  29 46         mov      r1, r5
+08005310:  30 46         mov      r0, r6
+08005312:  fc f7 0a f8   bl       #0x800132a
+08005316:  00 bf         nop      
+08005318:  00 bf         nop      
+0800531a:  00 bf         nop      
+0800531c:  00 bf         nop      
+0800531e:  00 bf         nop      
+08005320:  00 bf         nop      
+08005322:  00 bf         nop      
+08005324:  00 bf         nop      
+08005326:  00 bf         nop      
+08005328:  00 bf         nop      
+0800532a:  00 bf         nop      
+0800532c:  00 bf         nop      
+0800532e:  00 bf         nop      
+08005330:  00 bf         nop      
+08005332:  00 bf         nop      
+08005334:  00 bf         nop      
+08005336:  00 bf         nop      
+08005338:  00 bf         nop      
+0800533a:  00 bf         nop      
+0800533c:  00 bf         nop      
+0800533e:  00 bf         nop      
+08005340:  00 bf         nop      
+08005342:  00 bf         nop      
+08005344:  00 bf         nop      
+08005346:  00 bf         nop      
+08005348:  00 bf         nop      
+0800534a:  00 bf         nop      
+0800534c:  00 bf         nop      
+0800534e:  00 bf         nop      
+08005350:  00 bf         nop      
+08005352:  00 bf         nop      
+08005354:  00 bf         nop      
+08005356:  00 bf         nop      
+08005358:  00 bf         nop      
+0800535a:  00 bf         nop      
+0800535c:  00 bf         nop      
+0800535e:  00 bf         nop      
+08005360:  00 bf         nop      
+08005362:  00 bf         nop      
+08005364:  00 bf         nop      
+08005366:  00 bf         nop      
+08005368:  00 bf         nop      
+0800536a:  00 bf         nop      
+0800536c:  00 bf         nop      
+0800536e:  00 bf         nop      
+08005370:  00 bf         nop      
+08005372:  00 bf         nop      
+08005374:  00 bf         nop      
+08005376:  00 bf         nop      
+08005378:  00 bf         nop      
+0800537a:  00 bf         nop      
+0800537c:  00 bf         nop      
+0800537e:  00 bf         nop      
+08005380:  00 bf         nop      
+08005382:  00 bf         nop      
+08005384:  00 bf         nop      
+08005386:  00 bf         nop      
+08005388:  00 bf         nop      
+0800538a:  00 bf         nop      
+0800538c:  00 bf         nop      
+0800538e:  00 bf         nop      
+08005390:  29 46         mov      r1, r5
+08005392:  30 46         mov      r0, r6
+08005394:  fb f7 c7 ff   bl       #0x8001326
+08005398:  00 bf         nop      
+0800539a:  00 bf         nop      
+0800539c:  00 bf         nop      
+0800539e:  00 bf         nop      
+080053a0:  00 bf         nop      
+080053a2:  00 bf         nop      
+080053a4:  00 bf         nop      
+080053a6:  00 bf         nop      
+080053a8:  00 bf         nop      
+080053aa:  00 bf         nop      
+080053ac:  00 bf         nop      
+080053ae:  00 bf         nop      
+080053b0:  00 bf         nop      
+080053b2:  00 bf         nop      
+080053b4:  00 bf         nop      
+080053b6:  00 bf         nop      
+080053b8:  00 bf         nop      
+080053ba:  00 bf         nop      
+080053bc:  00 bf         nop      
+080053be:  00 bf         nop      
+080053c0:  00 bf         nop      
+080053c2:  00 bf         nop      
+080053c4:  00 bf         nop      
+080053c6:  00 bf         nop      
+080053c8:  00 bf         nop      
+080053ca:  00 bf         nop      
+080053cc:  00 bf         nop      
+080053ce:  00 bf         nop      
+080053d0:  00 bf         nop      
+080053d2:  00 bf         nop      
+080053d4:  00 bf         nop      
+080053d6:  00 bf         nop      
+080053d8:  00 bf         nop      
+080053da:  00 bf         nop      
+080053dc:  00 bf         nop      
+080053de:  00 bf         nop      
+080053e0:  00 bf         nop      
+080053e2:  00 bf         nop      
+080053e4:  00 bf         nop      
+080053e6:  00 bf         nop      
+080053e8:  00 bf         nop      
+080053ea:  00 bf         nop      
+080053ec:  00 bf         nop      
+080053ee:  00 bf         nop      
+080053f0:  00 bf         nop      
+080053f2:  00 bf         nop      
+080053f4:  00 bf         nop      
+080053f6:  00 bf         nop      
+080053f8:  00 bf         nop      
+080053fa:  00 bf         nop      
+080053fc:  00 bf         nop      
+080053fe:  00 bf         nop      
+08005400:  00 bf         nop      
+08005402:  00 bf         nop      
+08005404:  00 bf         nop      
+08005406:  00 bf         nop      
+08005408:  00 2c         cmp      r4, #0
+0800540a:  7f f4 7b af   bne.w    #0x8005304
+0800540e:  70 bd         pop      {r4, r5, r6, pc}
+08005410:  03 00 00 20   .word    0x20000003
+08005414:  00 08 00 48   .word    0x48000800
+08005418:  70 b5 43 48   .word    0x4843b570
+0800541c:  04 78         ldrb     r4, [r0]
+0800541e:  7f e0         b        #0x8005520
+08005420:  42 4e         ldr      r6, [pc, #0x108]    ; =0x48000800
+08005422:  64 1e         subs     r4, r4, #1
+08005424:  4f f4 70 75   mov.w    r5, #0x3c0
+08005428:  e4 b2         uxtb     r4, r4
+0800542a:  29 46         mov      r1, r5
+0800542c:  30 46         mov      r0, r6
+0800542e:  fb f7 7c ff   bl       #0x800132a
+08005432:  00 bf         nop      
+08005434:  00 bf         nop      
+08005436:  00 bf         nop      
+08005438:  00 bf         nop      
+0800543a:  00 bf         nop      
+0800543c:  00 bf         nop      
+0800543e:  00 bf         nop      
+08005440:  00 bf         nop      
+08005442:  00 bf         nop      
+08005444:  00 bf         nop      
+08005446:  00 bf         nop      
+08005448:  00 bf         nop      
+0800544a:  00 bf         nop      
+0800544c:  00 bf         nop      
+0800544e:  00 bf         nop      
+08005450:  00 bf         nop      
+08005452:  00 bf         nop      
+08005454:  00 bf         nop      
+08005456:  00 bf         nop      
+08005458:  00 bf         nop      
+0800545a:  00 bf         nop      
+0800545c:  00 bf         nop      
+0800545e:  00 bf         nop      
+08005460:  00 bf         nop      
+08005462:  00 bf         nop      
+08005464:  00 bf         nop      
+08005466:  00 bf         nop      
+08005468:  00 bf         nop      
+0800546a:  00 bf         nop      
+0800546c:  00 bf         nop      
+0800546e:  00 bf         nop      
+08005470:  00 bf         nop      
+08005472:  00 bf         nop      
+08005474:  00 bf         nop      
+08005476:  00 bf         nop      
+08005478:  00 bf         nop      
+0800547a:  00 bf         nop      
+0800547c:  00 bf         nop      
+0800547e:  00 bf         nop      
+08005480:  00 bf         nop      
+08005482:  00 bf         nop      
+08005484:  00 bf         nop      
+08005486:  00 bf         nop      
+08005488:  00 bf         nop      
+0800548a:  00 bf         nop      
+0800548c:  00 bf         nop      
+0800548e:  00 bf         nop      
+08005490:  00 bf         nop      
+08005492:  00 bf         nop      
+08005494:  00 bf         nop      
+08005496:  00 bf         nop      
+08005498:  00 bf         nop      
+0800549a:  00 bf         nop      
+0800549c:  00 bf         nop      
+0800549e:  00 bf         nop      
+080054a0:  00 bf         nop      
+080054a2:  00 bf         nop      
+080054a4:  00 bf         nop      
+080054a6:  00 bf         nop      
+080054a8:  00 bf         nop      
+080054aa:  29 46         mov      r1, r5
+080054ac:  30 46         mov      r0, r6
+080054ae:  fb f7 3a ff   bl       #0x8001326
+080054b2:  00 bf         nop      
+080054b4:  00 bf         nop      
+080054b6:  00 bf         nop      
+080054b8:  00 bf         nop      
+080054ba:  00 bf         nop      
+080054bc:  00 bf         nop      
+080054be:  00 bf         nop      
+080054c0:  00 bf         nop      
+080054c2:  00 bf         nop      
+080054c4:  00 bf         nop      
+080054c6:  00 bf         nop      
+080054c8:  00 bf         nop      
+080054ca:  00 bf         nop      
+080054cc:  00 bf         nop      
+080054ce:  00 bf         nop      
+080054d0:  00 bf         nop      
+080054d2:  00 bf         nop      
+080054d4:  00 bf         nop      
+080054d6:  00 bf         nop      
+080054d8:  00 bf         nop      
+080054da:  00 bf         nop      
+080054dc:  00 bf         nop      
+080054de:  00 bf         nop      
+080054e0:  00 bf         nop      
+080054e2:  00 bf         nop      
+080054e4:  00 bf         nop      
+080054e6:  00 bf         nop      
+080054e8:  00 bf         nop      
+080054ea:  00 bf         nop      
+080054ec:  00 bf         nop      
+080054ee:  00 bf         nop      
+080054f0:  00 bf         nop      
+080054f2:  00 bf         nop      
+080054f4:  00 bf         nop      
+080054f6:  00 bf         nop      
+080054f8:  00 bf         nop      
+080054fa:  00 bf         nop      
+080054fc:  00 bf         nop      
+080054fe:  00 bf         nop      
+08005500:  00 bf         nop      
+08005502:  00 bf         nop      
+08005504:  00 bf         nop      
+08005506:  00 bf         nop      
+08005508:  00 bf         nop      
+0800550a:  00 bf         nop      
+0800550c:  00 bf         nop      
+0800550e:  00 bf         nop      
+08005510:  00 bf         nop      
+08005512:  00 bf         nop      
+08005514:  00 bf         nop      
+08005516:  00 bf         nop      
+08005518:  00 bf         nop      
+0800551a:  00 bf         nop      
+0800551c:  00 bf         nop      
+0800551e:  00 bf         nop      
+08005520:  00 2c         cmp      r4, #0
+08005522:  7f f4 7d af   bne.w    #0x8005420
+08005526:  70 bd         pop      {r4, r5, r6, pc}
+08005528:  03 00 00 20   .word    0x20000003
+0800552c:  00 08 00 48   .word    0x48000800
+08005530:  70 b5 42 48   .word    0x4842b570
+08005534:  04 78         ldrb     r4, [r0]
+08005536:  7d e0         b        #0x8005634
+08005538:  41 4e         ldr      r6, [pc, #0x104]    ; =0x48000800
+0800553a:  64 1e         subs     r4, r4, #1
+0800553c:  4f f4 70 75   mov.w    r5, #0x3c0
+08005540:  e4 b2         uxtb     r4, r4
+08005542:  29 46         mov      r1, r5
+08005544:  30 46         mov      r0, r6
+08005546:  fb f7 f0 fe   bl       #0x800132a
+0800554a:  00 bf         nop      
+0800554c:  00 bf         nop      
+0800554e:  00 bf         nop      
+08005550:  00 bf         nop      
+08005552:  00 bf         nop      
+08005554:  00 bf         nop      
+08005556:  00 bf         nop      
+08005558:  00 bf         nop      
+0800555a:  00 bf         nop      
+0800555c:  00 bf         nop      
+0800555e:  00 bf         nop      
+08005560:  00 bf         nop      
+08005562:  00 bf         nop      
+08005564:  00 bf         nop      
+08005566:  00 bf         nop      
+08005568:  00 bf         nop      
+0800556a:  00 bf         nop      
+0800556c:  00 bf         nop      
+0800556e:  00 bf         nop      
+08005570:  00 bf         nop      
+08005572:  00 bf         nop      
+08005574:  00 bf         nop      
+08005576:  00 bf         nop      
+08005578:  00 bf         nop      
+0800557a:  00 bf         nop      
+0800557c:  00 bf         nop      
+0800557e:  00 bf         nop      
+08005580:  00 bf         nop      
+08005582:  00 bf         nop      
+08005584:  00 bf         nop      
+08005586:  00 bf         nop      
+08005588:  00 bf         nop      
+0800558a:  00 bf         nop      
+0800558c:  00 bf         nop      
+0800558e:  00 bf         nop      
+08005590:  00 bf         nop      
+08005592:  00 bf         nop      
+08005594:  00 bf         nop      
+08005596:  00 bf         nop      
+08005598:  00 bf         nop      
+0800559a:  00 bf         nop      
+0800559c:  00 bf         nop      
+0800559e:  00 bf         nop      
+080055a0:  00 bf         nop      
+080055a2:  00 bf         nop      
+080055a4:  00 bf         nop      
+080055a6:  00 bf         nop      
+080055a8:  00 bf         nop      
+080055aa:  00 bf         nop      
+080055ac:  00 bf         nop      
+080055ae:  00 bf         nop      
+080055b0:  00 bf         nop      
+080055b2:  00 bf         nop      
+080055b4:  00 bf         nop      
+080055b6:  00 bf         nop      
+080055b8:  00 bf         nop      
+080055ba:  00 bf         nop      
+080055bc:  00 bf         nop      
+080055be:  00 bf         nop      
+080055c0:  29 46         mov      r1, r5
+080055c2:  30 46         mov      r0, r6
+080055c4:  fb f7 af fe   bl       #0x8001326
+080055c8:  00 bf         nop      
+080055ca:  00 bf         nop      
+080055cc:  00 bf         nop      
+080055ce:  00 bf         nop      
+080055d0:  00 bf         nop      
+080055d2:  00 bf         nop      
+080055d4:  00 bf         nop      
+080055d6:  00 bf         nop      
+080055d8:  00 bf         nop      
+080055da:  00 bf         nop      
+080055dc:  00 bf         nop      
+080055de:  00 bf         nop      
+080055e0:  00 bf         nop      
+080055e2:  00 bf         nop      
+080055e4:  00 bf         nop      
+080055e6:  00 bf         nop      
+080055e8:  00 bf         nop      
+080055ea:  00 bf         nop      
+080055ec:  00 bf         nop      
+080055ee:  00 bf         nop      
+080055f0:  00 bf         nop      
+080055f2:  00 bf         nop      
+080055f4:  00 bf         nop      
+080055f6:  00 bf         nop      
+080055f8:  00 bf         nop      
+080055fa:  00 bf         nop      
+080055fc:  00 bf         nop      
+080055fe:  00 bf         nop      
+08005600:  00 bf         nop      
+08005602:  00 bf         nop      
+08005604:  00 bf         nop      
+08005606:  00 bf         nop      
+08005608:  00 bf         nop      
+0800560a:  00 bf         nop      
+0800560c:  00 bf         nop      
+0800560e:  00 bf         nop      
+08005610:  00 bf         nop      
+08005612:  00 bf         nop      
+08005614:  00 bf         nop      
+08005616:  00 bf         nop      
+08005618:  00 bf         nop      
+0800561a:  00 bf         nop      
+0800561c:  00 bf         nop      
+0800561e:  00 bf         nop      
+08005620:  00 bf         nop      
+08005622:  00 bf         nop      
+08005624:  00 bf         nop      
+08005626:  00 bf         nop      
+08005628:  00 bf         nop      
+0800562a:  00 bf         nop      
+0800562c:  00 bf         nop      
+0800562e:  00 bf         nop      
+08005630:  00 bf         nop      
+08005632:  00 bf         nop      
+08005634:  00 2c         cmp      r4, #0
+08005636:  7f f4 7f af   bne.w    #0x8005538
+0800563a:  70 bd         pop      {r4, r5, r6, pc}
+0800563c:  03 00 00 20   .word    0x20000003
+08005640:  00 08 00 48   .word    0x48000800
+08005644:  70 b5 41 48   .word    0x4841b570
+08005648:  04 78         ldrb     r4, [r0]
+0800564a:  7b e0         b        #0x8005744
+0800564c:  40 4e         ldr      r6, [pc, #0x100]    ; =0x48000800
+0800564e:  64 1e         subs     r4, r4, #1
+08005650:  4f f4 70 75   mov.w    r5, #0x3c0
+08005654:  e4 b2         uxtb     r4, r4
+08005656:  29 46         mov      r1, r5
+08005658:  30 46         mov      r0, r6
+0800565a:  fb f7 66 fe   bl       #0x800132a
+0800565e:  00 bf         nop      
+08005660:  00 bf         nop      
+08005662:  00 bf         nop      
+08005664:  00 bf         nop      
+08005666:  00 bf         nop      
+08005668:  00 bf         nop      
+0800566a:  00 bf         nop      
+0800566c:  00 bf         nop      
+0800566e:  00 bf         nop      
+08005670:  00 bf         nop      
+08005672:  00 bf         nop      
+08005674:  00 bf         nop      
+08005676:  00 bf         nop      
+08005678:  00 bf         nop      
+0800567a:  00 bf         nop      
+0800567c:  00 bf         nop      
+0800567e:  00 bf         nop      
+08005680:  00 bf         nop      
+08005682:  00 bf         nop      
+08005684:  00 bf         nop      
+08005686:  00 bf         nop      
+08005688:  00 bf         nop      
+0800568a:  00 bf         nop      
+0800568c:  00 bf         nop      
+0800568e:  00 bf         nop      
+08005690:  00 bf         nop      
+08005692:  00 bf         nop      
+08005694:  00 bf         nop      
+08005696:  00 bf         nop      
+08005698:  00 bf         nop      
+0800569a:  00 bf         nop      
+0800569c:  00 bf         nop      
+0800569e:  00 bf         nop      
+080056a0:  00 bf         nop      
+080056a2:  00 bf         nop      
+080056a4:  00 bf         nop      
+080056a6:  00 bf         nop      
+080056a8:  00 bf         nop      
+080056aa:  00 bf         nop      
+080056ac:  00 bf         nop      
+080056ae:  00 bf         nop      
+080056b0:  00 bf         nop      
+080056b2:  00 bf         nop      
+080056b4:  00 bf         nop      
+080056b6:  00 bf         nop      
+080056b8:  00 bf         nop      
+080056ba:  00 bf         nop      
+080056bc:  00 bf         nop      
+080056be:  00 bf         nop      
+080056c0:  00 bf         nop      
+080056c2:  00 bf         nop      
+080056c4:  00 bf         nop      
+080056c6:  00 bf         nop      
+080056c8:  00 bf         nop      
+080056ca:  00 bf         nop      
+080056cc:  00 bf         nop      
+080056ce:  00 bf         nop      
+080056d0:  00 bf         nop      
+080056d2:  29 46         mov      r1, r5
+080056d4:  30 46         mov      r0, r6
+080056d6:  fb f7 26 fe   bl       #0x8001326
+080056da:  00 bf         nop      
+080056dc:  00 bf         nop      
+080056de:  00 bf         nop      
+080056e0:  00 bf         nop      
+080056e2:  00 bf         nop      
+080056e4:  00 bf         nop      
+080056e6:  00 bf         nop      
+080056e8:  00 bf         nop      
+080056ea:  00 bf         nop      
+080056ec:  00 bf         nop      
+080056ee:  00 bf         nop      
+080056f0:  00 bf         nop      
+080056f2:  00 bf         nop      
+080056f4:  00 bf         nop      
+080056f6:  00 bf         nop      
+080056f8:  00 bf         nop      
+080056fa:  00 bf         nop      
+080056fc:  00 bf         nop      
+080056fe:  00 bf         nop      
+08005700:  00 bf         nop      
+08005702:  00 bf         nop      
+08005704:  00 bf         nop      
+08005706:  00 bf         nop      
+08005708:  00 bf         nop      
+0800570a:  00 bf         nop      
+0800570c:  00 bf         nop      
+0800570e:  00 bf         nop      
+08005710:  00 bf         nop      
+08005712:  00 bf         nop      
+08005714:  00 bf         nop      
+08005716:  00 bf         nop      
+08005718:  00 bf         nop      
+0800571a:  00 bf         nop      
+0800571c:  00 bf         nop      
+0800571e:  00 bf         nop      
+08005720:  00 bf         nop      
+08005722:  00 bf         nop      
+08005724:  00 bf         nop      
+08005726:  00 bf         nop      
+08005728:  00 bf         nop      
+0800572a:  00 bf         nop      
+0800572c:  00 bf         nop      
+0800572e:  00 bf         nop      
+08005730:  00 bf         nop      
+08005732:  00 bf         nop      
+08005734:  00 bf         nop      
+08005736:  00 bf         nop      
+08005738:  00 bf         nop      
+0800573a:  00 bf         nop      
+0800573c:  00 bf         nop      
+0800573e:  00 bf         nop      
+08005740:  00 bf         nop      
+08005742:  00 bf         nop      
+08005744:  00 2c         cmp      r4, #0
+08005746:  81 d1         bne      #0x800564c
+08005748:  70 bd         pop      {r4, r5, r6, pc}
+0800574a:  00 00         movs     r0, r0
+0800574c:  03 00 00 20   .word    0x20000003
+08005750:  00 08 00 48   .word    0x48000800
+08005754:  70 b5 40 48   .word    0x4840b570
+08005758:  04 78         ldrb     r4, [r0]
+0800575a:  79 e0         b        #0x8005850
+0800575c:  3f 4e         ldr      r6, [pc, #0xfc]    ; =0x48000800
+0800575e:  64 1e         subs     r4, r4, #1
+08005760:  4f f4 70 75   mov.w    r5, #0x3c0
+08005764:  e4 b2         uxtb     r4, r4
+08005766:  29 46         mov      r1, r5
+08005768:  30 46         mov      r0, r6
+0800576a:  fb f7 de fd   bl       #0x800132a
+0800576e:  00 bf         nop      
+08005770:  00 bf         nop      
+08005772:  00 bf         nop      
+08005774:  00 bf         nop      
+08005776:  00 bf         nop      
+08005778:  00 bf         nop      
+0800577a:  00 bf         nop      
+0800577c:  00 bf         nop      
+0800577e:  00 bf         nop      
+08005780:  00 bf         nop      
+08005782:  00 bf         nop      
+08005784:  00 bf         nop      
+08005786:  00 bf         nop      
+08005788:  00 bf         nop      
+0800578a:  00 bf         nop      
+0800578c:  00 bf         nop      
+0800578e:  00 bf         nop      
+08005790:  00 bf         nop      
+08005792:  00 bf         nop      
+08005794:  00 bf         nop      
+08005796:  00 bf         nop      
+08005798:  00 bf         nop      
+0800579a:  00 bf         nop      
+0800579c:  00 bf         nop      
+0800579e:  00 bf         nop      
+080057a0:  00 bf         nop      
+080057a2:  00 bf         nop      
+080057a4:  00 bf         nop      
+080057a6:  00 bf         nop      
+080057a8:  00 bf         nop      
+080057aa:  00 bf         nop      
+080057ac:  00 bf         nop      
+080057ae:  00 bf         nop      
+080057b0:  00 bf         nop      
+080057b2:  00 bf         nop      
+080057b4:  00 bf         nop      
+080057b6:  00 bf         nop      
+080057b8:  00 bf         nop      
+080057ba:  00 bf         nop      
+080057bc:  00 bf         nop      
+080057be:  00 bf         nop      
+080057c0:  00 bf         nop      
+080057c2:  00 bf         nop      
+080057c4:  00 bf         nop      
+080057c6:  00 bf         nop      
+080057c8:  00 bf         nop      
+080057ca:  00 bf         nop      
+080057cc:  00 bf         nop      
+080057ce:  00 bf         nop      
+080057d0:  00 bf         nop      
+080057d2:  00 bf         nop      
+080057d4:  00 bf         nop      
+080057d6:  00 bf         nop      
+080057d8:  00 bf         nop      
+080057da:  00 bf         nop      
+080057dc:  00 bf         nop      
+080057de:  00 bf         nop      
+080057e0:  29 46         mov      r1, r5
+080057e2:  30 46         mov      r0, r6
+080057e4:  fb f7 9f fd   bl       #0x8001326
+080057e8:  00 bf         nop      
+080057ea:  00 bf         nop      
+080057ec:  00 bf         nop      
+080057ee:  00 bf         nop      
+080057f0:  00 bf         nop      
+080057f2:  00 bf         nop      
+080057f4:  00 bf         nop      
+080057f6:  00 bf         nop      
+080057f8:  00 bf         nop      
+080057fa:  00 bf         nop      
+080057fc:  00 bf         nop      
+080057fe:  00 bf         nop      
+08005800:  00 bf         nop      
+08005802:  00 bf         nop      
+08005804:  00 bf         nop      
+08005806:  00 bf         nop      
+08005808:  00 bf         nop      
+0800580a:  00 bf         nop      
+0800580c:  00 bf         nop      
+0800580e:  00 bf         nop      
+08005810:  00 bf         nop      
+08005812:  00 bf         nop      
+08005814:  00 bf         nop      
+08005816:  00 bf         nop      
+08005818:  00 bf         nop      
+0800581a:  00 bf         nop      
+0800581c:  00 bf         nop      
+0800581e:  00 bf         nop      
+08005820:  00 bf         nop      
+08005822:  00 bf         nop      
+08005824:  00 bf         nop      
+08005826:  00 bf         nop      
+08005828:  00 bf         nop      
+0800582a:  00 bf         nop      
+0800582c:  00 bf         nop      
+0800582e:  00 bf         nop      
+08005830:  00 bf         nop      
+08005832:  00 bf         nop      
+08005834:  00 bf         nop      
+08005836:  00 bf         nop      
+08005838:  00 bf         nop      
+0800583a:  00 bf         nop      
+0800583c:  00 bf         nop      
+0800583e:  00 bf         nop      
+08005840:  00 bf         nop      
+08005842:  00 bf         nop      
+08005844:  00 bf         nop      
+08005846:  00 bf         nop      
+08005848:  00 bf         nop      
+0800584a:  00 bf         nop      
+0800584c:  00 bf         nop      
+0800584e:  00 bf         nop      
+08005850:  00 2c         cmp      r4, #0
+08005852:  83 d1         bne      #0x800575c
+08005854:  70 bd         pop      {r4, r5, r6, pc}
+08005856:  00 00         movs     r0, r0
+08005858:  03 00 00 20   .word    0x20000003
+0800585c:  00 08 00 48   .word    0x48000800

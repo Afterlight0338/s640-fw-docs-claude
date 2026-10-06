@@ -1,0 +1,5 @@
+reports 1260  rate 210 Hz  median 4.00 ms  intervals(ms):{0: 4, 1: 48, 2: 26, 3: 207, 4: 597, 5: 60}
+  x@3: mean 5058.0  std 0.00  range 0
+  y@6: mean 3261.0  std 0.00  range 0
+  raw@9: mean 2946.1  std 49.28  range 319
+  status bytes: [65]

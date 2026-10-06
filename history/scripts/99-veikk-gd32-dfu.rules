@@ -1,0 +1,4 @@
+# Veikk S640 / GD32 DFU bootloader - allow 'users' group to access without sudo
+SUBSYSTEM=="usb", ATTR{idVendor}=="28e9", ATTR{idProduct}=="0189", MODE="0664", GROUP="users"
+# Also allow the normal S640 tablet device
+SUBSYSTEM=="usb", ATTR{idVendor}=="2feb", ATTR{idProduct}=="0001", MODE="0664", GROUP="users"

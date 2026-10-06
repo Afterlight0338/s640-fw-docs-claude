@@ -1,0 +1,5 @@
+reports 1600  rate 267 Hz  median 3.87 ms  intervals(ms):{0: 2, 1: 16, 2: 53, 3: 644, 4: 532, 5: 316}
+  x@3: mean 5385.9  std 5.81  range 45
+  y@6: mean 3091.7  std 5.09  range 29
+  raw@9: mean 2938.4  std 45.12  range 310
+  status bytes: [65]

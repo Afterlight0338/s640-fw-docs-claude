@@ -1,0 +1,1 @@
+reports 2986  moving triples 2925  mean|dx| 174.7  mean|d2x| 56.0  sharpness 0.320
