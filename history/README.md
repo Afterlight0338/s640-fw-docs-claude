@@ -9,3 +9,6 @@ another AI assistant and contain mistakes; section 8 of the main README lists th
   builds an image whose first patch (`bx lr` at `0x08000310`) would stop all pen reports.
 * `s640_pin_numbered_WRONG.jpg`, `s640_pin44_guide_WRONG.jpg`: pin labels for a 48-pin chip.
   The real chip is LQFP64 and BOOT0 is pin 60. Kept only to show what went wrong.
+
+The old notes call this tablet "V1 hardware". "V1" and "V2" turned out to be the firmware's
+report format, not board versions (section 2.6 of the main README).
