@@ -134,8 +134,8 @@ page = f"""<!DOCTYPE html>
   <div class="doc-canvas">
     <div class="top-status-bar">
       <a href="/#projects" class="status-home">vivlos.dev / s640</a>
-      <span><span class="mono-dim">unit</span> Veikk S640 V1</span>
-      <span><span class="mono-dim">firmware</span> S640-251022 + v2</span>
+      <span><span class="mono-dim">unit</span> Veikk S640</span>
+      <span><span class="mono-dim">firmware</span> S640-251022 + nosmooth-nohold</span>
       <button type="button" class="motion-switch" id="allat-switch" role="switch" aria-checked="false">
         <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
         i aint reading allat
@@ -150,7 +150,7 @@ page = f"""<!DOCTYPE html>
         <dl class="doc-stats">
           <div><dt>report rate</dt><dd>250 Hz <span>scan-limited</span></dd></div>
           <div><dt>lag removed</dt><dd>&asymp;14 ms <span>8-sample average</span></dd></div>
-          <div><dt>still jitter, v2</dt><dd>&asymp;0.03 mm <span>raw sensor noise</span></dd></div>
+          <div><dt>still jitter, nosmooth-nohold</dt><dd>&asymp;0.03 mm <span>raw sensor noise</span></dd></div>
           <div><dt>status</dt><dd>alive <span>unbricked over SWD</span></dd></div>
         </dl>
       </div>

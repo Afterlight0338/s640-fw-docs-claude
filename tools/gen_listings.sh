@@ -45,10 +45,10 @@ gen 32_hardfault_reset_and_vendor_cmds 0x08001588 0x08001990
 gen 33_main_loop                0x0800663c 0x080068f0
 # patched images, rebuilt from the stock image with the scripts in patches/
 tmp=$(mktemp -d); ln -s "$(realpath "$img")" "$tmp/S640-251022.bin"
-( cd "$tmp" && nix-shell -p python3 --run "python3 -I '$OLDPWD/patches/nosmooth.py' v1.bin && python3 -I '$OLDPWD/patches/nosmooth.py' v2.bin --nodeadzone && python3 -I '$OLDPWD/patches/scanpatch.py' 80 70 t80.bin" )
+( cd "$tmp" && nix-shell -p python3 --run "python3 -I '$OLDPWD/patches/nosmooth.py' nosmooth.bin && python3 -I '$OLDPWD/patches/nosmooth.py' nosmooth-nohold.bin --nohold && python3 -I '$OLDPWD/patches/scanpatch.py' 80 70 t80.bin" )
 L() { nix-shell -p 'python3.withPackages(p:[p.capstone])' --run "python3 -I tools/listing.py $*"; }
-L "$tmp/v1.bin" 0x08000310 0x08000390 > asm/patched_v1_output_routine.lst
-L "$tmp/v2.bin" 0x080017c6 0x0800180a > asm/patched_v2_state_machine_tail.lst
+L "$tmp/nosmooth.bin" 0x08000310 0x08000390 > asm/patched_nosmooth_output_routine.lst
+L "$tmp/nosmooth-nohold.bin" 0x080017c6 0x0800180a > asm/patched_nohold_state_machine_tail.lst
 L "$tmp/t80.bin" 0x08003ae2 0x08003b0e 0x08003b40 0x08003b6c > asm/patched_t80_tuner.lst
 sha256sum "$tmp"/*.bin | sed "s|$tmp/||" > asm/patched_images.sha256
 rm -rf "$tmp"
