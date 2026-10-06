@@ -48,7 +48,9 @@ The script checks the original bytes before it changes anything and stops on a m
 Without `--nohold` you get `nosmooth` (average removed, motion hold kept, 7.3).
 
 **3. Wire the Pico to J1** (2.4): pad 2 (SWCLK) to GP2, pad 3 (SWDIO) to GP3, pad 5 (GND) to
-GND. Leave pad 1 (3V3) unconnected. Beep-test every wire from the Pico pin to the chip pin.
+GND. Pad 4 (NRST) to GP1 is optional: this unit had it wired, but the commands below use
+`reset_config none`, so OpenOCD never drives it. Leave pad 1 (3V3) unconnected. Beep-test
+every wire from the Pico pin to the chip pin.
 
 **4. Connect and check read protection.**
 
