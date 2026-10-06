@@ -44,7 +44,9 @@ vector table: `asm/00_data_tables.txt`. The entries that matter:
 | `0x0800FC80` to `0x0800FFFF` | unknown |
 
 Pages are 1 KB. The firmware references `0x0800C464` (the end of its own image) and the
-addresses above; nothing else past the image.
+addresses above; nothing else past the image. The `0x0800C464` reference is a C startup
+table entry at `0x08007320` that zeroes `0x77C` bytes of RAM at `0x20001174`; its handler
+(`0x0800663E`) never reads the source address, so the flash after the image really is free.
 
 ### 4.3 Factory tags
 

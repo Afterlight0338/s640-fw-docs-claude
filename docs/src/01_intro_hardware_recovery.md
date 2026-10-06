@@ -125,14 +125,18 @@ The main loop calls `0x2834` from `0x6822` and `0x685E`, both above `0x3000`. Po
 calls at a small routine in the free flash after the image (`0x0800C464` to `0x0800CFFF`,
 about 2.9 KB). It calls the original `0x2834`, then copies the newest sample (`histX[7]`,
 `histY[7]`) into `outX`/`outY` and marks a report pending. That is what `nosmooth-nohold`
-does, without changing a byte below `0x3000`. Only about 2 flash pages change.
+does, without changing a byte below `0x3000`. Only 2 flash pages change. This is the
+`nosmooth-hook` patch, built by [`patches/hook.py`](patches/hook.py) (0.2.2, details in 7.9).
 
-**Not known yet (check over SWD first):**
+**Answered from the code (not yet on a tablet):**
 
-* whether the history is updated on every report even while the hold is active
-* whether the report is built inside `0x2834` (a hook after it would then add one report,
-  about 4 ms, of lag) or after it returns
-* when it is safe to set the report-pending flag `0x20001031` (never with no pen in range)
+* The history is updated on every valid sample, before the hold is checked, so `hist[7]` is
+  always the newest raw position, held or not.
+* The report is built in the main loop after `0x2834` returns (`bl 0x08008780` at
+  `0x080068D6`), so a hook right after the call adds no lag.
+* The hook only marks a report pending when a new sample actually arrived this pass (the
+  history counter `0x2000107F` changed) and not in the rarely used mode A, the same cases
+  in which the stock firmware would run its output routine without the hold.
 
 **Why it is ultra mega risky:**
 
@@ -148,6 +152,62 @@ does, without changing a byte below `0x3000`. Only about 2 flash pages change.
 A heavier variant that rewrites the first 12 KB from code running above `0x3000` has been
 suggested. It is not covered here: it is riskier than the hook, and it is not known whether
 the chip even allows it.
+
+#### 0.2.1 Why not just undo the smoothing after it happens?
+
+Fair question: if the smoothing lives in the first 12 KB, why not add "reverse smoothing"
+after it?
+
+* **The average can only be half-undone.** The output is the average of the last 8
+  positions. Knowing the last 8 outputs, you could in theory work back to the newest raw
+  position. But the firmware rounds every average down, which loses a little each time.
+  Working backwards multiplies that error by 8 and carries it into every later step, so the
+  result drifts and gets noisy fast.
+* **The hold can't be undone at all.** When the pen moves only a little, the firmware does
+  not update the output and does not send a report. Nothing leaves the chip, so there is
+  nothing to reverse.
+
+**What works instead: don't reverse it, go around it.** The firmware keeps the raw positions
+in memory (the history, newest at `hist[7]`) and computes the average from them. Code after
+the 12 KB can read that raw value directly and put it in the output just before the report
+goes out. The smoothing still runs; its result just gets replaced. Think of a draft and a
+polished copy: turning the polished copy back into the draft is hard, but the draft is still
+on the desk, so you hand that over instead. That is the hook above, and because it also marks
+a report pending on every new sample, it gets past the hold too.
+
+Undoing it on the PC (an OpenTabletDriver filter) runs into the same two problems: the
+rounding, and the hold sending nothing.
+
+#### 0.2.2 Trying `nosmooth-hook` (SWD first)
+
+**Untested.** Try it over SWD, with a probe that can put stock back, before anyone thinks
+about USB.
+
+1. Build it in a folder with `S640-251022.bin`. The script refuses anything but the exact
+   stock file, and checks that nothing below `0x08003000` changed:
+
+   ```
+   python3 hook.py s640_nosmooth_hook.bin
+   # s640_nosmooth_hook.bin 50344 bytes, sha256 4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c
+   ```
+
+2. Flash it over SWD like any other image (0.1 for other probes), with the factory tags if
+   the chip was unlocked:
+
+   ```
+   openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_hook.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'
+   ```
+
+3. Check that it behaves like `nosmooth-nohold` (7.5, 7.8): `still.py` shows a few units of
+   still-pen noise and about 267 reports per second, `stroke.py` gives about 0.4, the pen is
+   found again after lifting it away, and pressure and the pen buttons still work.
+4. If anything is off, flash `S640-251022.bin` or `s640_nosmooth_nohold.bin` back.
+
+**Over USB: no tool here, on purpose.** Only once the SWD test passes. A USB tool would have
+to confirm the tablet runs exactly `S640-251022` above `0x3000` before writing anything, and
+then rewrite just two pages: `0x08006800` to `0x08006BFF` (both calls) and `0x0800C400` to
+`0x0800C7FF` (image tail plus the hook). Everything in "why it is ultra mega risky" above
+still applies.
 
 ## Contents
 

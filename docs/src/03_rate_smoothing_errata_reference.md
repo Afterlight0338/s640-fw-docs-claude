@@ -276,6 +276,43 @@ on any mismatch. To go back to stock, flash `S640-251022.bin` the same way.
 3. With the Pico attached, `tools/outcheck.tcl` prints the history buffer and the output
    coordinates five times. With nosmooth-nohold, `outX` equals the last `histX` value every time.
 
+
+### 7.9 Patch nosmooth-hook (untested): the same result without touching the first 12 KB
+
+`patches/hook.py OUT.bin`. Built and checked against the disassembly only; it has **never
+run on a tablet**. Why it exists and how to try it: 0.2.
+
+Changes (68 bytes appended at `0x0800C464`, 2 calls redirected; nothing below `0x08003000`):
+
+| Offset | Stock | Hook |
+| :--- | :--- | :--- |
+| `0x6822` | `fc f7 07 f8` (`bl 0x08002834`) | `05 f0 1f fe` (`bl 0x0800C464`) |
+| `0x685E` | `fb f7 e9 ff` (`bl 0x08002834`) | `05 f0 01 fe` (`bl 0x0800C464`) |
+| `0xC464` | end of image (erased flash) | the routine below |
+
+How each part was decided:
+
+* **New sample or not.** The 19-entry raw history counter `0x2000107F` changes on every valid
+  sample: it is incremented at `0x08002A52`, set to 1 when the pen is first found
+  (`0x08002A90`, all histories filled), and wraps from 19 to 3. Passes with no valid sample
+  leave `0x2834` before that: an invalid sample (`0xFFFF`) goes `0x080028DA` → `0x08002AFA` →
+  `0x08002F6A` → exit, and a too-weak signal exits at `0x08002A16`/`0x08002A24`. The hook compares
+  the counter before and after the call. (One corner: if the pen is found again while the
+  counter is already 1, that one pass is missed.)
+* **Mode A.** `0x2000107E` set means path A owns the output (`0x08002E62`), and the stock
+  output routine `0x08000310` does nothing in that case. The hook does the same.
+* **No added lag.** The report is built after `0x2834` returns: the main loop checks the
+  pending flag `0x20001031` at `0x080068A4` and calls the report builder at `0x080068D6`.
+* **Registers.** `0x2834` keeps r4 to r11 and returns nothing the main loop uses, and
+  `0x08000390`, called next, loads its own inputs. The hook keeps r4 to r6 and the stack
+  8-byte aligned.
+* **Path B** (5.8) can still run inside `0x2834` on a still pen and move the output; the hook
+  overwrites it right after, so it has no effect.
+
+```
+{{file asm/patched_hook.lst}}
+```
+
 ---
 
 ## 8. Corrections to the earlier notes
@@ -347,6 +384,7 @@ python3 tools/build_readme.py
 | `nosmooth.py OUT.bin [--nohold] [--fast]` | reads `S640-251022.bin` from the current directory. No flag: nosmooth. `--nohold`: nosmooth-nohold. `--fast`: also the failed changes of 6.5 (do not use) |
 | `scanpatch.py TOTAL CAP OUT.bin` | the tuner experiment of 6.4 (stock = 100 and 80) |
 | `build_window_only.py` | the failed window-only build of 6.5, exactly as run (do not use) |
+| `hook.py OUT.bin` | `nosmooth-hook` (7.9, **untested**): same effect as nosmooth-nohold, nothing below `0x08003000` changed |
 | `factory_tags_fc60.bin` | the 32 tag bytes for `0x0800FC60` (4.3) |
 
 ### 9.3 Measurement scripts (`tools/`, Python 3, no dependencies)
@@ -419,6 +457,7 @@ SHA-256:
 | nosmooth, `s640_nosmooth.bin` | `ab25928dd939246f03fffbb858bded70663db3a4dbc37b01fb24c26d5477b7e2` |
 | nosmooth-nohold, `s640_nosmooth_nohold.bin` | `371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e` |
 | T = 80, `test_t80.bin` | `93ac3e22e1c5b2dcec173d932f73bb843625f46872f41e0a3a9edd3b510ccf51` |
+| nosmooth-hook (untested), `s640_nosmooth_hook.bin` | `4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c` |
 | failed `--fast` build, `test_v3.bin` | `986577b753ea574ed1bcee845152d949c743dc47393e655a319b6ad15cdbb592` |
 | failed window-only, `test_v3_windowonly.bin` | `85de141275ada1ff30e6e74b3032a52587ae8375333959f6f9827ac03396d6a6` |
 | `patches/factory_tags_fc60.bin` | `09816b76a42cd4c5109f91dc5e880c012fb89f37b815a53e20eb592851b50247` |
