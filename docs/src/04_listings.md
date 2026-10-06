@@ -44,8 +44,8 @@ as stored in flash.
 | `asm/31_misc_0x0800941c.lst` | `0x0800941C` to `0x080095D4` | start-up helpers (not analysed) |
 | `asm/32_hardfault_reset_and_vendor_cmds.lst` | `0x08001588` to `0x08001990` | HardFault reset, vendor command handler incl. DFU request (3.1) |
 | `asm/33_main_loop.lst` | `0x0800663C` to `0x080068F0` | main loop, modes, bootloader jump (5.1, 3.1) |
-| `asm/patched_v1_output_routine.lst` | | v1 output routine |
-| `asm/patched_v2_state_machine_tail.lst` | | v2 state machine tail |
+| `asm/patched_nosmooth_output_routine.lst` | | nosmooth output routine |
+| `asm/patched_nohold_state_machine_tail.lst` | | nosmooth-nohold state machine tail |
 | `asm/patched_t80_tuner.lst` | | T = 80 tuner |
 
 The routines that matter most, in full:

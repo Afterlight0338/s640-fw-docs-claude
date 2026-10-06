@@ -10,7 +10,7 @@ Only go on if all of these match. If anything differs, stop.
 
 | Check | Must be |
 | :--- | :--- |
-| Tablet | Veikk S640 (this one is the "V1"; an S640 V2 was never tested) |
+| Tablet | Veikk S640. "V1" and "V2" only name the firmware's report format, not the board: any S640 running `S640-251022` shows up as V2 |
 | USB ID when working | `2feb:0001`, product `S640` |
 | Chip marking | `VEIKK VK1801`, 64 pins (16 per side) |
 | Debug header | J1, five gold through-holes in a row next to the chip |
@@ -22,7 +22,7 @@ Only go on if all of these match. If anything differs, stop.
 * 4 female-to-male jumper wires
 * a multimeter with a beep/continuity mode
 * OpenOCD 0.12 (`nix-shell -p openocd` on NixOS)
-* `S640-251022.bin` (Veikk's firmware update, SHA-256 starts with `150fbc8b`)
+* `S640-251022.bin`, Veikk's firmware update. If you're reading this repo, you probably already know where to obtain the firmware. SHA-256 starts with `150fbc8b`. From the `.hex`: `objcopy -I ihex -O binary --gap-fill 0xff S640-251022.hex S640-251022.bin`
 * from the GitHub repo: [`patches/nosmooth.py`](patches/nosmooth.py) and [`patches/factory_tags_fc60.bin`](patches/factory_tags_fc60.bin)
 
 ## Wiring
@@ -69,11 +69,11 @@ openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f 
 
 Then **unplug the tablet and plug it back in.**
 
-**5. Build the patched firmware** (in a folder with `S640-251022.bin` in it):
+**5. Build the patched firmware** (in a folder with `S640-251022.bin` in it). `nosmooth-nohold` was called "v2" before 2026-10-07:
 
 ```
-python3 nosmooth.py s640_firmware_nosmooth_v2.bin --nodeadzone
-sha256sum s640_firmware_nosmooth_v2.bin
+python3 nosmooth.py s640_nosmooth_nohold.bin --nohold
+sha256sum s640_nosmooth_nohold.bin
 # 371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e
 ```
 
@@ -81,7 +81,7 @@ sha256sum s640_firmware_nosmooth_v2.bin
 again does no harm):
 
 ```
-openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_firmware_nosmooth_v2.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'
+openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_nohold.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'
 ```
 
 Look for `** Verified OK **` twice. The tablet restarts on its own.
@@ -111,7 +111,7 @@ To go back to stock, flash `S640-251022.bin` the same way.
 
 ## What you get
 
-| | Stock | Patched (v2) |
+| | Stock | Patched (nosmooth-nohold) |
 | :--- | :--- | :--- |
 | Position smoothing | 8-sample average (about 14 ms of lag) | none, every report is the newest sample |
 | Motion "deadzone" | holds the cursor on small moves | gone |
@@ -126,6 +126,7 @@ To go back to stock, flash `S640-251022.bin` the same way.
 | :--- | :--- |
 | `cannot read IDR` | wiring. Beep-test again |
 | `Failed to read memory at 0x08000004` | flash is read-protected, see step 4 |
-| tablet shows up on USB but the pen is never detected | factory tags missing, write `factory_tags_fc60.bin` |
-| pen works, then never comes back after lifting it | you flashed a build with the window hack, flash v2 again |
+| tablet shows up on USB but the pen is never detected | factory tags missing, write `factory_tags_fc60.bin` (seen on two tablets) |
+| cursor lags, or creeps into place, when the pen slows down or stops | you are on stock `S640-251022`: that is its smoothing and motion hold. Flash `s640_nosmooth_nohold.bin` |
+| pen works, then never comes back after lifting it | you flashed a build with the window hack, flash nosmooth-nohold again |
 | nothing on USB at all, no LED | firmware broken. SWD in, flash `S640-251022.bin` + tags |

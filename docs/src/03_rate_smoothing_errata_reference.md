@@ -120,7 +120,7 @@ interpolation sees, which shifts the computed position. **About 10 % more report
 
 ### 6.5 Experiment: "position only" and a smaller window (both failed)
 
-Built with `patches/nosmooth.py v3.bin --nodeadzone --fast` and
+Built with `patches/nosmooth.py v3.bin --nohold --fast` and
 `patches/build_window_only.py` (31 and 27 bytes different from stock):
 
 | Change | Bytes | Result |
@@ -128,7 +128,7 @@ Built with `patches/nosmooth.py v3.bin --nodeadzone --fast` and
 | replace the frequency/pressure call at `0x08001F94` (`00 f0 ca fb`, `bl 0x0800272C`) with `40 f6 69 20` (`movw r0,#0xa69`, 2665 = the hover value measured with `tools/pval.tcl`) | 4 | **pen never detected**. The frequency measurement is also what picks the carrier channel and decides that a pen is present (5.7), so a fixed value cannot stand in for it |
 | tracking window extents: `0x3CD0` 3→2, `0x3DA0` 6→4, `0x3DDE` 5→3, `0x3E0A` 5→3, `0x3F04` 5→3, `0x3F38` 5→3 | 6 | tracks the pen, but **never finds it again after it is lifted away**. Which of the six values breaks re-acquisition was not bisected |
 
-Both were reverted to v2. Expected gain had they worked: about 0.32 ms + 0.6 ms, from
+Both were reverted to nosmooth-nohold. Expected gain had they worked: about 0.32 ms + 0.6 ms, from
 3.93 ms to about 3.0 ms (about 330 Hz).
 
 ### 6.6 What is left to try
@@ -173,12 +173,16 @@ and waits 2.5 s for a hit, while the pen is being moved:
 A first run without the sanity addresses gave "no" everywhere, which is what led to checking
 that breakpoints work at all.
 
-### 7.3 Patch v1: output = newest sample
+The two patches below were called "v1" and "v2" until 2026-10-07. They were renamed because
+"V2" is also the name of Veikk's newer report format (2.6), and `S640-251022` is already
+that format. `nosmooth.py` still accepts the old flag `--nodeadzone`.
+
+### 7.3 Patch nosmooth: output = newest sample
 
 `patches/nosmooth.py OUT.bin` (19 bytes). Both averaging paths of `0x08000310` become
 "copy `history[7]` to the output". The "report pending" flag is still set, so reports keep flowing.
 
-| Offset | Stock | v1 |
+| Offset | Stock | nosmooth |
 | :--- | :--- | :--- |
 | `0x330` | `0b 88 16 88 5f f0 01 00 31 f8` | `c8 89 20 80 d0 89 28 80 f0 bd` |
 | `0x356` | `0b 89 16 89 05 20 31 f8 10 70` | `c8 89 20 80 d0 89 28 80 f0 bd` |
@@ -191,21 +195,21 @@ strh r0, [r5]          ; outY
 pop  {r4, r5, r6, r7, pc}
 ```
 
-Patched routine (`asm/patched_v1_output_routine.lst`):
+Patched routine (`asm/patched_nosmooth_output_routine.lst`):
 
 ```
-{{file asm/patched_v1_output_routine.lst}}
+{{file asm/patched_nosmooth_output_routine.lst}}
 ```
 
-### 7.4 Patch v2: no motion hold either
+### 7.4 Patch nosmooth-nohold: no motion hold either
 
-`patches/nosmooth.py OUT.bin --nodeadzone` (21 bytes): v1 plus 2 bytes at `0x17CA`,
+`patches/nosmooth.py OUT.bin --nohold` (21 bytes): nosmooth plus 2 bytes at `0x17CA`,
 `9a f8` → `13 e0`, which turns the start of `ldrb.w r0,[sl]` into `b 0x080017F4`, so states
 0 and 1 also call the output routine with `r0 = 2` (the old bytes `00 00` at `0x17CC` are
 skipped).
 
 ```
-{{file asm/patched_v2_state_machine_tail.lst}}
+{{file asm/patched_nohold_state_machine_tail.lst}}
 ```
 
 **Side effect found while writing this document** (from the code; harmless on the tablet,
@@ -214,13 +218,13 @@ then does `ldrb r1,[r5]` with r5 still holding the X reversal count (0 to 6), so
 byte of the boot alias of the vector table (addresses 0 to 6) instead of the motion state.
 The hold counter `0x2000003D` is then reset on almost every report (it only counts up when the
 byte read is 1, i.e. when the X reversal count is exactly 5), so **path B can practically
-never run on v2**. A cleaner way to write the same patch would be `55 46 12 e0` at `0x17CA`
+never run on nosmooth-nohold**. A cleaner way to write the same patch would be `55 46 12 e0` at `0x17CA`
 (`mov r5, sl; b 0x080017F4`); that keeps the counter working and with it path B. **Not
 built or tested.**
 
 ### 7.5 Results
 
-| Test | Stock | v1 | v2 |
+| Test | Stock | nosmooth | nosmooth-nohold |
 | :--- | :--- | :--- | :--- |
 | output = `history[7]` on the chip, pen moving (5 snapshots) | (average of 8) | **yes, 5 of 5** | |
 | output = `history[7]`, pen lying still | | no (held, e.g. out `0x14C4` while history moves `0x14B0` to `0x14DF`) | **yes, 3 of 3** |
@@ -231,14 +235,14 @@ built or tested.**
 
 Stroke sharpness is `mean |second difference| / mean |first difference|` over consecutive
 reports while the pen moves (triples with a gap over 12 ms or a step under 20 units are
-skipped). A moving average lowers it. Two v2 runs where the pen hardly moved
+skipped). A moving average lowers it. Two nosmooth-nohold runs where the pen hardly moved
 (1.620 and 1.603, mean step 25 instead of 141 to 183) are kept in `data/` but are not
 comparable, because the measure is dominated by noise when the pen barely moves.
 
 What the numbers mean:
 
-* The 8-sample average is gone (sharpness x 2.5 with v1, x 3 with v2).
-* The hold is gone in v2: the raw noise of a still pen now shows, about 5.5 units standard
+* The 8-sample average is gone (sharpness x 2.5 with nosmooth, x 3 with nosmooth-nohold).
+* The hold is gone in nosmooth-nohold: the raw noise of a still pen now shows, about 5.5 units standard
   deviation, i.e. **about 0.03 mm** (0.005 mm per unit). OpenTabletDriver can filter that on
   the PC if wanted.
 * The firmware skips the USB report when the output did not change (5.1), so the hold also
@@ -247,7 +251,7 @@ What the numbers mean:
 ### 7.6 Smoothing that is still there
 
 * **Pressure**: 8-sample average and a 4-report tip-down debounce (5.7). Not patched.
-* **Path B** (5.8): practically disabled on v2 by the side effect in 7.4.
+* **Path B** (5.8): practically disabled on nosmooth-nohold by the side effect in 7.4.
 * **Path A**: only with the `0x2000107E` mode flag set, never seen.
 * Inside one scan: coil baseline subtraction and position interpolation. These are part of
   measuring the position, not smoothing over time.
@@ -257,8 +261,8 @@ What the numbers mean:
 ```
 mkdir build && cd build
 cp /path/to/S640-251022.bin .          # the script reads this exact name from the current directory
-python3 ../patches/nosmooth.py s640_firmware_nosmooth_v2.bin --nodeadzone
-sha256sum s640_firmware_nosmooth_v2.bin  # 371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e
+python3 ../patches/nosmooth.py s640_nosmooth_nohold.bin --nohold
+sha256sum s640_nosmooth_nohold.bin  # 371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e
 ```
 
 Then flash it over SWD (3.8). Every patch script asserts the original bytes first and stops
@@ -266,11 +270,11 @@ on any mismatch. To go back to stock, flash `S640-251022.bin` the same way.
 
 ### 7.8 How to check it yourself
 
-1. Lay the pen flat and run `python3 tools/still.py 6`. With v2 the X/Y standard deviation is
-   a few units; with stock or v1 it is 0 to 3.
-2. Scribble fast and run `python3 tools/stroke.py 10`. v2 is around 0.4, stock around 0.13.
+1. Lay the pen flat and run `python3 tools/still.py 6`. With nosmooth-nohold the X/Y standard deviation is
+   a few units; with stock or nosmooth it is 0 to 3.
+2. Scribble fast and run `python3 tools/stroke.py 10`. nosmooth-nohold is around 0.4, stock around 0.13.
 3. With the Pico attached, `tools/outcheck.tcl` prints the history buffer and the output
-   coordinates five times. With v2, `outX` equals the last `histX` value every time.
+   coordinates five times. With nosmooth-nohold, `outX` equals the last `histX` value every time.
 
 ---
 
@@ -293,6 +297,8 @@ unverified claims, and what is actually true:
 | the "500 Hz" firmware | changed `bInterval` 1 → 2, which would have halved USB polling |
 | "Sensor Matrix Processing: 26 X-coils and 18 Y-coils sub-pixel peak interpolation located at `0x080003ac` and `0x080006f4`" | 26 and 18 coils is right (window clamps, full scan loops). The raw X/Y come from `0x08001330` and `0x0800142C`; `0x08000390`/`0x080003AC` run after the position routine and were not analysed |
 | clearing read protection erases "the entire 128 KB" | it erases the whole 64 KB flash, including the bootloader, settings pages and factory tags (3.6) |
+| this unit is "V1 hardware" | V1 and V2 are report formats. This unit shipped with V1-format firmware and runs V2-format `S640-251022` on the same board (2.6) |
+| Veikk quietly shipped "3 hardware revisions" of the S640, the V2 with a different MCU and crystal; around 2020 to 2021 an updater with no revision check flashed the wrong binary and bricked tablets, so Veikk pulled all firmware downloads in 2021 | **no source.** The earlier assistant's own web search found no record of it, and the details were made up. It started from one unsourced line in a Discord chat ("they took down all firmware downloads in 2021 because they bricked tablets"). `S640-251022` itself is dated 2025-10-22. What is documented is the 2021 switch to the 13-byte V2 report (2.6), which made new tablets unreadable by older drivers |
 
 Corrections to things said during the 2026-10-06 session itself (before this write-up):
 
@@ -304,7 +310,7 @@ Corrections to things said during the 2026-10-06 session itself (before this wri
 | wait A = excitation, wait B = settle | the burst happens before both; A is most likely the delay before integration, B the integration window |
 | the two wait sets are "search" and "tracking" | they are the **X and Y axes** |
 | the scan code partly runs from the SVCall/PendSV handlers | both handlers are empty `bx lr` |
-| v2 still-pen jitter is ±0.04 mm | standard deviation about **0.03 mm** (5.5 report units at 0.005 mm) |
+| nosmooth-nohold still-pen jitter is ±0.04 mm | standard deviation about **0.03 mm** (5.5 report units at 0.005 mm) |
 | `28e9:0189` is the ROM DFU (project memory) | Veikk bootloader at `0x0800D800` |
 | `0x0800D800` is a settings page | it is the bootloader; the settings pages are `0x0800D000` and `0x0800D400` |
 | the J1 photo numbering 1 to 5 "left to right" differs from "bottom to top" | they are the same holes, the photos are just rotated 90 degrees |
@@ -338,7 +344,7 @@ python3 tools/build_readme.py
 
 | File | Use |
 | :--- | :--- |
-| `nosmooth.py OUT.bin [--nodeadzone] [--fast]` | reads `S640-251022.bin` from the current directory. No flag: v1. `--nodeadzone`: v2. `--fast`: also the failed v3 changes of 6.5 (do not use) |
+| `nosmooth.py OUT.bin [--nohold] [--fast]` | reads `S640-251022.bin` from the current directory. No flag: nosmooth. `--nohold`: nosmooth-nohold. `--fast`: also the failed changes of 6.5 (do not use) |
 | `scanpatch.py TOTAL CAP OUT.bin` | the tuner experiment of 6.4 (stock = 100 and 80) |
 | `build_window_only.py` | the failed window-only build of 6.5, exactly as run (do not use) |
 | `factory_tags_fc60.bin` | the 32 tag bytes for `0x0800FC60` (4.3) |
@@ -393,9 +399,9 @@ Breakpoint-based scripts halt the tablet briefly; the pen drops out for a moment
 | :--- | :--- |
 | `session_outputs_2026-10-06.txt` | every output of the session that was not saved to its own file: meter readings, OpenOCD output, register reads, unlock, restore, breakpoints, RAM snapshots, cycle counts |
 | `rate_stock.txt`, `rate_t80.txt` | `rate.py`, 15 s, pen moving |
-| `still_stock.txt`, `still_t80.txt`, `still_stock2.txt`, `still_nosmooth.txt`, `still_v2.txt` | `still.py`, pen lying flat |
-| `stroke_stock.txt`, `stroke_nosmooth.txt`, `stroke_v2c.txt` | `stroke.py`, fast scribbles (valid runs) |
-| `stroke_v2.txt`, `stroke_v2b.txt` | `stroke.py` runs where the pen barely moved (not comparable) |
+| `still_stock.txt`, `still_t80.txt`, `still_stock2.txt`, `still_nosmooth.txt`, `still_nohold.txt` | `still.py`, pen lying flat |
+| `stroke_stock.txt`, `stroke_nosmooth.txt`, `stroke_nohold_c.txt` | `stroke.py`, fast scribbles (valid runs) |
+| `stroke_nohold.txt`, `stroke_nohold_b.txt` | `stroke.py` runs where the pen barely moved (not comparable) |
 | `profile_buckets_pen_in_use_12000.txt` | `prof.tcl`, 12000 samples, pen moving, stock |
 | `pcs_window_only_build_pen_lost.txt` | 8000 raw PCs on the failed window-only build after the pen was lost |
 | `padscan.log` | the 2026-10-03 pad scan attempt (only port errors) |
@@ -410,17 +416,17 @@ SHA-256:
 | :--- | :--- |
 | `S640-251022.bin` (stock, not included) | `150fbc8b9cf356224245865c76ebab194083d72d32225921e6af55e83a287b45` |
 | `S640-251022.hex` (stock, not included) | `8bbc8c491ad2806b3fcd18cdf5520974226ac413863477690e3e9091d9297319` |
-| v1, `test_nosmooth.bin` | `ab25928dd939246f03fffbb858bded70663db3a4dbc37b01fb24c26d5477b7e2` |
-| v2, `s640_firmware_nosmooth_v2.bin` | `371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e` |
+| nosmooth, `s640_nosmooth.bin` | `ab25928dd939246f03fffbb858bded70663db3a4dbc37b01fb24c26d5477b7e2` |
+| nosmooth-nohold, `s640_nosmooth_nohold.bin` | `371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e` |
 | T = 80, `test_t80.bin` | `93ac3e22e1c5b2dcec173d932f73bb843625f46872f41e0a3a9edd3b510ccf51` |
-| failed v3, `test_v3.bin` | `986577b753ea574ed1bcee845152d949c743dc47393e655a319b6ad15cdbb592` |
+| failed `--fast` build, `test_v3.bin` | `986577b753ea574ed1bcee845152d949c743dc47393e655a319b6ad15cdbb592` |
 | failed window-only, `test_v3_windowonly.bin` | `85de141275ada1ff30e6e74b3032a52587ae8375333959f6f9827ac03396d6a6` |
 | `patches/factory_tags_fc60.bin` | `09816b76a42cd4c5109f91dc5e880c012fb89f37b815a53e20eb592851b50247` |
 | the old "500 Hz" image `s640_firmware_500hz.bin` | `1835c781c2d2c9a7963432dff2187e1862df050e88b383d329c8fae8c35d0401` |
 | the old "zero smoothing" image `s640_firmware_zero_smoothing.bin` (`bx lr` at `0x310`, do not use) | `47e0959add33d2c4cb44649c6a220b81824dd86f2152e0be829eca892165aec0` |
 | `debugprobe_on_pico.uf2` used for the Pico | `6649ebba11df46cfa6cfa1faec9706bd21303893cf3f1e40067284bd4e3792d4` |
 
-`tools/gen_listings.sh` rebuilds v1, v2 and T = 80 from the stock image and records their
+`tools/gen_listings.sh` rebuilds nosmooth, nosmooth-nohold and T = 80 from the stock image and records their
 hashes in `asm/patched_images.sha256`; they match the table.
 
 ---
@@ -437,6 +443,6 @@ hashes in `asm/patched_images.sha256`; they match the table.
 * How the X/Y interpolation in `0x08001330` and `0x0800142C` works, and what `0x08000390`,
   `0x080003AC` and `0x08000B24` do.
 * The meaning of report bytes 11 and 12 (most likely tilt).
-* Whether the unused `mov r5, sl` variant of v2 (7.4) behaves any differently in practice.
+* Whether the unused `mov r5, sl` variant of nosmooth-nohold (7.4) behaves any differently in practice.
 * The S640 bootloader at `0x0800D800`: it is not in Veikk's update file. A flash dump from a
   working tablet would answer this and the settings questions.

@@ -314,7 +314,7 @@ tuner read the corrected arrays.
    passed on (4 reports, about 16 ms).
 8. **Pressure smoothing**: an 8-entry history at `0x200003F4`, output = average of the 8
    (`0x2000103C`). On a fresh touch with pressure of at least 24, the history is filled with
-   the new value first. **This 8-sample pressure average is not patched by v1 or v2.**
+   the new value first. **This 8-sample pressure average is not patched by nosmooth or nosmooth-nohold.**
 9. A margin added to f0 of states 3 and 2 depends on the amplitude at `0x2000107C` (set by
    `0x08000B24`) and on X wait A: if the amplitude is under 320, `(320 - amp) * 8`; if A is 15
    or less, plus `(15 - A) * 64`. With an amplitude under 8, no pressure is reported at all.

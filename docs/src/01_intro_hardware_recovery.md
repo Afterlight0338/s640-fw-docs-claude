@@ -12,6 +12,73 @@ SHA-256 `150fbc8b…287b45`).
 > SWD access requires removing the chip's read protection, and that **erases the whole flash**,
 > including per-unit data that this document cannot give back to you (section 3.6).
 
+## 0. How to flash
+
+The short path. Section 3 explains every step, and [`docs/short.md`](docs/short.md) has the
+same steps with the do's and don'ts.
+
+**You need:** a Raspberry Pi Pico running Raspberry Pi's `debugprobe` firmware, 4 jumper
+wires, a multimeter with a beep mode, OpenOCD 0.12, Python 3, and the tablet opened up.
+
+**1. The stock firmware.** If you're reading this repo, you probably already know where to
+obtain the firmware. You need `S640-251022.bin`. Check it first:
+
+```
+sha256sum S640-251022.bin
+# 150fbc8b9cf356224245865c76ebab194083d72d32225921e6af55e83a287b45
+```
+
+If you have the `.hex`, convert it with the gaps filled as `0xFF` (the default fill of `0x00`
+gives a different file):
+
+```
+objcopy -I ihex -O binary --gap-fill 0xff S640-251022.hex S640-251022.bin
+```
+
+**2. The patch.** That part is ours: [`patches/nosmooth.py`](patches/nosmooth.py) builds it
+from the stock file. Run it in a folder that contains `S640-251022.bin`:
+
+```
+python3 nosmooth.py s640_nosmooth_nohold.bin --nohold
+sha256sum s640_nosmooth_nohold.bin
+# 371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e
+```
+
+The script checks the original bytes before it changes anything and stops on a mismatch.
+Without `--nohold` you get `nosmooth` (average removed, motion hold kept, 7.3).
+
+**3. Wire the Pico to J1** (2.4): pad 2 (SWCLK) to GP2, pad 3 (SWDIO) to GP3, pad 5 (GND) to
+GND. Leave pad 1 (3V3) unconnected. Beep-test every wire from the Pico pin to the chip pin.
+
+**4. Connect and check read protection.**
+
+```
+openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; mdw 0x4002201C; shutdown'
+```
+
+You want `SWD DPIDR 0x1ba01477`. If the value printed for `0x4002201C` ends in `2`, read
+protection is on and has to be removed first. **That erases the whole chip**, including
+Veikk's USB updater and the per-unit settings (3.5, 3.6):
+
+```
+openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; stm32f1x unlock 0; shutdown'
+```
+
+Then unplug the tablet and plug it back in.
+
+**5. Flash the patch and the factory tags.**
+
+```
+openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_nohold.bin 0x08000000 verify; program factory_tags_fc60.bin 0x0800FC60 verify; reset run; shutdown'
+```
+
+Look for `** Verified OK **` twice. The tags ([`patches/factory_tags_fc60.bin`](patches/factory_tags_fc60.bin))
+are required after an unlock: without them the pen is never detected (3.7, seen on two
+tablets). Writing them again on a tablet that has them does no harm.
+
+**Back to stock:** the same command with `S640-251022.bin`.
+**Not over USB:** Veikk's USB updater skips the first 12 KB, which is where the patch is (3.1).
+
 ## Contents
 
 1. [Quick facts](#1-quick-facts)
@@ -33,7 +100,7 @@ SHA-256 `150fbc8b…287b45`).
 
 | Thing | Value | How it was found |
 | :--- | :--- | :--- |
-| Unit used | one Veikk S640, called **V1** in the earlier notes; no revision marking on the photographed parts of the PCB (2.1) | owner, photos |
+| Unit used | one Veikk S640. It shipped with V1-format firmware and now runs `S640-251022`, which is V2 format. V1 and V2 are report formats, not hardware (2.6) | earlier notes' logs, `hidraw` |
 | Tablet | Veikk S640, USB `2feb:0001`, manufacturer string `VEIKK.INC`, product `S640` | `lsusb`, kernel log |
 | MCU marking | `VEIKK VK1801` (relabelled), LQFP64, 16 pins per side | photos |
 | Core | ARM Cortex-M3 r2p1, CPUID `0x412FC231` | SWD read of `0xE000ED00` |
@@ -48,7 +115,7 @@ SHA-256 `150fbc8b…287b45`).
 | Pen report rate | 250 Hz (4.0 ms), limited by the antenna scan, not USB | measured |
 | USB polling | `bInterval 1` on all IN endpoints in `S640-251022` | descriptor + `lsusb -v` |
 | Pen coordinates | 0.005 mm per unit (5080 LPI), X 0 to 30480, Y 0 to 20320 | report builder + measurements |
-| Firmware smoothing | 8-sample boxcar on X/Y + a motion "hold" (deadzone), both removed by the v2 patch | breakpoints + RAM reads |
+| Firmware smoothing | 8-sample boxcar on X/Y + a motion "hold" (deadzone), both removed by the nosmooth-nohold patch | breakpoints + RAM reads |
 
 ---
 
@@ -58,12 +125,12 @@ SHA-256 `150fbc8b…287b45`).
 
 | | |
 | :--- | :--- |
-| Model | Veikk S640 (6 x 4 inch), the version the earlier notes call **V1**. Veikk also sells an "S640 V2"; nothing here was checked on one |
+| Model | Veikk S640 (6 x 4 inch). The earlier notes called it a "V1"; that name only describes the firmware it shipped with (2.6) |
 | PCB revision | no version or date marking on the parts of the board in the photos (front side around the MCU and the antenna front end) |
 | USB | `2feb:0001`, `bcdDevice 0x0000`, strings `VEIKK.INC` / `S640` |
 | MCU | marked `VEIKK VK1801`, LQFP64, device ID `0x13030410` |
-| Firmware it came with | unknown version, never read out (lost in the unlock, 3.6). The earlier notes measured `bInterval 3` on it |
-| Firmware now | `S640-251022` with the v2 patch (7.4) |
+| Firmware it came with | unknown version, never read out (lost in the unlock, 3.6). It sent 9-byte V1-format pen reports (logged 2026-09-15, for example `09 41 a0 74 15 30 29 00 00`), and the earlier notes measured `bInterval 3` on it |
+| Firmware now | `S640-251022` with the nosmooth-nohold patch (7.4) |
 | Pen | the pen that came with it; model not recorded. The hover frequency measurement returns a period of 2621 to 2687 TIMER2 ticks (5.7) |
 
 If your tablet's MCU marking, USB ID, J1 layout or the bytes the patch scripts check differ
@@ -153,6 +220,34 @@ which was tried on 2026-09-29, shorts the 3.3 V rail to GND. **Do not do it.** T
 working firmware to receive the command. With broken firmware, SWD is the only way in.
 
 ---
+
+### 2.6 "V1" and "V2" are firmware, not hardware
+
+OpenTabletDriver has two S640 configurations. Both use USB ID `2feb:0001`, the same size and
+the same pressure range. The only difference is the pen report:
+
+| OpenTabletDriver name | Report | Parser | X / Y |
+| :--- | :--- | :--- | :--- |
+| `VEIKK S640` ("V1") | 9 bytes | `VeikkV1ReportParser` | 16 bit |
+| `VEIKK S640 V2` | 13 bytes | `VeikkReportParser` | 24 bit (bytes 3 to 5 and 6 to 8), pressure 16 bit at byte 9 |
+
+The V2 configuration was added on 2021-06-15 (OpenTabletDriver commit `9771bfb1`, PR #1186).
+In July 2021 people were already reporting "S640 v2" tablets that the older hawku
+TabletDriver could not read (hawku/TabletDriver#1162). So from about mid-2021, S640s shipped
+with firmware that sends the newer report.
+
+What that means here:
+
+* This unit sent 9-byte V1 reports before anything was flashed (2.1). On `S640-251022` it
+  sends 13-byte reports (5.8). Same board, so **`S640-251022` is V2-format firmware**, and it
+  runs fine on a tablet that shipped with V1-format firmware.
+* **Any S640 running `S640-251022` shows up as "S640 V2"**, whatever it shipped with.
+  Seeing "V2" after flashing it says nothing about the hardware.
+* Another user's tablet, flashed with `S640-251022` after a mass erase, has the same board:
+  marked `HK1102 VER02b` and `20180113`, with the same `VK1801`, J1, six HC4051 and MC4580
+  layout, and the same 8 KB of SRAM.
+* Whether Veikk ever made an S640 with different hardware is not known. Nothing found so far
+  points to one.
 
 ## 3. How it was bricked, and how it was recovered
 
@@ -330,13 +425,19 @@ page (they only erase the pages the image covers).
 Without the `"3721"` tag the tracking scan returns immediately (4.3) and the pen is never
 detected. That is the first thing to check if a re-flashed tablet sees no pen.
 
+**Seen on a second tablet (2026-10-07):** another user mass-erased their S640 and flashed
+`S640-251022`. The tablet showed up on USB but never detected the pen. Writing
+`factory_tags_fc60.bin` brought the pen back. With the stock firmware they then saw the
+cursor lag and creep into place whenever the pen slowed down or stopped, which is the stock
+motion hold and 8-sample average (5.8), the two things `nosmooth-nohold` removes.
+
 ### 3.8 Flashing any image later
 
 With the Pico still wired:
 
 ```
 cd veikk-s640-zero-smoothing
-nix-shell -p openocd --run "openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_firmware_nosmooth_v2.bin 0x08000000 verify; reset run; shutdown'"
+nix-shell -p openocd --run "openocd -f interface/cmsis-dap.cfg -c 'transport select swd; set CPUTAPID 0' -f target/stm32f1x.cfg -c 'adapter speed 1000; reset_config none; init; halt; program s640_nosmooth_nohold.bin 0x08000000 verify; reset run; shutdown'"
 ```
 
 Look for `** Verified OK **`. The tablet restarts by itself. **Never flash images from this
