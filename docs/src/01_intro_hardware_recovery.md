@@ -12,6 +12,50 @@ SHA-256 `150fbc8b…287b45`).
 > SWD access requires removing the chip's read protection, and that **erases the whole flash**,
 > including per-unit data that this document cannot give back to you (section 3.6).
 
+## -2. Changelog
+
+Newest first. Small wording fixes are not listed.
+
+**2026-10-08**
+
+* New 0.3: your own bootloader over USB (idea, untested). The 12 KB lock turned out to be a
+  rule inside Veikk's updater, not the chip.
+* Pins: the muxes have six enable lines, PA8 and PB11 to PB15. PB12 to PB15 were missing
+  (2.3, 5.4). Pointed out by another user.
+* Corrected: the September USB flash most likely changed nothing (3.1), so 0.2 no longer
+  assumes an old first 12 KB runs with 251022's upper part. All corrections are listed in 8.
+
+**2026-10-07**
+
+* New 0 (how to flash) and 0.1 (probes other than the Pico).
+* New 0.2: patching over USB without touching the first 12 KB, plus the untested
+  `nosmooth-hook` patch built for it (7.9).
+* Patches renamed: v1 is now `nosmooth`, v2 is `nosmooth-nohold`. Same bytes, same hashes.
+* New 2.6: "V1" and "V2" are report formats, not hardware.
+* 3.7: missing factory tags confirmed as the cause of a dead pen on a second tablet.
+* 8: the "Veikk pulled all firmware in 2021" story marked as unsourced.
+
+**2026-10-06**
+
+* First version: the SWD unbrick, the firmware internals, why 1000 Hz isn't possible, and
+  the zero-smoothing patches. Later that day: the warning banner, the unit's details (2.1)
+  and the short version ([`docs/short.md`](docs/short.md), vivlos.dev/s640).
+
+## -1. What?
+
+The S640's firmware smooths the pen position before sending it: an 8-sample average (about
+14 ms of lag) and a "hold" that keeps the cursor still on small moves. That is why the cursor
+lags behind and creeps into place when the pen slows down. This project gets rid of both.
+
+* **Goal:** every report carries the newest pen position, nothing averaged, nothing held
+  back. Done: `nosmooth-nohold` (7.4), flashed over SWD.
+* **On the way:** bringing the tablet back over SWD after an earlier attempt bricked it (3),
+  and reading the firmware to find where the smoothing actually is (5, 7).
+* **Ruled out:** a higher report rate. The antenna scan takes about 3.9 ms, so 250 Hz is the
+  ceiling (6).
+* **Still open:** pressure smoothing (5.7), and a way to do all this over USB without opening
+  the tablet (0.2, 0.3).
+
 ## 0. How to flash
 
 The short path. Section 3 explains every step, and [`docs/short.md`](docs/short.md) has the
