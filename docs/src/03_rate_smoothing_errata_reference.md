@@ -326,6 +326,7 @@ unverified claims, and what is actually true:
 | pin pictures with "44 BOOT0", "37 PA14 (SWCLK)" (`history/*_WRONG.jpg`) | 48-pin numbering on a 64-pin chip. BOOT0 is pin 60, SWCLK pin 49, SWDIO pin 46 |
 | SWD on "the four test pads next to the GD32F150" | J1 has **five** through-holes: 3V3, SWCLK, SWDIO, NRST, GND |
 | `28e9:0189` is the native ROM bootloader | Veikk's own bootloader at `0x0800D800`, entered from the firmware (3.1). Erased by the unlock |
+| the "GD32 DFU ROM silently discards writes" to the first 12 KB, and "251022 firmware code beyond 12KB was updated successfully" | the refusal is the updater's own address check, not the ROM or the chip (0.3.1). The rest most likely did not land either, because no erase commands were sent (3.1) |
 | pen interface `bInterval 3`, fix it with `usbhid.mousepoll=1` | `S640-251022` declares `bInterval 1` on every IN endpoint; host polling is not the limit. (The 3 ms may have been true for the tablet's previous firmware) |
 | the boxcar adds "up to 32 ms latency" | an 8-sample average spans 8 reports (about 32 ms), but its group delay is 3.5 reports, **about 14 ms** |
 | patch `bx lr` at `0x08000310` removes the boxcar | it would stop all pen reports (7.1) |
@@ -351,6 +352,14 @@ Corrections to things said during the 2026-10-06 session itself (before this wri
 | `28e9:0189` is the ROM DFU (project memory) | Veikk bootloader at `0x0800D800` |
 | `0x0800D800` is a settings page | it is the bootloader; the settings pages are `0x0800D000` and `0x0800D400` |
 | the J1 photo numbering 1 to 5 "left to right" differs from "bottom to top" | they are the same holes, the photos are just rotated 90 degrees |
+
+Corrections to this document (2026-10-08):
+
+| Said before | Correct |
+| :--- | :--- |
+| the mux control lines are PA8 and PB11 | there are six enable lines, PA8 and PB11 to PB15, one per HC4051 (2.3, 5.4). Pointed out by another user |
+| read protection may be why Veikk's updater refuses the first 12 KB | it is the updater's own address check (0.3.1). Whether read protection also locks pages against the firmware is a separate, open question (0.3.2) |
+| in September only the part from `0x3000` up landed, so an old first 12 KB runs with 251022's upper part | most likely nothing landed (3.1); no tablet is known to run that mix |
 
 ---
 
@@ -489,5 +498,9 @@ hashes in `asm/patched_images.sha256`; they match the table.
 * Pressure smoothing: the 8-sample pressure average and the 4-report tip debounce (5.7) are
   still in every patch here.
 * Whether a tablet with a different board than `HK1102 VER02b` exists at all (2.6).
-* The S640 bootloader at `0x0800D800`: it is not in Veikk's update file. A flash dump from a
-  working tablet would answer this and the settings questions.
+* Which HC4051 each enable line (PA8, PB11 to PB15) drives.
+* Whether read protection stops the firmware itself from writing the first pages (0.3.2).
+  That decides whether the bootloader idea in 0.3 can work.
+* The S640 bootloader at `0x0800D800`: it is not in Veikk's update file. It matches
+  GigaDevice's DFU example (0.3.1); a flash dump from a working tablet would confirm that and
+  answer the settings questions.

@@ -204,10 +204,12 @@ Called with up to two mux selections, a third coil selection and the carrier cha
 in order (`asm/09_coil_measure.lst`):
 
 1. `[0x20000003] = 28`: the burst will be 28 carrier cycles.
-2. `0x08000A8C`: sets PC4, PA7, PA6, PB11, PA8 and more high (all mux control lines idle).
+2. `0x08000A8C`: sets PC4, PA6, PA7 (mux address) and PA8, PB11, PB12, PB13, PB14, PB15
+   (the six mux enables) high, so every mux is off.
 3. Coil/mux select routines from the 100-entry table at `0x08006A0C` for the first two
-   arguments (`0xFF` = skip). They set or clear PA6, PA7, PC4 (address) and PB11, PA8
-   (enable). Unused table slots point at `bx lr` stubs.
+   arguments (`0xFF` = skip). Each sets the address on PA6, PA7 and PC4, then pulls one
+   enable low: PA8, PB11, PB12, PB13, PB14 or PB15, one per HC4051 (which line goes to which
+   chip was not traced). Unused table slots point at `bx lr` stubs.
 4. PB1 high (`0x0800132A`, BOP register).
 5. PC6 to PC9: push-pull outputs, then driven low (`0x08001290` init, `0x08001326` BC register).
 6. **Carrier burst**: the channel's routine from `0x08006B9C`, 28 cycles on PC6 to PC9.
