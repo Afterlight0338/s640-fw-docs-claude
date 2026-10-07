@@ -40,7 +40,7 @@ def render(text, id_prefix=""):
     def h2(m):
         nonlocal n
         hid, name = m.group(1), m.group(2)
-        num = re.match(r"(\d+)\.\s+", name)
+        num = re.match(r"(-?\d+)\.\s+", name)
         if num:
             n, name = int(num.group(1)), name[num.end():]
         else:
