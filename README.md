@@ -33,6 +33,15 @@ Newest first. Small wording fixes are not listed.
 
 **2026-10-08**
 
+* `nosmooth-hook` tested on a tablet over SWD: in a blind test it played like
+  `nosmooth-nohold` and its reports match the newest sample just as often (7.9). Over USB is
+  still untested.
+* New 7.10: a firmware that reverses the smoothing from the reports alone, the way a PC
+  filter would. Worse than stock.
+* New 6.7: another user's measurement of how much pen signal the neighbouring coils pick up
+  after one burst, and what that means for reading several coils per burst.
+* 5.6: while the pen moves slowly, the tracking scan already excites the peak coil and reads
+  its neighbours.
 * New 0.3: your own bootloader over USB (idea, untested). The 12 KB lock turned out to be a
   rule inside Veikk's updater, not the chip.
 * Pins: the muxes have six enable lines, PA8 and PB11 to PB15. PB12 to PB15 were missing
@@ -239,8 +248,8 @@ rounding, and the hold sending nothing.
 
 #### 0.2.2 Trying `nosmooth-hook` (SWD first)
 
-**Untested.** Try it over SWD, with a probe that can put stock back, before anyone thinks
-about USB.
+**Tested over SWD on 2026-10-08** (results in 7.9). Do the same, with a probe that can put
+stock back, before anyone thinks about USB.
 
 1. Build it in a folder with `S640-251022.bin`. The script refuses anything but the exact
    stock file, and checks that nothing below `0x08003000` changed:
@@ -1274,6 +1283,15 @@ the grid (X index 0 to 25, `0x19`; Y index 0 to 17, `0x11`). Extents written by 
 `0x08003F38`, 2 / 2 (`movs r4,#2` at `0x08003E58`, `movs r2,#2` at `0x08003F3E`). Measured:
 14 to 16 coil measurements per report (11 X + 5 Y and 5 X + 9 Y in two consecutive reports).
 
+**Which coil gets the burst.** The window code also sets one flag per axis, `0x20001026` (X)
+and `0x20001027` (Y). If the peak moved by 3 coils or more, the flag is 1
+(`0x08003DE4`, `0x08003EFE`) and every coil in the window is excited and read on its own.
+If it moved less, the flag is 0 (`0x08003E10`, `0x08003F26`) and every measurement excites
+the **peak coil** (`0x2000101D` / `0x2000101E`, picked at `0x08003000`, `0x08003030`,
+`0x08003070` and `0x0800309C`) and reads the window coil. So while the pen moves slowly, the
+neighbour readings are the pen ringing after the peak coil's burst (measured in 6.7). It is
+still one burst per measurement. Read from the code, not checked on a running tablet.
+
 **Baseline** (`0x08006554`, gated by `"0226"`): for each coil in the window,
 `corrected = raw - baseline` (0 if negative), and when raw is not above the baseline the
 baseline becomes raw. X: raw `0x200001F8`, baseline `0x20000404`, corrected `0x200001C4`.
@@ -1700,8 +1718,83 @@ Both were reverted to nosmooth-nohold. Expected gain had they worked: about 0.32
   two TIMER2 captures (maybe 5 %).
 * Re-tune the position interpolation together with a shorter integration window, the way the
   Wacom mods appear to. Large effort, uncertain result.
+* Read several coils after one burst. Limited by how fast the pen's ring-down fades (6.7).
 
 Always test lifting the pen away and bringing it back, and measure accuracy, not just Hz.
+
+### 6.7 Measured by another user: the pen signal on the neighbouring coils
+
+Another user measured this on their own tablet over SWD (2026-10-08). The numbers below are
+theirs, quoted from their write-up, not repeated here. Setup: the coil measurement of 5.4,
+burst on Y coil `y` at carrier channel 9 (507 kHz), but read on coil `y + d` (the third
+selection) for d = -2 to +2. Wait A = 0, 5, 10 and 20, wait B = 60 throughout (units of about
+1 µs, 5.3). Values are the routine's return value, `ADC >> 2`, so 0 to 1023.
+
+Pen over the tablet, A = 5 (average of two tries), and what is left at A = 20:
+
+| Coil | A = 5 | vs. coil `y` | A = 20, as % of A = 5 |
+| :--- | :--- | :--- | :--- |
+| y - 2 | 125 | 15 % | 38 % |
+| y - 1 | 749 | 90 % | 57 % |
+| y (burst) | 835 | 100 % | 80 % |
+| y + 1 | 806 | 97 % | 72 % |
+| y + 2 | 385 | 46 % | 52 % |
+
+What it shows:
+
+* **Pen away**: about 145 at A = 0 on every coil, two coils away too, and exactly 0 from
+  A = 5 up. The 145 is a transient from the end of the burst, not the pen. It is gone by
+  A = 5 (1 to 4 were not tried), which fits the tuner's lower limit of 5 (5.5). Exactly 0,
+  instead of noise around a baseline, also means the front end clamps at the bottom, so "no
+  crosstalk without the pen" holds only down to that floor (see below).
+* **The neighbours pick up most of the signal.** The pen keeps ringing after the burst, and
+  the coils next to the excited one see almost as much of it. The stock firmware already
+  relies on this: while the pen moves slowly, it excites the peak coil and reads the others
+  (5.6).
+* **The readings are lopsided** (y + 1 > y - 1, y + 2 > y - 2): the pen sits a little towards
+  +y. That asymmetry is what the position math works from.
+* **The centre clips** at about 841 to 844 (about 2.7 V, if the ADC reference is 3.3 V). The
+  test held A at 5. In normal use the tuner (5.5) raises A until the peak coil reads 320 to
+  640, which is how stock firmware avoids clipping.
+* **One decay time, not five.** Their write-up reads the five percentages as decay times of
+  15 to 70 µs. One pen rings down with one time constant, so the spread must come from the
+  front end. One time constant τ, a floor c (the front end outputs nothing below it) and the
+  clipping explain all five. With reading = signal - c and the signal falling as e^(-A/τ),
+  reading(20) = r x reading(5) - c x (1 - r), with r = e^(-15/τ): a straight line. Through
+  y - 2, y - 1 and y + 2, the coils that do not clip, r = 0.61, so **τ ≈ 30 µs** and the floor
+  is about 80 counts, with all three within 3 counts of the line. y and y + 1 sit above it, as
+  they should if their A = 5 readings are clipped. The line puts their unclipped values at about
+  1150 and 1000. The 60 µs window does not bend this: for an exponential, the ratio of two
+  equally long windows is exactly e^(-ΔA/τ). The estimate is rough because it rests on three
+  points, two unknowns and rounded percentages, not because of the window.
+
+**Same test on the tablet these notes come from, pen away** (2026-10-08,
+[`tools/sweep.tcl`](tools/sweep.tcl), [`data/sweep_penaway_2026-10-08.txt`](data/sweep_penaway_2026-10-08.txt); burst and read on Y coil 8 ± 2,
+channel 9, B = 60): the transient is about 41 to 51 at A = 0 (not 145), 18 to 40 at A = 1,
+and **exactly 0 from A = 2 up**. Going from about 25 to exactly 0 in 1 µs suggests the floor
+subtracts, rather than the transient simply fading. A sweep of B at A = 0 on the burst coil
+gave 73, 89, 87, 81, 75, 61, 41 for B = 0, 2, 5, 10, 20, 40, 60: **the reading falls as B
+grows**. A plain integrator would hold or grow, so the stage that PB1 releases leaks, and
+"integration window" (5.4) is a loose name for B. That does not change the τ estimate above,
+because the stage still scales with its input. How B behaves with the pen over the tablet is
+not measured yet.
+
+**What it means for reading several coils after one burst.** Each measurement today has its
+own burst: 28 carrier cycles, about 55 µs of the 179 µs (5.4). One burst for several coils
+would save most of that, but:
+
+* All coils share one receive path. The measurement selects one receive coil, gates one stage
+  with PB1 and starts one ADC conversion (5.4). Reads after one burst would come one after
+  the other, not at the same time.
+* With τ ≈ 30 µs, a second read whose window starts 65 µs after the first one's (A + B)
+  sees about 12 % of the signal, and most of that is under the floor. With stock windows, one
+  burst serves one read.
+* Shorter windows could fit 2 or 3 reads into one ring-down. But each read gets less signal,
+  each slot needs its own gain correction, and the edge coils that carry the position
+  information (y ± 2 here) are the first to drop under the floor. A window only 20 % shorter
+  already moved the position by 3 mm (6.4), so the position math would need redoing too.
+
+Not tried. The first test worth doing: how much of y ± 2 is left with a 10 to 15 µs window.
 
 ---
 
@@ -1925,10 +2018,26 @@ on any mismatch. To go back to stock, flash `S640-251022.bin` the same way.
    coordinates five times. With nosmooth-nohold, `outX` equals the last `histX` value every time.
 
 
-### 7.9 Patch nosmooth-hook (untested): the same result without touching the first 12 KB
+### 7.9 Patch nosmooth-hook (SWD-tested): the same result without touching the first 12 KB
 
-`patches/hook.py OUT.bin`. Built and checked against the disassembly only; it has **never
-run on a tablet**. Why it exists and how to try it: 0.2.
+`patches/hook.py OUT.bin`. Why it exists and how to try it: 0.2.
+
+**Tested over SWD on 2026-10-08.** The owner played osu! on three images flashed in random
+order without being told which was which (stock, `nosmooth-nohold`, `nosmooth-hook`), and
+named all three correctly. During each round [`tools/watch.tcl`](tools/watch.tcl) read, every 100 ms and
+without halting the chip, the output position `0x20001040/42` and the newest history
+sample (`histX[7]` `0x20000490`, `histY[7]` `0x200013A8`):
+
+| Image | Samples with the pen tracked | Output = newest sample | Within 50 units | More than 300 apart |
+| :--- | :--- | :--- | :--- | :--- |
+| stock | 534 | 0 % | 23 % | 180 |
+| nosmooth-nohold | 543 | 23 % | 69 % | 4 |
+| nosmooth-hook | 506 | 26 % | 70 % | 7 |
+
+The two values are read a few ms apart while the pen moves, so even a perfect patch does
+not reach 100 %; the point is that the hook and nosmooth-nohold are indistinguishable and
+stock is not. Logs: `data/watch_blind_*_2026-10-08.txt`. Not yet run on the hook:
+`still.py`, `stroke.py`, and a check of pressure and the pen buttons.
 
 Changes (68 bytes appended at `0x0800C464`, 2 calls redirected; nothing below `0x08003000`):
 
@@ -2001,6 +2110,40 @@ How each part was decided:
 0800c4a0:  9a 13 00 20   .word    0x2000139a
 0800c4a4:  31 10 00 20   .word    0x20001031
 ```
+
+### 7.10 Experiment: reversing the smoothing (worse than stock)
+
+0.2.1 argues that undoing the average after the fact cannot work. To check it on a tablet,
+[`patches/reverse.py`](patches/reverse.py) (source [`patches/reverse.s`](patches/reverse.s)) builds an image that does exactly what a
+PC-side filter would have to do. It sits where the hook sits (same two redirected calls, the
+routine at `0x0800C464`, nothing below `0x08003000` changed), but it never reads the raw
+history. It only looks at the smoothed position of each report that is about to go out and
+works backwards, assuming the 8-sample average:
+
+```
+rec[n] = rec[n-8] + 8 x (out[n] - out[n-1])
+```
+
+That is the exact inverse of `sum / 8`, apart from the rounding. It keeps its own last 8
+results at `0x20001F00` (above the stack), starts from the smoothed value after the pen is
+found, and falls back to the smoothed value if the result lands more than 2000 units (10 mm)
+away from it.
+
+**Result (2026-10-08):** in the blind osu! test (7.9) the owner recognised it within seconds
+and stopped the test. [`tools/watch.tcl`](tools/watch.tcl) ([`data/watch_reverse_2026-10-08.txt`](data/watch_reverse_2026-10-08.txt)), compared with
+the newest raw sample as in 7.9:
+
+| Image | Samples with the pen tracked | Within 50 units | More than 300 apart |
+| :--- | :--- | :--- | :--- |
+| reverse | 572 | 6 % | 378 |
+| stock | 534 | 23 % | 180 |
+| nosmooth-hook | 506 | 70 % | 7 |
+
+Worse than leaving the smoothing in. Each step can be off by up to 7 units of rounding,
+multiplied back by 8, and nothing pulls the error back, so the 8 interleaved chains drift
+apart. Samples the hold never reported put the chains out of step for good. An OpenTabletDriver filter works on
+the same reports, so it would do no better. The hook (7.9) is the way: the raw value is
+still in RAM, so use it.
 
 ---
 
@@ -2082,7 +2225,8 @@ python3 tools/build_readme.py
 | `nosmooth.py OUT.bin [--nohold] [--fast]` | reads `S640-251022.bin` from the current directory. No flag: nosmooth. `--nohold`: nosmooth-nohold. `--fast`: also the failed changes of 6.5 (do not use) |
 | `scanpatch.py TOTAL CAP OUT.bin` | the tuner experiment of 6.4 (stock = 100 and 80) |
 | `build_window_only.py` | the failed window-only build of 6.5, exactly as run (do not use) |
-| `hook.py OUT.bin` | `nosmooth-hook` (7.9, **untested**): same effect as nosmooth-nohold, nothing below `0x08003000` changed |
+| `hook.py OUT.bin` | `nosmooth-hook` (7.9, tested over SWD): same effect as nosmooth-nohold, nothing below `0x08003000` changed |
+| `reverse.py OUT.bin` | the reverse-smoothing experiment of 7.10 (worse than stock, do not use); source `reverse.s` |
 | `factory_tags_fc60.bin` | the 32 tag bytes for `0x0800FC60` (4.3) |
 
 ### 9.3 Measurement scripts ([`tools/`](tools/), Python 3, no dependencies)
@@ -2116,6 +2260,8 @@ All are run as
 | `cyc.tcl` | cycles inside the frequency call and per report, with DWT_CYCCNT and breakpoints (5.9) |
 | `count.tcl` | counts coil measurements per report and times one (5.9) |
 | `pval.tcl` | 12 return values of the frequency call (6.5) |
+| `sweep.tcl` | runs the Y coil measurement directly (burst on one coil, read on another) for a grid of A and B (6.7); halts the tablet, resets it at the end |
+| `watch.tcl` | every 100 ms for 5 minutes, without halting: scan flags, peak coils, output position, newest history sample, counter (7.9) |
 
 Breakpoint-based scripts halt the tablet briefly; the pen drops out for a moment while they run.
 
@@ -2141,6 +2287,10 @@ Breakpoint-based scripts halt the tablet briefly; the pen drops out for a moment
 | `profile_buckets_pen_in_use_12000.txt` | `prof.tcl`, 12000 samples, pen moving, stock |
 | `pcs_window_only_build_pen_lost.txt` | 8000 raw PCs on the failed window-only build after the pen was lost |
 | `padscan.log` | the 2026-10-03 pad scan attempt (only port errors) |
+| `sweep_penaway_2026-10-08.txt` | `sweep.tcl`, pen away (6.7) |
+| `watch_blind_stock_2026-10-08.txt`, `watch_blind_nohold_2026-10-08.txt`, `watch_blind_hook_2026-10-08.txt` | `watch.tcl` during the blind osu! test (7.9) |
+| `watch_reverse_2026-10-08.txt` | `watch.tcl`, the reverse-smoothing image (7.10) |
+| `watch_hook_osu_2026-10-08.txt` | `watch.tcl`, nosmooth-hook, earlier osu! session (scan flags always 0, 5.6) |
 
 ---
 
@@ -2155,7 +2305,8 @@ SHA-256:
 | nosmooth, `s640_nosmooth.bin` | `ab25928dd939246f03fffbb858bded70663db3a4dbc37b01fb24c26d5477b7e2` |
 | nosmooth-nohold, `s640_nosmooth_nohold.bin` | `371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e` |
 | T = 80, `test_t80.bin` | `93ac3e22e1c5b2dcec173d932f73bb843625f46872f41e0a3a9edd3b510ccf51` |
-| nosmooth-hook (untested), `s640_nosmooth_hook.bin` | `4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c` |
+| nosmooth-hook, `s640_nosmooth_hook.bin` | `4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c` |
+| reverse experiment (7.10, do not use) | `c17f91a3185d89dc0ea4a761d1fafc18af450d3234c432da93cdf3c990ae74f3` |
 | failed `--fast` build, `test_v3.bin` | `986577b753ea574ed1bcee845152d949c743dc47393e655a319b6ad15cdbb592` |
 | failed window-only, `test_v3_windowonly.bin` | `85de141275ada1ff30e6e74b3032a52587ae8375333959f6f9827ac03396d6a6` |
 | [`patches/factory_tags_fc60.bin`](patches/factory_tags_fc60.bin) | `09816b76a42cd4c5109f91dc5e880c012fb89f37b815a53e20eb592851b50247` |
@@ -2181,13 +2332,14 @@ hashes in [`asm/patched_images.sha256`](asm/patched_images.sha256); they match t
   `0x080003AC` and `0x08000B24` do.
 * The meaning of report bytes 11 and 12 (most likely tilt).
 * Whether the unused `mov r5, sl` variant of nosmooth-nohold (7.4) behaves any differently in practice.
-* Whether `nosmooth-hook` (7.9) behaves like `nosmooth-nohold` on a
-  real tablet over SWD, and after that, whether it can be written safely through Veikk's USB
+* Whether `nosmooth-hook` (7.9, works over SWD) can be written safely through Veikk's USB
   updater on an untouched tablet (0.2).
 * Pressure smoothing: the 8-sample pressure average and the 4-report tip debounce (5.7) are
   still in every patch here.
 * Whether a tablet with a different board than `HK1102 VER02b` exists at all (2.6).
 * Which HC4051 each enable line (PA8, PB11 to PB15) drives.
+* What sets the receive floor (about 80 counts in 6.7), and whether the 30 µs ring-down
+  changes with pressure or between pens.
 * Whether read protection stops the firmware itself from writing the first pages (0.3.2).
   That decides whether the bootloader idea in 0.3 can work.
 * The S640 bootloader at `0x0800D800`: it is not in Veikk's update file. It matches
@@ -2243,7 +2395,7 @@ as stored in flash.
 | [`asm/patched_nosmooth_output_routine.lst`](asm/patched_nosmooth_output_routine.lst) | | nosmooth output routine |
 | [`asm/patched_nohold_state_machine_tail.lst`](asm/patched_nohold_state_machine_tail.lst) | | nosmooth-nohold state machine tail |
 | [`asm/patched_t80_tuner.lst`](asm/patched_t80_tuner.lst) | | T = 80 tuner |
-| [`asm/patched_hook.lst`](asm/patched_hook.lst) | | nosmooth-hook: redirected calls and the hook (untested) |
+| [`asm/patched_hook.lst`](asm/patched_hook.lst) | | nosmooth-hook: redirected calls and the hook |
 
 The routines that matter most, in full:
 
