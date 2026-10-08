@@ -18,6 +18,15 @@ Newest first. Small wording fixes are not listed.
 
 **2026-10-08**
 
+* `nosmooth-hook` tested on a tablet over SWD: in a blind test it played like
+  `nosmooth-nohold` and its reports match the newest sample just as often (7.9). Over USB is
+  still untested.
+* New 7.10: a firmware that reverses the smoothing from the reports alone, the way a PC
+  filter would. Worse than stock.
+* New 6.7: another user's measurement of how much pen signal the neighbouring coils pick up
+  after one burst, and what that means for reading several coils per burst.
+* 5.6: while the pen moves slowly, the tracking scan already excites the peak coil and reads
+  its neighbours.
 * New 0.3: your own bootloader over USB (idea, untested). The 12 KB lock turned out to be a
   rule inside Veikk's updater, not the chip.
 * Pins: the muxes have six enable lines, PA8 and PB11 to PB15. PB12 to PB15 were missing
@@ -224,8 +233,8 @@ rounding, and the hold sending nothing.
 
 #### 0.2.2 Trying `nosmooth-hook` (SWD first)
 
-**Untested.** Try it over SWD, with a probe that can put stock back, before anyone thinks
-about USB.
+**Tested over SWD on 2026-10-08** (results in 7.9). Do the same, with a probe that can put
+stock back, before anyone thinks about USB.
 
 1. Build it in a folder with `S640-251022.bin`. The script refuses anything but the exact
    stock file, and checks that nothing below `0x08003000` changed:

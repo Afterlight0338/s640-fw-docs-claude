@@ -281,6 +281,15 @@ the grid (X index 0 to 25, `0x19`; Y index 0 to 17, `0x11`). Extents written by 
 `0x08003F38`, 2 / 2 (`movs r4,#2` at `0x08003E58`, `movs r2,#2` at `0x08003F3E`). Measured:
 14 to 16 coil measurements per report (11 X + 5 Y and 5 X + 9 Y in two consecutive reports).
 
+**Which coil gets the burst.** The window code also sets one flag per axis, `0x20001026` (X)
+and `0x20001027` (Y). If the peak moved by 3 coils or more, the flag is 1
+(`0x08003DE4`, `0x08003EFE`) and every coil in the window is excited and read on its own.
+If it moved less, the flag is 0 (`0x08003E10`, `0x08003F26`) and every measurement excites
+the **peak coil** (`0x2000101D` / `0x2000101E`, picked at `0x08003000`, `0x08003030`,
+`0x08003070` and `0x0800309C`) and reads the window coil. So while the pen moves slowly, the
+neighbour readings are the pen ringing after the peak coil's burst (measured in 6.7). It is
+still one burst per measurement. Read from the code, not checked on a running tablet.
+
 **Baseline** (`0x08006554`, gated by `"0226"`): for each coil in the window,
 `corrected = raw - baseline` (0 if negative), and when raw is not above the baseline the
 baseline becomes raw. X: raw `0x200001F8`, baseline `0x20000404`, corrected `0x200001C4`.

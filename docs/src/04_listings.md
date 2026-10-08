@@ -47,7 +47,7 @@ as stored in flash.
 | `asm/patched_nosmooth_output_routine.lst` | | nosmooth output routine |
 | `asm/patched_nohold_state_machine_tail.lst` | | nosmooth-nohold state machine tail |
 | `asm/patched_t80_tuner.lst` | | T = 80 tuner |
-| `asm/patched_hook.lst` | | nosmooth-hook: redirected calls and the hook (untested) |
+| `asm/patched_hook.lst` | | nosmooth-hook: redirected calls and the hook |
 
 The routines that matter most, in full:
 
