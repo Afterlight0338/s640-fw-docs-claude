@@ -10,7 +10,7 @@ import html, pathlib, re, shutil, sys
 import markdown
 
 REPO = "https://github.com/Afterlight0338/s640-fw-docs-claude"
-STYLE_V, PAGE_V = 7, 2          # /style.css?v= (bump with the main site) and /s640/s640.css?v=
+STYLE_V, PAGE_V = 8, 2          # /style.css?v= (bump with the main site) and /s640/s640.css?v=
 root = pathlib.Path(__file__).resolve().parent.parent
 out = pathlib.Path(sys.argv[1])
 (out / "images").mkdir(parents=True, exist_ok=True)
@@ -83,7 +83,7 @@ manual.</p>
 """
 
 page = f"""<!DOCTYPE html>
-<html lang="en" data-tab="projects">
+<html lang="en" data-tab="blog">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -133,7 +133,7 @@ page = f"""<!DOCTYPE html>
 
   <div class="doc-canvas">
     <div class="top-status-bar">
-      <a href="/#projects" class="status-home">vivlos.dev / s640</a>
+      <a href="/#blog" class="status-home">vivlos.dev / s640</a>
       <span><span class="mono-dim">unit</span> Veikk S640</span>
       <span><span class="mono-dim">firmware</span> S640-251022 + nosmooth-nohold</span>
       <button type="button" class="motion-switch" id="allat-switch" role="switch" aria-checked="false">
