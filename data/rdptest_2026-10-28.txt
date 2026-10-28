@@ -1,0 +1,15 @@
+RDP page-lock test, owner's tablet, 2026-10-28 (patches/rdptest.s, README 0.3.2)
+Image: nosmooth-hook + rdptest routine at 0x0800C4A8, reset literal 0x080001AC -> 0x0800C4A9,
+padding slots set to 0xFFFF. Log at 0x20001F80: magic, OBSTAT, then {addr, FMC_STAT, readback} x7.
+
+Run 1, read protection OFF (reset via AIRCR):
+20001f80: 5afe0001 ffffff00
+20001f88: 08000212 00000020 00000000 08000b1a 00000020 00000000 08000c0e 00000020 00000000 0800132e 00000020 00000000 0800141a 00000020 00000000 080023b2 00000020 00000000 0800cc00 00000020 00000000
+
+Run 2, read protection ON (stm32f1x lock 0, then NRST pulse with SWD idle; tablet enumerated):
+20001f80: 5afe0001 ffffff02
+20001f88: 08000266 00000020 00000000 08000b6e 00000020 00000000 08000c6a 00000020 00000000 0800132e eeeeeeee 00000000 08001516 00000020 00000000 080023ba 00000020 00000000 0800cc02 00000020 00000000
+
+Page 4 had one slot only, used in run 1 (eeeeeeee = no blank slot left).
+Before the NRST pulse, a reset with the debugger attached since power-on locked the core up
+(vector fetch from flash blocked, "clearing lockup after double fault").
