@@ -16,6 +16,11 @@ SHA-256 `150fbc8b…287b45`).
 
 Newest first. Small wording fixes are not listed.
 
+**2026-10-28**
+
+* 0.3.2 tested: read protection doesn't lock any page against the firmware, page 0
+  included. Also how to reset a protected chip without replugging.
+
 **2026-10-08**
 
 * `nosmooth-hook` tested on a tablet over SWD: in a blind test it played like
@@ -264,7 +269,7 @@ still applies.
 
 ### 0.3 Your own bootloader over USB (idea, untested)
 
-**Nothing in this section has been built or tested.** Another user suggested it: get a small
+**Only 0.3.2 has been tested; nothing else here has been built.** Another user suggested it: get a small
 program onto the tablet through Veikk's updater, let that program overwrite the first 12 KB
 with an open bootloader, and flash complete images over USB from then on. Looking into it on
 2026-10-08 changed what this document says about the 12 KB lock (3.1, 3.4).
@@ -290,21 +295,40 @@ What that example does:
 
 So the lock only binds the updater. Firmware code running from flash is not subject to it.
 
-#### 0.3.2 The hardware question, and a test for it
+#### 0.3.2 Read protection does not lock pages (tested 2026-10-28)
 
-Read protection might still lock the first pages against the firmware itself; ST's F1 chips
-do that for pages 0 to 3. For this chip it is not known. A test on a tablet with an SWD probe
-attached, every step recoverable (not built yet):
+ST's F1 chips lock pages 0 to 3 against the firmware while read protection is on. **This
+chip doesn't lock any page.** Tested on the owner's tablet over SWD
+([`patches/rdptest.s`](patches/rdptest.s), log in
+[`data/rdptest_2026-10-28.txt`](data/rdptest_2026-10-28.txt)):
 
-1. Flash `S640-251022` plus a small routine, run once from the main loop like the hook in
-   0.2, that programs `0xFFFFFFFF` onto one word in each of pages 0, 3, 4 and 11 and saves
-   `FMC_STAT` (`0x4002200C`) after each one in spare SRAM. Programming all ones can't change
-   a single bit.
-2. Turn read protection on (`stm32f1x lock 0`), then unplug the tablet and plug it back in.
-3. Attach with `reset_config none` and read the saved values. SRAM stays readable with
-   protection on (3.4). `WPERR` (bit 4) on a page means the hardware locks it. `PGERR`
-   (bit 2) or no error means the firmware can write it.
-4. Unlock and flash back as in section 0, steps 4 and 5.
+1. Image: `nosmooth-hook` with a 192-byte routine at `0x0800C4A8`. The reset handler's
+   SystemInit literal (`0x080001AC`) points to it, so it runs at every boot, pen or not, and
+   then calls SystemInit. Alignment padding words in pages 0, 2, 3, 4, 5 and 8 (never
+   executed, they sit in front of literal pools) are set to `0xFFFF`, plus a blank word in
+   page 51 as a control.
+2. For each page the routine programs `0x0000` into the first slot still reading `0xFFFF`
+   and logs `FMC_STAT` and the readback in spare SRAM (`0x20001F80`). This is a real bit
+   change, not a write of all ones.
+3. Read protection off: every page `FMC_STAT = 0x20` (done, no error), readback `0000`.
+4. `stm32f1x lock 0`, then a reset through NRST **with SWD idle** (see below). The firmware
+   booted with protection on (`OBSTAT = 0xFFFFFF02`) and enumerated. Again every page
+   `0x20` and readback `0000`: no `WPERR`, page 0 included.
+5. Unlocked (mass erase) and wrote the full 64 KB backup back, byte-identical.
+
+So with protection on, firmware running from flash can rewrite every page, including the
+first 12 KB. That leaves 0.3.3 as the only real obstacle.
+
+Side finding: after any SWD access since power-on, the chip blocks flash for the core while
+protection is on, so a reset from OpenOCD just locks up ("clearing lockup after double
+fault"). No replug is needed: pulse NRST with the probe and keep SWD quiet until the firmware
+has run. With debugprobe, J1 pad 4 wired to GP1 as in section 0:
+
+```
+openocd -f interface/cmsis-dap.cfg -c 'transport select swd' \
+  -c 'reset_config srst_only srst_nogate' -c init \
+  -c 'adapter assert srst' -c 'sleep 100' -c 'adapter deassert srst' -c shutdown
+```
 
 #### 0.3.3 The real problem: getting the first stage to run
 
@@ -334,7 +358,7 @@ Two rules keep the brick windows down to single page writes (tens of millisecond
 | First stage writes | the first 12 KB | `0x0800D800` to `0x0800FBFF` (stops before the factory tags page) |
 | Firmware it can flash afterwards | only firmware built to start at `0x08003000`. `S640-251022` and the patches here start at `0x08000000`, so going back to them needs SWD | complete images as they are, including `S640-251022` and the patches here |
 | Reachable after a bad flash | yes, it runs first at every reset | only through the first stage or working firmware, like Veikk's |
-| Needs 0.3.2 to come out "writable" | yes, pages 0 to 11 | not to install it. To flash complete images afterwards, yes |
+| Blocked by read protection? | no, firmware can write pages 0 to 11 (0.3.2) | no (0.3.2) |
 
 Either way the starting point is the same GigaDevice example, with the app start and the
 protected range set for where it lives. Veikk's build fits below the factory tags at
@@ -633,8 +657,8 @@ failed because of read protection:
 
 Read protection explains why SWD could not read flash. It is most likely **not** why Veikk's
 updater refused the first 12 KB: that is an address check in the updater's own code (0.3.1).
-Whether read protection also stops the firmware itself from writing the first pages is a
-separate question, not tested yet (0.3.2).
+Read protection doesn't stop the firmware itself from writing the first pages either
+(tested, 0.3.2).
 
 ### 3.5 Removing read protection (mass erase)
 

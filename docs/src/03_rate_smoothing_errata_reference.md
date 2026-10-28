@@ -483,7 +483,7 @@ Corrections to this document (2026-10-08):
 | Said before | Correct |
 | :--- | :--- |
 | the mux control lines are PA8 and PB11 | there are six enable lines, PA8 and PB11 to PB15, one per HC4051 (2.3, 5.4). Pointed out by another user |
-| read protection may be why Veikk's updater refuses the first 12 KB | it is the updater's own address check (0.3.1). Whether read protection also locks pages against the firmware is a separate, open question (0.3.2) |
+| read protection may be why Veikk's updater refuses the first 12 KB | it is the updater's own address check (0.3.1). Read protection doesn't lock pages against the firmware either (tested, 0.3.2) |
 | in September only the part from `0x3000` up landed, so an old first 12 KB runs with 251022's upper part | most likely nothing landed (3.1); no tablet is known to run that mix |
 
 ---
@@ -633,7 +633,6 @@ hashes in `asm/patched_images.sha256`; they match the table.
 * Which HC4051 each enable line (PA8, PB11 to PB15) drives.
 * What sets the receive floor (about 80 counts in 6.7), and whether the 30 µs ring-down
   changes with pressure or between pens.
-* Whether read protection stops the firmware itself from writing the first pages (0.3.2).
   That decides whether the bootloader idea in 0.3 can work.
 * The S640 bootloader at `0x0800D800`: it is not in Veikk's update file. It matches
   GigaDevice's DFU example (0.3.1); a flash dump from a working tablet would confirm that and
