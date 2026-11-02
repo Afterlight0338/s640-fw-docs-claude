@@ -31,6 +31,15 @@ SHA-256 `150fbc8b…287b45`).
 
 Newest first. Small wording fixes are not listed.
 
+**2026-11-02**
+
+* New 6.8: a Wacom LP-170E on this tablet at a steady 1000 Hz, with a custom position-only
+  firmware. Source in [`wacom/lp170e/`](wacom/lp170e/). No pressure, and it has only been measured with the pen
+  lying still.
+* Corrected: "1000 Hz isn't possible" only holds for the stock scan and the Veikk pen (6, 8).
+* 6.8 also answers an open question: the frequency measurement is heterodyne, TIMER2 counts
+  the beat against a PWM on PB10.
+
 **2026-10-28**
 
 * 0.3.2 tested: read protection doesn't lock any page against the firmware, page 0
@@ -83,8 +92,9 @@ lags behind and creeps into place when the pen slows down. This project gets rid
   back. Done: `nosmooth-nohold` (7.4), flashed over SWD.
 * **On the way:** bringing the tablet back over SWD after an earlier attempt bricked it (3),
   and reading the firmware to find where the smoothing actually is (5, 7).
-* **Ruled out:** a higher report rate. The antenna scan takes about 3.9 ms, so 250 Hz is the
-  ceiling (6).
+* **Report rate:** with the Veikk pen and the stock scan, about 3.9 ms per report, so 250 Hz
+  is the ceiling (6). A Wacom LP-170E with a custom position-only firmware reaches a steady
+  1000 Hz, without pressure (6.8).
 * **Still open:** pressure smoothing (5.7), and a way to do all this over USB without opening
   the tablet (0.2, 0.3).
 
@@ -425,7 +435,7 @@ halfway needs SWD. The source isn't in this repo yet.
 3. [How it was bricked, and how it was recovered](#3-how-it-was-bricked-and-how-it-was-recovered)
 4. [The firmware image](#4-the-firmware-image)
 5. [How the firmware works](#5-how-the-firmware-works)
-6. [Report rate: why 1000 Hz is not possible here](#6-report-rate-why-1000-hz-is-not-possible-here)
+6. [Report rate: 250 Hz with the stock scan, 1000 Hz with a Wacom pen](#6-report-rate-250-hz-with-the-stock-scan-1000-hz-with-a-wacom-pen)
 7. [Zero smoothing](#7-zero-smoothing)
 8. [Corrections to the earlier notes](#8-corrections-to-the-earlier-notes)
 9. [Tools, scripts and data in this repository](#9-tools-scripts-and-data-in-this-repository)
@@ -451,7 +461,7 @@ halfway needs SWD. The source isn't in this repo yet.
 | Debug header | J1, 5 through-holes: 3V3, SWCLK, SWDIO, NRST, GND | multimeter |
 | BOOT0 | pin 60, tied straight to GND (0 Ω) | multimeter |
 | Read protection | was ON (`FMC_OBSTAT = 0xFFFFFF02`, option byte SPC = `0x00`) | SWD |
-| Pen report rate | 250 Hz (4.0 ms), limited by the antenna scan, not USB | measured |
+| Pen report rate | 250 Hz (4.0 ms) on stock firmware, limited by the antenna scan, not USB. 1000 Hz with a Wacom LP-170E and the firmware of 6.8 | measured |
 | USB polling | `bInterval 1` on all IN endpoints in `S640-251022` | descriptor + `lsusb -v` |
 | Pen coordinates | 0.005 mm per unit (5080 LPI), X 0 to 30480, Y 0 to 20320 | report builder + measurements |
 | Firmware smoothing | 8-sample boxcar on X/Y + a motion "hold" (deadzone), both removed by the nosmooth-nohold patch | breakpoints + RAM reads |
@@ -1643,7 +1653,10 @@ bursts plus integration waits. The rest of the work alone is more than 1 ms.
 
 ---
 
-## 6. Report rate: why 1000 Hz is not possible here
+## 6. Report rate: 250 Hz with the stock scan, 1000 Hz with a Wacom pen
+
+6.1 to 6.7 are about the Veikk pen and the stock scan, where 250 Hz is the ceiling. 6.8 replaces
+the scan and the pen.
 
 ### 6.1 Measured rate
 
@@ -1669,7 +1682,7 @@ measurement, plus about 0.9 ms of other work. The coil measurements are mostly p
 a 28-cycle burst at about 500 kHz (56 µs) and about 100 µs of waiting and integrating per coil.
 The non-waiting work alone is over 1 ms, so even a firmware with no waits at all (which
 would not see the pen) could not reach 1000 Hz. A realistic ceiling with careful tuning is
-around 300 to 330 Hz.
+around 300 to 330 Hz. That is for this scan with the Veikk pen; 6.8 gets around it.
 
 ### 6.3 How the Wacom "1000 Hz" firmwares do it
 
@@ -1858,6 +1871,102 @@ would save most of that, but:
   already moved the position by 3 mm (6.4), so the position math would need redoing too.
 
 Not tried. The first test worth doing: how much of y ± 2 is left with a 10 to 15 µs window.
+
+### 6.8 A Wacom LP-170E at 1000 Hz (2026-10-28 and 29)
+
+Another user reported about 985 Hz on an S640 with a Wacom LP-190K pen and their own firmware:
+0.3 % drops, jitter 0.029 mm average and 0.200 mm max in a WebHID tester. Those numbers are
+theirs and I haven't seen their patch. So the same thing was tried here from scratch, with the
+LP-170E from a CTH-670.
+
+**Result, `s640_lp170e_track_v14`, pen lying still** ([`data/lp170e_still_v14_60s.txt`](data/lp170e_still_v14_60s.txt)):
+
+| Run | Reports | Rate | Intervals | X / Y std |
+| :--- | :--- | :--- | :--- | :--- |
+| 60 s | 60000 | 1000.0 Hz | 59995 at 1 ms, 2 at 2 ms | 4.1 / 4.3 units (about 21 µm) |
+| 5 min | 299995 | 1000.0 Hz | 299985 at 1 ms, one 2 ms, one 6 ms | 4.3 / 4.1 units |
+
+Intervals are rounded to whole ms, the few that round to 0 are host read timing. In a 20000
+packet audit every packet was a well-formed `09 41 a0`. The 5 min log is not in the repo (10 MB).
+
+**What this firmware is not:**
+
+* **No pressure and no pen buttons.** Reports always say in range, tip up, pressure 0. It was
+  built for tapping with a keyboard in osu!.
+* **Not for the Veikk pen.** The carrier is fixed at 672.9 kHz, so the Veikk pen isn't expected to
+  work. Not tried.
+* **Only measured with the pen still.** The tracker logic was tested moving as an SRAM
+  prototype at about 800 frames/s: 100 % tracked for 60 s, up to 2.87 m/s. v14 itself has not been
+  tested moving, and there is no osu! verdict on it yet.
+* **Dead coils are hardcoded.** `DEAD_X` in `trk.c` lists coils x10, x16 and x21, which read 0 on
+  this physically worn tablet. Yours will differ. Tracking works across them, but X is noisier there.
+* **Edges:** at x0 and x25 there is no outer neighbour, so the position snaps to the coil centre.
+* One tablet, one pen.
+
+**Why the stock firmware can't see this pen**
+
+* **Wrong frequency.** The LP-170E resonates at about 665 kHz (hover 666.0, pressed 664.7), above
+  the 450 to 554 kHz carrier table. The amplitude peak is broad, visible from 590 to 758 kHz and
+  highest at 655 to 673 kHz. A variable burst running from SRAM reaches it
+  ([`wacom/lp170e/vburst.s`](wacom/lp170e/vburst.s)).
+* **The pen is field-powered and has to wake up.** This cost the most time. Probes 30 ms apart
+  read 2 to 70 against the Veikk pen's 809, which looks hopeless. After a 30 ms burst the same
+  probe reads 551, and the pen stays awake for about 300 ms (378 at 100 ms, 164 at 400 ms, 11 at
+  1.6 s). Bursts every 131 µs climb from 12 to 470 in 39 ms. A running scan keeps the pen awake
+  by itself. Off resonance (867 kHz) it always reads 0.
+* **The frequency measurement is heterodyne.** `0x08009554` puts a PWM on PB10 (TIMER1 CH2),
+  at `72 MHz / ((psc + 1)(arr + 1))`. The stock "band bases" 439024, 461538 and 480000 are this
+  oscillator, and TIMER2 CH2 (PB0) measures the beat. Oscillators of 562.5, 600 and 620.7 kHz gave
+  sum readings of 659 to 662 kHz, and 720 kHz gave a difference of 661 kHz, so they agree. A beat of
+  about 40 to 100 kHz works. The oscillator doesn't affect the amplitude path (flat from 480 to 783 kHz).
+* **Pressure wasn't found.** Hover and pressed are about 1.3 kHz apart with overlapping ranges,
+  and hover, light and hard press show the same decay and no keying. Only a hard press raises
+  the amplitude. Maybe it takes Wacom's own excitation pattern; that is a guess.
+
+**The firmware** ([`wacom/lp170e/trk.c`](wacom/lp170e/trk.c)): stock 251022 plus a 2452 byte blob at `0x0800C464`,
+replacing the pen-mode dispatch of the main loop (`0x08006794`) and hooking start-up
+(`0x08006678`). Nothing else in the stock image changes.
+
+* **Search:** a 1000 cycle power burst, then all 26 X and 18 Y coils self-excited.
+* **Track:** excite the peak coil and read it plus its nearest live neighbour on each side, so 3
+  coils per axis and 6 measurements of 130 µs per frame. Bursts are 28 cycles, wait A 4, wait B 60.
+* **Position:** a parabola through the 3 readings. Compared on recorded sweeps, it had the best
+  linearity (1 backward step against 39 for log-Gaussian). The stock measure routine returns
+  ADC >> 2, but the full 12 bits are still in `ADC_RDATA` afterwards, which roughly halves the noise.
+* **Leaving:** after 20 weak frames it sends one `09 41 c0` and goes back to search. A test build
+  forcing this got 6 of 6 leave reports out, re-acquiring in 16 to 31 ms.
+
+**From 458 to 1000 Hz.** The rate was not the physics this time:
+
+| Problem | Evidence | Fix | Rate |
+| :--- | :--- | :--- | :--- |
+| USB interrupt inside a measurement: 10 to 15 % of reports jumped 4 to 17 mm | report histograms | mask interrupts per measurement. A whole frame masked (v3) starved USB control transfers, 5 s per enumeration step | 458 Hz (v2) |
+| 2 ms of frame time for 0.8 ms of measurements, outside the measurements and changing with code layout in steps of about 62 µs | cold flash read 2091 cycles against 4 for the next word, a never-run stock function 6293. Most likely a small flash cache, each miss about 29 µs. Interrupts ruled out with an SRAM vector table | run the hot code from SRAM: `0x200008F8` to `0x20000FFF` is unused by stock, copied at start-up | 942 Hz (v6) |
+| stock report queue: 28 % of reports waited behind an older one | counters in a debug build | newest report overwrites the unsent one | 954 to 972 Hz (v7) |
+| stock sender: 32 % of reports reached the endpoint about 1 ms stale, 4.4 % never | SysTick wrapper in a debug build | load EP3 directly after each frame | 999 Hz (v9) |
+| replacing a packet still waiting (NAK, rewrite, VALID) collides with the host's poll, and can tear it | every one of 71 gaps per 10 s followed a replace | never touch a VALID packet. A frame that finds EP3 busy is dropped | 1000 Hz (v14) |
+
+Two traps in direct loading. The stock USB interrupt counts every EP3 completion against its own
+transfer struct (`0x20000120` to `0x20000128`). Without updating that struct it ran past zero and
+sent the RAM after the buffer as packets until it bus-faulted at `0x20002000`. And STAT_TX can
+already read NAK while the packet is still going out, so "free" has to mean the stock length is 0
+as well. Direct mode only starts about 10 s after boot, so if it ever breaks USB, a replug still
+gives a window on the stock path. v8 and v10 (2 frames per pass), v11 (no SCAN_BEGIN/END) and v13
+(B = 55) were all worse. v12 (B = 50) also hit 1000 Hz, but with more noise.
+
+**Build and flash.** Read the list above first. Put `S640-251022.bin` in [`wacom/lp170e/`](wacom/lp170e/) (the hash
+is checked), set `DEAD_X` for your tablet, then:
+
+```
+cd wacom/lp170e
+nix-shell -p gcc-arm-embedded python3 --run "python3 build.py out.bin"
+```
+
+Unchanged, this rebuilds v14 byte for byte (10). Flash it like any other image, over SWD (0) or the
+open bootloader (0.3.5). v14 here went on over SWD, earlier builds over the open bootloader. It keeps
+the stock report format, so OpenTabletDriver sees "VEIKK S640 V2". Measure with
+`python3 still3.py SECONDS OUT.txt`. Debug builds (`CFLAGS=-DDEBUG_TIMING2` and so on) put data in
+the pressure bytes, so stop OpenTabletDriver before flashing one.
 
 ---
 
@@ -2256,6 +2365,12 @@ Corrections to this document (2026-10-08):
 | read protection may be why Veikk's updater refuses the first 12 KB | it is the updater's own address check (0.3.1). Read protection doesn't lock pages against the firmware either (tested, 0.3.2) |
 | in September only the part from `0x3000` up landed, so an old first 12 KB runs with 251022's upper part | most likely nothing landed (3.1); no tablet is known to run that mix |
 
+Corrections to this document (2026-11-02):
+
+| Said before | Correct |
+| :--- | :--- |
+| 1000 Hz is not possible on this tablet, the ceiling is 300 to 330 Hz | true for the stock scan and the Veikk pen. A different pen and a custom scan reach 1000 Hz (6.8) |
+
 ---
 
 ## 9. Tools, scripts and data in this repository
@@ -2271,6 +2386,7 @@ tools/                       measurement scripts, OpenOCD TCL scripts, generator
 data/                        every measurement from the session
 images/                      annotated photos, raw photos in images/raw/
 wacom/                       the Wacom firmware comparison (no firmware files)
+wacom/lp170e/                source of the LP-170E 1000 Hz firmware (6.8)
 history/                     the earlier notes, scripts and wrong pinout pictures, unchanged
 ```
 
@@ -2291,6 +2407,7 @@ python3 tools/build_readme.py
 | `hook.py OUT.bin` | `nosmooth-hook` (7.9, tested over SWD): same effect as nosmooth-nohold, nothing below `0x08003000` changed |
 | `reverse.py OUT.bin` | the reverse-smoothing experiment of 7.10 (worse than stock, do not use); source `reverse.s` |
 | `factory_tags_fc60.bin` | the 32 tag bytes for `0x0800FC60` (4.3) |
+| [`wacom/lp170e/build.py`](wacom/lp170e/build.py) `OUT.bin` | the LP-170E firmware (6.8): `trk.c`, `link.ld`, `vburst.s`. `still3.py` logs and summarises reports |
 
 ### 9.3 Measurement scripts ([`tools/`](tools/), Python 3, no dependencies)
 
@@ -2354,6 +2471,7 @@ Breakpoint-based scripts halt the tablet briefly; the pen drops out for a moment
 | `watch_blind_stock_2026-10-08.txt`, `watch_blind_nohold_2026-10-08.txt`, `watch_blind_hook_2026-10-08.txt` | `watch.tcl` during the blind osu! test (7.9) |
 | `watch_reverse_2026-10-08.txt` | `watch.tcl`, the reverse-smoothing image (7.10) |
 | `watch_hook_osu_2026-10-08.txt` | `watch.tcl`, nosmooth-hook, earlier osu! session (scan flags always 0, 5.6) |
+| `lp170e_still_v14_60s.txt` | `still3.py`, 60 s, v14, pen lying still (6.8). Columns: time, status, X, Y, bytes 11 and 12 |
 
 ---
 
@@ -2369,6 +2487,7 @@ SHA-256:
 | nosmooth-nohold, `s640_nosmooth_nohold.bin` | `371a4f7bc4ab181a1a41d58867bf31e7bc56dcaec656c0fe614f68995551877e` |
 | T = 80, `test_t80.bin` | `93ac3e22e1c5b2dcec173d932f73bb843625f46872f41e0a3a9edd3b510ccf51` |
 | nosmooth-hook, `s640_nosmooth_hook.bin` | `4f41d2b5c537efae1bc964f4f2c1298932ff3afdaa22dba708defc47744da96c` |
+| LP-170E v14 (6.8), [`wacom/lp170e/build.py`](wacom/lp170e/build.py) | `43df069f06993e76916ae461b00b7a7c1b3afcfe9ba28d3fdba2ea285e467460` |
 | reverse experiment (7.10, do not use) | `c17f91a3185d89dc0ea4a761d1fafc18af450d3234c432da93cdf3c990ae74f3` |
 | failed `--fast` build, `test_v3.bin` | `986577b753ea574ed1bcee845152d949c743dc47393e655a319b6ad15cdbb592` |
 | failed window-only, `test_v3_windowonly.bin` | `85de141275ada1ff30e6e74b3032a52587ae8375333959f6f9827ac03396d6a6` |
@@ -2385,8 +2504,8 @@ hashes in [`asm/patched_images.sha256`](asm/patched_images.sha256); they match t
 ## 11. Open questions
 
 * What exactly the hold flag `0x2000107E` (path A) is for, and whether anything sets it.
-* How the frequency measurement turns `72 MHz / period + band offset` into the pen's
-  resonant frequency (what feeds TIMER2 channel 2).
+* How the LP-170E signals pressure and its buttons, if plain bursts can get it at all (6.8).
+* How v14 behaves with the pen moving and in real play (6.8).
 * What the mode in `0x20001054` (saved to settings page B after about 500 reports) does.
 * What the settings pages held on this unit, and whether pressure, pen buttons and the
   express keys behave the same with them blank.
