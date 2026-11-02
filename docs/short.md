@@ -104,8 +104,8 @@ To go back to stock, flash `S640-251022.bin` the same way.
   first 12 KB (where the patch is) and an interrupted DFU flash is how this tablet died.
 * **Don't use the old scripts in [`history/`](history/)**: `flash_500hz.py` bricked it, and the old
   "zero smoothing" image (`bx lr` at `0x08000310`) would stop all pen reports.
-* **Don't expect 1000 Hz.** The antenna scan takes about 3.9 ms, so 250 Hz is it. The USB side
-  is already 1 ms.
+* **Don't expect 1000 Hz from the Veikk pen.** The antenna scan takes about 3.9 ms, so 250 Hz is
+  it. The USB side is already 1 ms. See below for the Wacom pen route.
 * **Don't try the speed hacks**: skipping the pressure measurement kills pen detection, and
   shrinking the coil window loses the pen for good once you lift it.
 
@@ -119,6 +119,14 @@ To go back to stock, flash `S640-251022.bin` the same way.
 | Report rate, pen moving | 250 Hz | 250 Hz |
 | Still-pen jitter | 0 (hidden by the deadzone) | about 0.03 mm (filter it in OpenTabletDriver if it bugs you) |
 | Pressure | 8-sample average, 4-report tip debounce | unchanged |
+
+## 1000 Hz with a Wacom pen
+
+A Wacom LP-170E (CTH-670 pen) with a custom firmware reports at a steady 1000 Hz, about 0.02 mm
+of still-pen noise. Position only: no pressure, no pen buttons, and the Veikk pen isn't expected to
+work on it. So far it has only been measured with the pen lying still, on one tablet. Dead coils
+are hardcoded for that tablet, so change them for yours. Section 6.8 of the long version has the
+details, the source is in [`wacom/lp170e/`](https://github.com/Afterlight0338/s640-fw-docs-claude/tree/main/wacom/lp170e).
 
 ## If something goes wrong
 

@@ -16,6 +16,15 @@ SHA-256 `150fbc8b…287b45`).
 
 Newest first. Small wording fixes are not listed.
 
+**2026-11-02**
+
+* New 6.8: a Wacom LP-170E on this tablet at a steady 1000 Hz, with a custom position-only
+  firmware. Source in `wacom/lp170e/`. No pressure, and it has only been measured with the pen
+  lying still.
+* Corrected: "1000 Hz isn't possible" only holds for the stock scan and the Veikk pen (6, 8).
+* 6.8 also answers an open question: the frequency measurement is heterodyne, TIMER2 counts
+  the beat against a PWM on PB10.
+
 **2026-10-28**
 
 * 0.3.2 tested: read protection doesn't lock any page against the firmware, page 0
@@ -68,8 +77,9 @@ lags behind and creeps into place when the pen slows down. This project gets rid
   back. Done: `nosmooth-nohold` (7.4), flashed over SWD.
 * **On the way:** bringing the tablet back over SWD after an earlier attempt bricked it (3),
   and reading the firmware to find where the smoothing actually is (5, 7).
-* **Ruled out:** a higher report rate. The antenna scan takes about 3.9 ms, so 250 Hz is the
-  ceiling (6).
+* **Report rate:** with the Veikk pen and the stock scan, about 3.9 ms per report, so 250 Hz
+  is the ceiling (6). A Wacom LP-170E with a custom position-only firmware reaches a steady
+  1000 Hz, without pressure (6.8).
 * **Still open:** pressure smoothing (5.7), and a way to do all this over USB without opening
   the tablet (0.2, 0.3).
 
@@ -410,7 +420,7 @@ halfway needs SWD. The source isn't in this repo yet.
 3. [How it was bricked, and how it was recovered](#3-how-it-was-bricked-and-how-it-was-recovered)
 4. [The firmware image](#4-the-firmware-image)
 5. [How the firmware works](#5-how-the-firmware-works)
-6. [Report rate: why 1000 Hz is not possible here](#6-report-rate-why-1000-hz-is-not-possible-here)
+6. [Report rate: 250 Hz with the stock scan, 1000 Hz with a Wacom pen](#6-report-rate-250-hz-with-the-stock-scan-1000-hz-with-a-wacom-pen)
 7. [Zero smoothing](#7-zero-smoothing)
 8. [Corrections to the earlier notes](#8-corrections-to-the-earlier-notes)
 9. [Tools, scripts and data in this repository](#9-tools-scripts-and-data-in-this-repository)
@@ -436,7 +446,7 @@ halfway needs SWD. The source isn't in this repo yet.
 | Debug header | J1, 5 through-holes: 3V3, SWCLK, SWDIO, NRST, GND | multimeter |
 | BOOT0 | pin 60, tied straight to GND (0 Ω) | multimeter |
 | Read protection | was ON (`FMC_OBSTAT = 0xFFFFFF02`, option byte SPC = `0x00`) | SWD |
-| Pen report rate | 250 Hz (4.0 ms), limited by the antenna scan, not USB | measured |
+| Pen report rate | 250 Hz (4.0 ms) on stock firmware, limited by the antenna scan, not USB. 1000 Hz with a Wacom LP-170E and the firmware of 6.8 | measured |
 | USB polling | `bInterval 1` on all IN endpoints in `S640-251022` | descriptor + `lsusb -v` |
 | Pen coordinates | 0.005 mm per unit (5080 LPI), X 0 to 30480, Y 0 to 20320 | report builder + measurements |
 | Firmware smoothing | 8-sample boxcar on X/Y + a motion "hold" (deadzone), both removed by the nosmooth-nohold patch | breakpoints + RAM reads |
