@@ -148,7 +148,7 @@ page = f"""<!DOCTYPE html>
         <h1>{title}</h1>
         <p class="doc-meta">Written 2026-10-06 &middot; scripts, data and listings on <a href="{REPO}">GitHub</a></p>
         <dl class="doc-stats">
-          <div><dt>report rate</dt><dd>250 Hz <span>scan-limited</span></dd></div>
+          <div><dt>report rate</dt><dd>250 Hz <span>stock scan, 1000 Hz with a Wacom pen</span></dd></div>
           <div><dt>lag removed</dt><dd>&asymp;14 ms <span>8-sample average</span></dd></div>
           <div><dt>still jitter, nosmooth-nohold</dt><dd>&asymp;0.03 mm <span>raw sensor noise</span></dd></div>
           <div><dt>status</dt><dd>alive <span>unbricked over SWD</span></dd></div>
