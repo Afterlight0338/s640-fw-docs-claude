@@ -9,3 +9,5 @@ main README. No firmware files are included, only diffs, hashes and page snapsho
 * `hashes_of_files_analysed.txt`: hashes of every file compared.
 * `tabletvit_page_strings_2026-10-06.txt`, `xstarry_firmware_catalog_snapshot_2026-10-06.json`:
   what the two download pages said on that day.
+* `lp170e/`: source of our own 1000 Hz firmware for the LP-170E pen, section 6.8. Builds from your
+  copy of the stock image, no firmware files here either.
