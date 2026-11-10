@@ -10,7 +10,7 @@ import html, pathlib, re, shutil, sys
 import markdown
 
 REPO = "https://github.com/Afterlight0338/s640-fw-docs-claude"
-STYLE_V, PAGE_V = 8, 2          # /style.css?v= (bump with the main site) and /s640/s640.css?v=
+STYLE_V, PAGE_V = 9, 2          # /style.css?v= (bump with the main site) and /s640/s640.css?v=
 root = pathlib.Path(__file__).resolve().parent.parent
 out = pathlib.Path(sys.argv[1])
 (out / "images").mkdir(parents=True, exist_ok=True)
@@ -89,7 +89,7 @@ page = f"""<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Veikk S640 firmware notes, vivlos.dev</title>
   <meta name="description" content="Unbricking a Veikk S640 over SWD with a Pi Pico, how its firmware scans the pen, and removing the cursor smoothing. Every byte and measurement.">
-  <meta name="theme-color" content="#080b12">
+  <meta name="theme-color" content="#171a1c">
   <link rel="icon" type="image/webp" href="/assets/vivlos/racing.webp">
   <meta property="og:title" content="Veikk S640 firmware notes">
   <meta property="og:description" content="SWD unbrick, firmware internals and the zero-smoothing patch for the Veikk S640.">
