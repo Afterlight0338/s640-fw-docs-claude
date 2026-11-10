@@ -10,7 +10,7 @@ import html, pathlib, re, shutil, sys
 import markdown
 
 REPO = "https://github.com/Afterlight0338/s640-fw-docs-claude"
-STYLE_V, PAGE_V = 9, 2          # /style.css?v= (bump with the main site) and /s640/s640.css?v=
+STYLE_V, PAGE_V = 10, 2          # /style.css?v= (bump with the main site) and /s640/s640.css?v=
 root = pathlib.Path(__file__).resolve().parent.parent
 out = pathlib.Path(sys.argv[1])
 (out / "images").mkdir(parents=True, exist_ok=True)
