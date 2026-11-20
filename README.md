@@ -27,9 +27,35 @@ SHA-256 `150fbc8b…287b45`).
 > SWD access requires removing the chip's read protection, and that **erases the whole flash**,
 > including per-unit data that this document cannot give back to you (section 3.6).
 
+## -3. Web flasher
+
+**[vivlos.dev/s640/flash](https://vivlos.dev/s640/flash/)**: flash the tablet over USB from
+Chrome, Edge or Brave. No Pico, no opening the tablet. If your tablet works and you just want
+the smoothing gone (or stock back), use this and skip the rest.
+
+* **How:** it uses Veikk's own updater at `0x0800D800`. The running firmware jumps into it when
+  it gets HID report `09 04 2F EB 00 00 00 00 C0` on interface 2. The updater then shows up as
+  `28e9:0189` and takes 1 KB DFU blocks (erase each page first, data from block 2). Found by
+  pcb, whose `flash.py` the page follows step for step.
+* **Safe area:** the updater refuses anything at or above `0x0800D800`, so it can't touch
+  itself, the settings or the factory tags.
+* **Images:** stock `S640-251022`, `nosmooth-hook` (7.9) and the LP-170E 1000 Hz build (6.8,
+  Wacom pen only, tuned on one tablet). All three keep the HID switch, so you can always get
+  back to stock over USB. A firmware without it leaves you with SWD only.
+* **Tested:** stock and the LP-170E build flashed back and forth over USB with `flash.py` on the
+  owner's tablet, each checked over SWD (2026-11-19). The web page itself hasn't flashed a
+  tablet yet.
+* **Corrects 0.2 and 0.3:** this updater writes from `0x08000000`, the first 12 KB included
+  (the stock app written this way read back identical over SWD). The 12 KB limit described
+  there doesn't apply to it.
+
 ## -2. Changelog
 
 Newest first. Small wording fixes are not listed.
+
+**2026-11-20**
+
+* New -3: the web flasher. Flashing over USB works through Veikk's own updater, no Pico.
 
 **2026-11-02**
 
@@ -95,8 +121,8 @@ lags behind and creeps into place when the pen slows down. This project gets rid
 * **Report rate:** with the Veikk pen and the stock scan, about 3.9 ms per report, so 250 Hz
   is the ceiling (6). A Wacom LP-170E with a custom position-only firmware reaches a steady
   1000 Hz, without pressure (6.8).
-* **Still open:** pressure smoothing (5.7), and a way to do all this over USB without opening
-  the tablet (0.2, 0.3).
+* **Over USB:** done, see the web flasher (-3).
+* **Still open:** pressure smoothing (5.7).
 
 ## 0. How to flash
 
