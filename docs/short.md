@@ -1,3 +1,12 @@
+## Easiest way: the web flasher
+
+Tablet still works and you just want the smoothing gone (or stock back)? Use
+**[vivlos.dev/s640/flash](https://vivlos.dev/s640/flash/)**. Chrome, Edge or Brave, a USB cable,
+three steps. No Pico, nothing to open. It uses Veikk's own updater, so you can always flash
+stock again the same way.
+
+Everything below is for a bricked tablet, or for doing it by hand over SWD.
+
 ## What this is
 
 A Veikk S640 bricked by a bad USB flash, revived over SWD with a Raspberry Pi Pico, then
