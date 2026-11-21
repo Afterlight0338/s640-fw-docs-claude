@@ -94,6 +94,10 @@ page = f"""<!DOCTYPE html>
   <meta property="og:title" content="Veikk S640 firmware notes">
   <meta property="og:description" content="SWD unbrick, firmware internals and the zero-smoothing patch for the Veikk S640.">
   <meta property="og:url" content="https://vivlos.dev/s640/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://vivlos.dev/s640/images/s640_board_j1_swd_wiring.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://vivlos.dev/s640/">
   <!-- Generated from README.md and docs/short.md by tools/build_site_page.py in {REPO}.
        Edit the source there. Uses the main stylesheet's tokens, fonts and switch:
        bump ?v= together with index.html -->
